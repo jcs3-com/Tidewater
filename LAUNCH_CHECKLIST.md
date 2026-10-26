@@ -12,11 +12,11 @@ does not clear the indexing, newsletter, legal or operational gates below.
   output; light/dark axe audits of 13 primary routes had zero A/AA violations.
 - [x] Prepared release log, design system, asset register, source-archive command
   and an opt-in Drive sync workflow. See `docs/DRIVE_SYNC.md` for exact OAuth setup.
-- [ ] **[[TODO: Restore GitHub integration Contents/Workflows write access. Both
-  Git push and connector branch creation currently return HTTP 403.]]** v2 is
-  not pushed, no PR exists, and it is not deployed.
-- [ ] **[[TODO: After publication, verify the production Cloudflare check and
-  `/release.json` source SHA, then run the live v2 browser suite.]]**
+- [x] GitHub write access confirmed 2026-10-26; `feat/tidewater-v2` pushed and
+  [PR #1](https://github.com/jcs3-com/Tidewater/pull/1) opened and merged to `main`.
+- [x] Production Cloudflare check, live `/release.json` source SHA and live v2
+  browser suite: see the production verification entry in
+  `docs/TIDEWATER_RELEASE_LOG.md`.
 - [ ] **[[TODO: Configure Google OAuth secrets and enable DRIVE_SYNC_ENABLED
   only after a successful verified sync. Automatic sync is not active.]]**
 - [ ] **[[TODO: Complete actual production Airtable/Resend delivery checks after

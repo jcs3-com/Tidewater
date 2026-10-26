@@ -25,8 +25,8 @@ Candidate branch `feat/tidewater-v2`, based on `main` commit `c8dbde3138d2722ecf
 | Launch gates | noindex/nofollow, disallow-all robots and newsletter signups closed verified |
 | Mobile Lighthouse 13, local production home | Performance 97; accessibility 100; best practices 100; SEO 69 |
 | Lighthouse metrics | FCP 0.9s, LCP 2.1s, CLS 0, TBT 180ms; total measured transfer 189 KiB |
-| Live v2 deployment | **Not performed: GitHub writes denied (403); Cloudflare CLI unauthenticated** |
-| Continuous Drive sync | **Not active: workflow prepared locally; OAuth secrets unverified/unconfigured here** |
+| Live v2 deployment | Published through PR #1; see "Production verification" in `TIDEWATER_RELEASE_LOG.md` for the Cloudflare check, live SHA and live browser results |
+| Continuous Drive sync | **Not active: workflow installed in the repository but gated off (`DRIVE_SYNC_ENABLED` unset); OAuth secrets not configured** |
 
 The Lighthouse SEO score reflects the intentional noindex launch gate. Do not remove the gate to improve that score. Local metrics are laboratory measurements, not field data or proof of live performance.
 

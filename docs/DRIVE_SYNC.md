@@ -2,7 +2,7 @@
 
 ## Current status — 2026-10-26
 
-**Automatic synchronization is not active.** `.github/workflows/release-to-drive.yml` is prepared locally and opts in only when `DRIVE_SYNC_ENABLED=1`. GitHub writes are currently denied with HTTP 403, so the new workflow cannot yet be installed in the repository. There are no Google OAuth bindings in the execution environment, and GitHub's Actions secrets/variables APIs also return 403. Their configuration is therefore unverified; no credentials were guessed or extracted from connected apps.
+**Automatic synchronization is not active.** `.github/workflows/release-to-drive.yml` was installed in the repository through PR #1 and opts in only when repository variable `DRIVE_SYNC_ENABLED=1`. That variable is not set and the three Google OAuth secrets below are not configured, so every run is skipped. No credentials were guessed or extracted from connected apps.
 
 The connected Google Drive app can independently upload this session's candidate documentation/archive. Those manual uploads do not configure GitHub Actions or establish continuous synchronization. See the session's `drive-sync-receipt.json` for actual uploaded IDs, checksums and source commit. Unpublished candidates must stay clearly labelled as such.
 
@@ -22,7 +22,7 @@ The script hardcodes this folder to prevent accidental root-folder duplication. 
    - `GOOGLE_DRIVE_CLIENT_ID`: the OAuth client ID.
    - `GOOGLE_DRIVE_CLIENT_SECRET`: that client's secret.
    - `GOOGLE_DRIVE_REFRESH_TOKEN`: the offline refresh token for the authorized Drive account.
-4. Restore GitHub repository write authorization (Contents and Workflows write; Pull requests write for PR creation). Install the reviewed workflow through GitHub.
+4. The reviewed workflow is already installed (PR #1); no further GitHub write step is needed.
 5. Only after verifying the account can add children to the exact folder, set repository **variable** `DRIVE_SYNC_ENABLED=1`. This is not a secret. No separate folder variable is needed.
 6. Run the workflow manually and inspect its verified receipt. Do not claim active synchronization before a successful run. Set `DRIVE_SYNC_ENABLED=0` to disable it again.
 

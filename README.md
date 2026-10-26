@@ -2,9 +2,11 @@
 
 ## Tidewater v2 candidate status
 
-The v2 institutional/coastal redesign is implemented locally from `main` baseline
-`c8dbde3138d2722ecf1e4fd2f1f01dcb914018e4`. Publication is blocked by HTTP 403 on
-GitHub writes; it is **not deployed**. See [release log](docs/TIDEWATER_RELEASE_LOG.md),
+The v2 institutional/coastal redesign was published through [PR #1](https://github.com/jcs3-com/Tidewater/pull/1) from
+`main` baseline `c8dbde3138d2722ecf1e4fd2f1f01dcb914018e4` and deploys through the
+existing Cloudflare Pages project `tidewater` (https://tidewater-6ik.pages.dev).
+The verified production commit is recorded in the release log; the live
+`/release.json` marker is authoritative. See [release log](docs/TIDEWATER_RELEASE_LOG.md),
 [design system](docs/TIDEWATER_SITE_DESIGN_SYSTEM.md),
 [asset/license register](docs/asset-register.md) and [Drive sync setup](docs/DRIVE_SYNC.md).
 These status notes must be updated after a verified production release.
