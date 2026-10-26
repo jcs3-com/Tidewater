@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "include": [
+    "/api/*",
+    "/health",
+    "/README.md",
+    "/LAUNCH_CHECKLIST.md",
+    "/package.json",
+    "/package-lock.json",
+    "/.env.example",
+    "/.gitignore",
+    "/astro.config.mjs",
+    "/tsconfig.json",
+    "/playwright.config.mjs",
+    "/src/*",
+    "/worker/*",
+    "/docs/*",
+    "/seed/*",
+    "/tests/*",
+    "/.github/*",
+    "/functions/*",
+    "/public/*"
+  ],
+  "exclude": []
+}
