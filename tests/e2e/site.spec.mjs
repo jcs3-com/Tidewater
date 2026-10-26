@@ -15,7 +15,7 @@ for(const width of [360,1440]){
 }
 test('mobile nav opens and links to pricing',async({page})=>{
  await page.setViewportSize({width:360,height:800});await page.goto('/');
- const button=page.getByRole('button',{name:'Menu'});await button.click();
+ const button=page.locator('#menu-toggle');await button.click();
  await expect(button).toHaveAttribute('aria-expanded','true');
  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:'Pricing'}).click();
  await expect(page).toHaveURL(/\/pricing$/);
