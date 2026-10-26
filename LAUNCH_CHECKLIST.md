@@ -38,9 +38,9 @@ source SHA, remote main, actual production evidence and manually archived files.
 - [x] Domain `tidewaterbid.com` registered at Cloudflare Registrar (2026-10-26). Code defaults now use it.
 - [ ] **[[TODO: Attach `tidewaterbid.com` (and optionally `www.tidewaterbid.com`) as Custom domains on the Pages project `tidewater`.]]**
 - [ ] **[[TODO: After the domain serves HTTPS, set the Pages variable `SITE_URL=https://tidewaterbid.com` and redeploy; verify canonical, OG and sitemap URLs.]]**
-- [ ] **[[TODO: Enable Cloudflare Email Routing for `hello@tidewaterbid.com`, verify forwarding, then replace the personal Gmail on Contact, Privacy, Terms and footer.]]**
+- [x] Cloudflare Email Routing enabled for `tidewaterbid.com` (MX and SPF live); public contact is `hello@tidewaterbid.com` on every page. No personal address is published. **[[TODO: Add a DMARC record; send a test message to confirm forwarding.]]**
 - [ ] **[[TODO: Optional: register `tidewaterbids.com` and redirect it to `tidewaterbid.com`.]]**
-- [x] Public contact email temporarily set to `james.c.simpsoniii@gmail.com`. [[TODO: Replace with dedicated domain mailbox if desired.]]
+- [x] Public contact email is `hello@tidewaterbid.com` (forwarded by Cloudflare Email Routing).
 - [ ] **[[TODO: Supply actual company postal mailing address]]** for site footer and CAN-SPAM email footer.
 - [x] Founder bio drafted from known operator history. **[[TODO: Founder final copy review before public launch.]]**
 - [ ] **[[TODO: Confirm final trademark/trade-name use and logo/brand approval.]]**
@@ -59,7 +59,7 @@ source SHA, remote main, actual production evidence and manually archived files.
 
 - [x] Airtable base and Prospects, RFPs, Matches tables created and verified: https://airtable.com/app5wO7MKQ92y16f1
 - [ ] **[[TODO: Create restricted Airtable access tokens; configure builder read-only and Worker read/write.]]**
-- [ ] **[[TODO: Email delivery: verify Resend sender/domain, mailing address and unsubscribe secret.]]** Personal Gmail is the public contact and internal recipient, not an authenticated bulk sender.
+- [ ] **[[TODO: Email delivery: verify Resend sender/domain, mailing address and unsubscribe secret.]]** `hello@tidewaterbid.com` is receive-only forwarding, not an authenticated bulk sender.
 - [ ] **[[TODO: Set production SITE_URL and deploy Pages with its same-origin Functions; configure runtime secrets in Cloudflare.]]** Separate Worker is optional, not required for the default Pages deploy.
 - [ ] **[[TODO: Perform actual contact, quiz, packet and newsletter form submissions; verify all fields in Airtable.]]**
 - [ ] **[[TODO: Click actual double-opt-in link, verify Pending → Confirmed; test expiry and unsubscribe → Unsubscribed.]]**
