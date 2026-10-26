@@ -2,6 +2,12 @@
 
 `[[TODO]]` items are deliberately not guessed. Resolve these before the site goes live.
 
+## Launch gates (build variables, default off)
+
+- [ ] **[[TODO: Set `SITE_INDEXABLE=1` only after every copy/legal TODO below is cleared.]]** Until then every page is `noindex, nofollow` and robots.txt disallows all.
+- [ ] **[[TODO: Set `NEWSLETTER_ENABLED=1` only after Resend sender, `MAILING_ADDRESS` and `HMAC_SECRET` are configured.]]** Until then the signup form is not rendered and `/api/lead` returns 503 for newsletter requests.
+- [ ] **[[TODO: Set GitHub variable `DAILY_REBUILD=1` after the Action's secrets exist.]]** Scheduled runs are skipped until then.
+
 ## Identity, offers and copy
 
 - [ ] **[[TODO: Set temporary `*.pages.dev` hostname as canonical SITE_URL after creating the Cloudflare Pages project; custom domain later.]]**
@@ -38,13 +44,13 @@
 
 ## Infrastructure and QA
 
-- [ ] **[[TODO: Create a blank `jcs3-com/tidewater` GitHub repository, then push this bundle.]]** GitHub connector can edit existing repos but has no create-repository action in this chat. Generate package-lock.json after npm install.
+- [x] Source pushed to `jcs3-com/Tidewater` `main` with `package-lock.json` (2026-10-26).
 - [ ] **[[TODO: Create Cloudflare Pages project from `jcs3-com/tidewater` and deploy static site plus Pages Functions.]]** Cloudflare API action is not connected in this chat. A custom domain can be added later.
 - [ ] **[[TODO: Configure Cloudflare Pages build variables and secrets; separately configure GitHub Actions for daily RFP rebuild.]]**
 - [ ] **[[TODO: Configure Plausible domain and `lead` event goal, or choose Cloudflare Web Analytics and adapt A/B conversion tracking.]]**
 - [ ] **[[TODO: Verify email authentication SPF, DKIM and DMARC.]]**
-- [ ] **[[TODO: Run a real Astro production build and fix any dependency-specific errors.]]** Network-restricted artifact environment could not fetch npm packages.
-- [ ] **[[TODO: Run Playwright or browser screenshots at 360px and 1440px; verify no horizontal overflow, menus, quiz, filters, focus states and dark mode.]]**
+- [x] `npm install`, `npm run check` (0 errors) and `npm run build` pass on Node 22. Fixed: missing `@types/node`; `build.format: 'file'` so Pages serves slashless canonicals without redirects.
+- [x] Playwright suite 6/6 (dev). Production build under `wrangler pages dev`: 15 routes at 360/390/768/1440px, no horizontal overflow, real RFP renders, SAMPLE pages 404. **[[TODO: Re-run against the live *.pages.dev URL with `BASE_URL=... npx playwright test`; check focus states manually.]]**
 - [ ] **[[TODO: Audit rendered routes with axe for keyboard, contrast and ARIA compliance.]]**
 - [ ] **[[TODO: Run mobile Lighthouse and achieve 90+ for performance, accessibility, best practices and SEO.]]** Target is not yet measured.
 - [ ] **[[TODO: Validate production sitemap, robots, canonical URLs, OG PNGs, JSON-LD and noindex on sample records.]]**
