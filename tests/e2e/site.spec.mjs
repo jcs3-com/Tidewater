@@ -1,6 +1,7 @@
 import {test,expect} from '@playwright/test';
-const routes=['/','/bids','/pricing','/restaurant-advisory','/open-bids','/readiness','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md','/bids/washington-dc/sample-event-catering'];
-for(const width of [360,1440]){
+const demo=process.env.DEMO_SEED!=='0';
+export const routes=['/','/bids','/pricing','/restaurant-advisory','/open-bids','/readiness','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md',...(demo?['/bids/washington-dc/sample-event-catering']:[])];
+for(const width of [360,390,768,1440]){
  test(`routes usable at ${width}px without horizontal scrolling`,async({page})=>{
   await page.setViewportSize({width,height:800});
   for(const path of routes){
@@ -17,6 +18,10 @@ test('mobile nav opens and links to pricing',async({page})=>{
  await page.setViewportSize({width:360,height:800});await page.goto('/');
  const button=page.locator('#menu-toggle');await button.click();
  await expect(button).toHaveAttribute('aria-expanded','true');
+ await page.keyboard.press('Escape');
+ await expect(button).toHaveAttribute('aria-expanded','false');
+ await expect(button).toBeFocused();
+ await button.press('Enter');
  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:'Pricing'}).click();
  await expect(page).toHaveURL(/\/pricing$/);
 });
@@ -34,7 +39,11 @@ test('readiness calculates score and reveals lead capture',async({page})=>{
 });
 test('sample listings never appear as verified bids',async({page})=>{
  await page.goto('/open-bids');
- await expect(page.getByText(/SAMPLE cards are fictional/)).toBeVisible();
- const sample=page.locator('[data-bid-row][data-status=SAMPLE]');await expect(sample).toHaveCount(3);
- await page.locator('#due-filter').selectOption('7');await expect(page.locator('#filter-count')).toContainText('0 listings');
+ const sample=page.locator('[data-bid-row][data-status=SAMPLE]');await expect(sample).toHaveCount(demo?3:0);
+ if(demo){
+  await expect(page.getByText(/SAMPLE cards are fictional/)).toBeVisible();
+  await page.locator('#due-filter').selectOption('7');await expect(page.locator('#filter-count')).toContainText('0 listings');
+ }else{
+  const response=await page.goto('/bids/washington-dc/sample-event-catering');expect(response?.status()).toBe(404);
+ }
 });

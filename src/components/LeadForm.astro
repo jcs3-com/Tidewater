@@ -21,6 +21,7 @@ const turnstileKey=import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
   {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="auto"></div>}
   <button type="submit" class="button">{kind==='newsletter'?'Send confirmation email':kind==='bid_packet'?'Request the bid packet':'Send request'}</button>
   <div class="form-feedback" role="status" aria-live="polite"></div>
+  <p class="fine dim">If online delivery is unavailable, <a href="mailto:james.c.simpsoniii@gmail.com">email Tidewater directly</a>. A request is received only after delivery is confirmed.</p>
 </form>
 {turnstileKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
 <script src="/scripts/forms.js" defer></script>

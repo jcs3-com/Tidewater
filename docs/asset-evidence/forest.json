@@ -1,0 +1,99 @@
+{
+  "verified_at": "2026-10-26",
+  "title": "File:Aerial view of forest, river and marsh (7507904032).jpg",
+  "description_url": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_forest,_river_and_marsh_(7507904032).jpg",
+  "original_download_url": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Aerial_view_of_forest%2C_river_and_marsh_%287507904032%29.jpg",
+  "source_metadata": {
+    "DateTime": {
+      "value": "2016-09-29 16:24:35",
+      "source": "mediawiki-metadata",
+      "hidden": ""
+    },
+    "ObjectName": {
+      "value": "Aerial view of forest, river and marsh (7507904032)",
+      "source": "mediawiki-metadata"
+    },
+    "CommonsMetadataExtension": {
+      "value": 1.2,
+      "source": "extension",
+      "hidden": ""
+    },
+    "Categories": {
+      "value": "Wetlands of Maryland|PD US FWS|Photos uploaded from Flickr by F\u00e6 using a script|Flickr images reviewed by FlickreviewR|Files with coordinates missing SDC location of creation|Files from the United States Fish and Wildlife Service Northeast Region Flickr stream",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "Assessments": {
+      "value": "",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "GPSLatitude": {
+      "value": "38.977560",
+      "source": "commons-desc-page"
+    },
+    "GPSLongitude": {
+      "value": "-76.488876",
+      "source": "commons-desc-page"
+    },
+    "GPSMapDatum": {
+      "value": "WGS-84",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "ImageDescription": {
+      "value": "Aerial view of important bald eagle habitat near Aberdeen Proving Ground <br>\n<p><br>\n</p>\nCredit: Leo Miranda/USFWS",
+      "source": "commons-desc-page"
+    },
+    "DateTimeOriginal": {
+      "value": "2010-05-01 21:42:15",
+      "source": "commons-desc-page"
+    },
+    "Credit": {
+      "value": "<a rel=\"nofollow\" class=\"external free\" href=\"https://www.flickr.com/photos/usfwsnortheast/7507904032/\">https://www.flickr.com/photos/usfwsnortheast/7507904032/</a>",
+      "source": "commons-desc-page"
+    },
+    "Artist": {
+      "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/people/43322816@N08\">U. S. Fish and Wildlife Service - Northeast Region</a>",
+      "source": "commons-desc-page"
+    },
+    "Permission": {
+      "value": "At the time of upload, the image license was automatically confirmed using the Flickr <a href=\"https://en.wikipedia.org/wiki/API\" class=\"extiw\" title=\"en:API\">API</a>. For more information see <a href=\"//commons.wikimedia.org/wiki/User:F%C3%A6/Flickr_API_detail\" title=\"User:F\u00e6/Flickr API detail\">Flickr API detail</a>.",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "LicenseShortName": {
+      "value": "Public domain",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "UsageTerms": {
+      "value": "Public domain",
+      "source": "commons-desc-page"
+    },
+    "AttributionRequired": {
+      "value": "false",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Copyrighted": {
+      "value": "False",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Restrictions": {
+      "value": "",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "License": {
+      "value": "pd",
+      "source": "commons-templates",
+      "hidden": ""
+    }
+  },
+  "revision_id": 1034685086,
+  "revision_timestamp": "2025-05-23T20:22:09Z",
+  "source_wikitext": "== {{int:filedesc}} ==\n{{information\n|description={{en|1=Aerial view of important bald eagle habitat near Aberdeen Proving Ground <br>\n<br>\nCredit: Leo Miranda/USFWS\n}}\n|date=2010-05-01 21:42:15\n|author=[https://www.flickr.com/people/43322816@N08 U. S. Fish and Wildlife Service - Northeast Region]\n|source=https://www.flickr.com/photos/usfwsnortheast/7507904032/\n|permission={{User:F\u00e6/Flickr API}}\n|other_versions=\n|other_fields={{Information field|name=Flickr sets|value={{flatlist|\n*Chesapeake Bay Field Office\n}}}}{{Information field|name=Flickr tags|value={{flatlist|\n*USFWS\n*US Fish and Wildlife\n*USFWS Northeast\n*Chesapeake Bay Field Office\n*forest river marsh wetland bald\n*eagle\n*habitat\n}}}}\n}}\n{{Location|1=38.977560|2=-76.488876}}\n\n== {{int:license-header}} ==\n{{CC-BY-2.0}}\n{{User:FlickreviewR/reviewed-pass|U. S. Fish and Wildlife Service - Northeast Region|https://flickr.com/photos/43322816@N08/7507904032|2016-09-29 16:30:50|cc-by-2.0|}}\n\n\n \n[[Category:Wetlands of Maryland]]\n[[Category:Files from the United States Fish and Wildlife Service Northeast Region Flickr stream]]\n{{PD-USGov-FWS}}\n[[Category:Photos uploaded from Flickr by F\u00e6 using a script]]",
+  "original_sha256": "ea0a8ae54057c701bd7c414fe6fb8ed1029060e466f070865ba8ceb6daa58a8b"
+}

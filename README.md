@@ -1,5 +1,16 @@
 # Tidewater — bid desk + restaurant advisory
 
+## Tidewater v2 candidate status
+
+The v2 institutional/coastal redesign was published through [PR #1](https://github.com/jcs3-com/Tidewater/pull/1) from
+`main` baseline `c8dbde3138d2722ecf1e4fd2f1f01dcb914018e4` and deploys through the
+existing Cloudflare Pages project `tidewater` (https://tidewater-6ik.pages.dev).
+The verified production commit is recorded in the release log; the live
+`/release.json` marker is authoritative. See [release log](docs/TIDEWATER_RELEASE_LOG.md),
+[design system](docs/TIDEWATER_SITE_DESIGN_SYSTEM.md),
+[asset/license register](docs/asset-register.md) and [Drive sync setup](docs/DRIVE_SYNC.md).
+These status notes must be updated after a verified production release.
+
 Production-oriented **Astro static site** for **Tidewater**, a trade name of Tidewater Advisory LLC. The frontend builds to Cloudflare Pages. Cloudflare Pages Functions (on the Workers runtime) accept form submissions, writes to Airtable, and handle newsletter double confirmation on the same domain. A daily GitHub Action rebuilds public bids from Airtable.
 
 **Status:** Code and full page copy included. Airtable base and operational interface are created. Three fictional SAMPLE RFPs are in Airtable but are hidden from production builds (`DEMO_SEED=0`). **Do not launch before resolving `LAUNCH_CHECKLIST.md` and running the browser tests.**
