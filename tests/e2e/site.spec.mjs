@@ -59,3 +59,15 @@ test('canonical URLs are clean, served directly and marked in navigation',async(
  await page.goto('/pricing');
  await expect(page.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:'Pricing'})).toHaveAttribute('aria-current','page');
 });
+
+test('retired v1 source paths return uncacheable 410 and never expose source',async({request})=>{
+ for(const path of ['/README.md','/LAUNCH_CHECKLIST.md','/package.json','/src/pages/contact.astro','/worker/src/index.js','/.env.example']){
+  const r=await request.get(path,{maxRedirects:0});
+  expect(r.status(),path).toBe(410);
+  expect(r.headers()['cache-control'],path).toBe('no-store');
+  expect(await r.text(),path).not.toMatch(/@gmail\.com/i);
+ }
+ expect((await request.get('/health')).status()).toBe(200);
+ expect((await request.get('/pricing')).status()).toBe(200);
+ for(const asset of ['/scripts/forms.js','/scripts/readiness.js','/scripts/landscape.js','/assets/favicon.svg'])expect((await request.get(asset)).status(),asset).toBe(200);
+});
