@@ -35,7 +35,11 @@ source SHA, remote main, actual production evidence and manually archived files.
 
 ## Identity, offers and copy
 
-- [ ] **[[TODO: Set temporary `*.pages.dev` hostname as canonical SITE_URL after creating the Cloudflare Pages project; custom domain later.]]**
+- [x] Domain `tidewaterbid.com` registered at Cloudflare Registrar (2026-10-26). Code defaults now use it.
+- [ ] **[[TODO: Attach `tidewaterbid.com` (and optionally `www.tidewaterbid.com`) as Custom domains on the Pages project `tidewater`.]]**
+- [ ] **[[TODO: After the domain serves HTTPS, set the Pages variable `SITE_URL=https://tidewaterbid.com` and redeploy; verify canonical, OG and sitemap URLs.]]**
+- [ ] **[[TODO: Enable Cloudflare Email Routing for `hello@tidewaterbid.com`, verify forwarding, then replace the personal Gmail on Contact, Privacy, Terms and footer.]]**
+- [ ] **[[TODO: Optional: register `tidewaterbids.com` and redirect it to `tidewaterbid.com`.]]**
 - [x] Public contact email temporarily set to `james.c.simpsoniii@gmail.com`. [[TODO: Replace with dedicated domain mailbox if desired.]]
 - [ ] **[[TODO: Supply actual company postal mailing address]]** for site footer and CAN-SPAM email footer.
 - [x] Founder bio drafted from known operator history. **[[TODO: Founder final copy review before public launch.]]**

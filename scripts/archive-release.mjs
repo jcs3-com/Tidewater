@@ -22,5 +22,5 @@ mkdirSync(destination,{recursive:true});
 const name=`Tidewater-v${version}-${sha}.zip`;
 execFileSync('git',['archive','--format=zip',`--prefix=Tidewater-${sha}/`,`--output=${resolve(destination,name)}`,sha,'--',...files],{cwd:root});
 const checksum=createHash('sha256').update(readFileSync(resolve(destination,name))).digest('hex');
-writeFileSync(resolve(destination,'release-manifest.json'),JSON.stringify({version,commit:sha,source:'https://github.com/jcs3-com/Tidewater',production:'https://tidewater-6ik.pages.dev/',archive:name,sha256:checksum,files:files.length,excludes:'Git history, environment files (except empty example), dependencies, build output, runtime data and credentials'},null,2)+'\n');
+writeFileSync(resolve(destination,'release-manifest.json'),JSON.stringify({version,commit:sha,source:'https://github.com/jcs3-com/Tidewater',production:'https://tidewaterbid.com/',archive:name,sha256:checksum,files:files.length,excludes:'Git history, environment files (except empty example), dependencies, build output, runtime data and credentials'},null,2)+'\n');
 console.log(JSON.stringify({archive:resolve(destination,name),commit:sha,sha256:checksum,files:files.length}));

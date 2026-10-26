@@ -18,7 +18,8 @@ const target=await json(`${api}/files/${folder}?fields=id,mimeType,capabilities(
 if(target.mimeType!=='application/vnd.google-apps.folder'||!target.capabilities?.canAddChildren)throw new Error('The established Drive folder is not writable');
 const dir=resolve('release-archive');
 const manifest=JSON.parse(readFileSync(resolve(dir,'release-manifest.json'),'utf8'));
-// Stop before upload when the source isn't actually serving on production.
+// Stop before upload when the source isn't actually serving on production. The *.pages.dev
+// origin always serves the production deployment, independent of custom-domain DNS.
 const deployed=await (await fetch('https://tidewater-6ik.pages.dev/release.json',{cache:'no-store'})).json();
 if(deployed.commit!==manifest.commit)throw new Error('Production commit differs from this release; no Drive upload attempted');
 const docs=['TIDEWATER_RELEASE_LOG.md','TIDEWATER_SITE_DESIGN_SYSTEM.md','asset-register.md','DRIVE_SYNC.md','QA_REPORT.md'];

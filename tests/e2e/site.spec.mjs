@@ -47,3 +47,15 @@ test('sample listings never appear as verified bids',async({page})=>{
   const response=await page.goto('/bids/washington-dc/sample-event-catering');expect(response?.status()).toBe(404);
  }
 });
+
+test('canonical URLs are clean, served directly and marked in navigation',async({page,request})=>{
+ for(const path of ['/','/pricing','/open-bids','/contracts/catering/montgomery-county-md','/insights/winner-teardown-reading-bid-tabs']){
+  await page.goto(path);
+  const href=await page.locator('link[rel=canonical]').getAttribute('href');
+  expect(new URL(href).pathname,`canonical on ${path}`).toBe(path);
+  expect(href).not.toMatch(/\.html$/);
+  expect((await request.get(path,{maxRedirects:0})).status(),`${path} must not redirect`).toBe(200);
+ }
+ await page.goto('/pricing');
+ await expect(page.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:'Pricing'})).toHaveAttribute('aria-current','page');
+});

@@ -25,13 +25,14 @@ jobs:
       - run: npm run check
       - run: npm run build
         env:
-          SITE_URL: https://tidewater-6ik.pages.dev
+          SITE_URL: https://tidewaterbid.com
           DEMO_SEED: '0'
           SITE_INDEXABLE: '0'
           NEWSLETTER_ENABLED: '0'
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - name: Wait for this commit on production (bounded)
+        # tidewater-6ik.pages.dev always serves the production deployment, independent of custom-domain DNS.
         run: |
           node --input-type=module <<'JS'
           let ready=false;
@@ -44,7 +45,8 @@ jobs:
       - name: Test actual production before archiving
         run: npm run test:e2e
         env:
-          BASE_URL: https://tidewater-6ik.pages.dev
+          BASE_URL: https://tidewaterbid.com
+          SITE_URL: https://tidewaterbid.com
           DEMO_SEED: '0'
       - run: npm run release:archive
       - name: Synchronize and verify bytes in the established Drive folder
