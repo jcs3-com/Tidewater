@@ -62,7 +62,8 @@ test('launch gates and deployed-source marker stay explicit',async({page,request
  expect(marker.version).toBe('2.0.0');expect(marker.commit).toMatch(/^[a-f0-9]{40}$/);
  await expect(page.locator('meta[name=tidewater-commit]')).toHaveAttribute('content',marker.commit);
  const robots=await (await request.get('/robots.txt')).text();expect(robots).toContain('Disallow: /');
- await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href','https://tidewater-6ik.pages.dev/');
+ // Canonical origin follows the SITE_URL the build used (Cloudflare env in production).
+ await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',new URL('/',process.env.SITE_URL||'https://tidewaterbid.com').href);
 });
 for(const width of [360,390,768,1440]){
  test(`release screenshots at ${width}px`,async({page},testInfo)=>{

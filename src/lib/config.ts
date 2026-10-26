@@ -17,7 +17,7 @@ export const jurisdictions = [
 ] as const;
 export const categoryName = (s:string) => categories.find(x=>x.slug===s)?.name || s.replaceAll('-', ' ');
 export const jurisdictionName = (s:string) => jurisdictions.find(x=>x.slug===s)?.name || s.replaceAll('-', ' ');
-export const siteUrl = import.meta.env.SITE || 'https://tidewateradvisory.example';
+export const siteUrl = import.meta.env.SITE || 'https://tidewaterbid.com';
 // Production defaults to same-origin Cloudflare Pages Functions.
 export const apiUrl = import.meta.env.PUBLIC_API_URL || (import.meta.env.PROD ? '' : 'http://127.0.0.1:8787');
 export const todayUTC = () => new Date().toISOString().slice(0,10);

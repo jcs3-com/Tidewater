@@ -2,8 +2,10 @@
 import '../styles/global.css';
 import {pageUrl,siteUrl,indexable} from '../lib/config';
 import {release} from '../data/release';
+// build.format 'file' renders /pricing as pricing.html; Pages serves it at /pricing (and 308s the .html form).
+const cleanPath=Astro.url.pathname.replace(/\.html$/,'').replace(/\/index$/,'/')||'/';
 const navigation=[{href:'/bids',label:'Bid desk'},{href:'/open-bids',label:'Open bids'},{href:'/pricing',label:'Pricing'},{href:'/restaurant-advisory',label:'Restaurant advisory'},{href:'/insights',label:'Insights'},{href:'/about',label:'About'}];
-const {title='Tidewater | The bid desk for DMV hospitality and service operators', description='Find relevant government contracts. Understand the price, paperwork and process. Tidewater helps hospitality and service operators prepare bids.', canonical=Astro.url.pathname, ogImage='/assets/og-default.png', schema=[]} = Astro.props;
+const {title='Tidewater | The bid desk for DMV hospitality and service operators', description='Find relevant government contracts. Understand the price, paperwork and process. Tidewater helps hospitality and service operators prepare bids.', canonical=cleanPath, ogImage='/assets/og-default.png', schema=[]} = Astro.props;
 const structured=[{'@context':'https://schema.org','@type':'Organization',name:'Tidewater',legalName:'Tidewater Advisory LLC',url:siteUrl,description:'Bid preparation and restaurant operations advisory for hospitality and service operators.'},...(Array.isArray(schema)?schema:[schema])];
 const safeJson = JSON.stringify(structured).replace(/</g,'\\u003c');
 const analytics=import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
@@ -42,7 +44,7 @@ const analytics=import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
 <header class="site-header"><div class="container header-inner">
   <a class="logo" href="/">Tidewater<span class="logo-subtitle"> Advisory</span><span class="sr-only"> homepage</span></a>
   <nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><ul class="nav-list">
-    {navigation.map(item=><li><a href={item.href} aria-current={Astro.url.pathname===item.href?'page':undefined}>{item.label}</a></li>)}
+    {navigation.map(item=><li><a href={item.href} aria-current={cleanPath===item.href?'page':undefined}>{item.label}</a></li>)}
   </ul></nav>
   <div class="header-actions"><button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch color theme" title="Switch color theme"><span aria-hidden="true">◐</span></button><a class="button header-cta" href="/readiness">Readiness check <span aria-hidden="true">↗</span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" id="menu-toggle">Menu <span aria-hidden="true">＋</span></button></div>
 </div></header>

@@ -4,7 +4,8 @@
 
 The v2 institutional/coastal redesign was published through [PR #1](https://github.com/jcs3-com/Tidewater/pull/1) from
 `main` baseline `c8dbde3138d2722ecf1e4fd2f1f01dcb914018e4` and deploys through the
-existing Cloudflare Pages project `tidewater` (https://tidewater-6ik.pages.dev).
+existing Cloudflare Pages project `tidewater`. Canonical domain: https://tidewaterbid.com
+(registered at Cloudflare 2026-10-26); https://tidewater-6ik.pages.dev also serves production.
 The verified production commit is recorded in the release log; the live
 `/release.json` marker is authoritative. See [release log](docs/TIDEWATER_RELEASE_LOG.md),
 [design system](docs/TIDEWATER_SITE_DESIGN_SYSTEM.md),
@@ -127,7 +128,7 @@ Jurisdictions: `washington-dc`, `montgomery-county-md`, `prince-georges-county-m
 
 | Variable | Purpose |
 | --- | --- |
-| `SITE_URL` | Final HTTPS canonical origin, no trailing path. Defaults to `https://tidewateradvisory.example` **for development only** |
+| `SITE_URL` | Final HTTPS canonical origin, no trailing path. Production: `https://tidewaterbid.com`. Code default is the same; the Cloudflare Pages variable overrides it |
 | `AIRTABLE_PAT` | Read RFP records at build time |
 | `AIRTABLE_BASE_ID` | Airtable base identifier |
 | `DEMO_SEED` | `1` to show fictional examples when Airtable unavailable; **set `0` in production** |
@@ -160,7 +161,7 @@ The Worker requires all sending fields before creating a newsletter signup and b
 
 1. **[[TODO: Create `jcs3-com/tidewater` on GitHub.]]** Repository creation is not exposed by the connected GitHub actions in this chat. Upload or push this repo from the ZIP. Keep it private until you review the code, then public if desired.
 2. **[[TODO: Create Cloudflare Pages project, name `tidewater`, connect the GitHub repo.]]** Set production branch `main`, build command `npm run build`, output directory `dist`, Node version 22. Cloudflare assigns a `*.pages.dev` domain; no custom domain required at launch. Git integration automatically deploys commits. Pages Functions in `functions/` deploy alongside the static site, using the Workers runtime; **no second Worker deployment** or API DNS record is needed.
-3. **[[TODO: Enter production environment variables.]]** Cloudflare Pages build variables: `SITE_URL=https://[[TODO: assigned-pages-host]]`, `AIRTABLE_PAT=[[TODO: restricted PAT]]`, `AIRTABLE_BASE_ID=app5wO7MKQ92y16f1`, `DEMO_SEED=0`, `PUBLIC_API_URL=` (blank). Set optional analytics/Turnstile public keys. At runtime add secret `AIRTABLE_PAT` (read/write), `AIRTABLE_BASE_ID`, and, once available, `RESEND_API_KEY`, `FROM_EMAIL`, `HMAC_SECRET`, `MAILING_ADDRESS`. The Pages Functions automatically derive same-origin `SITE_URL`, `WORKER_URL` and allowed origin from request URL if not explicitly set.
+3. **[[TODO: Enter production environment variables.]]** Cloudflare Pages build variables: `SITE_URL=https://tidewaterbid.com` (only after the custom domain is active), `AIRTABLE_PAT=[[TODO: restricted PAT]]`, `AIRTABLE_BASE_ID=app5wO7MKQ92y16f1`, `DEMO_SEED=0`, `PUBLIC_API_URL=` (blank). Set optional analytics/Turnstile public keys. At runtime add secret `AIRTABLE_PAT` (read/write), `AIRTABLE_BASE_ID`, and, once available, `RESEND_API_KEY`, `FROM_EMAIL`, `HMAC_SECRET`, `MAILING_ADDRESS`. The Pages Functions automatically derive same-origin `SITE_URL`, `WORKER_URL` and allowed origin from request URL if not explicitly set.
 4. **[[TODO: Set sender and physical address before activating newsletter email.]]** Public contact is temporarily `james.c.simpsoniii@gmail.com`. Airtable has a draft [lead-notification automation](https://airtable.com/app5wO7MKQ92y16f1/wflOZq1GHTG4nayoX) to send new lead notices there; you must review and turn it on in Airtable. Sending newsletters from a personal Gmail address via Resend is **not configured**; use a verified email domain and physical mailing address to comply with email requirements. Until then newsletter confirmation returns a configuration error rather than silently subscribing.
 5. **[[TODO: GitHub Action for daily rebuild.]]** GitHub secrets: `AIRTABLE_PAT`, `AIRTABLE_BASE_ID`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. GitHub variables: `SITE_URL` for the assigned Pages domain and optional `PUBLIC_ANALYTICS_DOMAIN`; `PUBLIC_API_URL` can remain blank. The Action runs daily from Airtable and uses `wrangler pages deploy dist` to update the same Pages project, including its Functions.
 6. **[[TODO: Test deployed form submissions.]]** Submit contact, bid packet, quiz, newsletter confirm and unsubscribe in production, then verify Airtable state. Run Playwright, axe, mobile Lighthouse and verify site canonical URLs before announcing launch.
