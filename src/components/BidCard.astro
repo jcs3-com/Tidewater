@@ -1,0 +1,11 @@
+---
+import {bidUrl,effectiveStatus,type Rfp} from '../lib/rfps';
+import {categoryName,jurisdictionName,displayDate,displayValue} from '../lib/config';
+const {bid}=Astro.props as {bid:Rfp};
+const status=effectiveStatus(bid);
+---
+<a class="bid-card" href={bidUrl(bid)} data-bid-row data-category={bid.category} data-jurisdiction={bid.jurisdiction} data-due={bid.dueDate} data-status={status}>
+  <div><span class={`badge ${status.toLowerCase()}`}>{status}</span><span class="badge" style="margin-left:.35rem">{categoryName(bid.category)}</span>
+  <h3>{bid.title}</h3><p class="bid-meta">{jurisdictionName(bid.jurisdiction)} · {bid.agency}</p><p class="bid-meta">Due {displayDate(bid.dueDate)}</p></div>
+  <div class="bid-value"><strong>{displayValue(bid.estimatedValue)}</strong><div class="fine">Estimated value</div></div>
+</a>

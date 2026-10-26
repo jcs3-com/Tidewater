@@ -1,0 +1,9 @@
+---
+import Base from '../../layouts/Base.astro';
+import {articles,type Article} from '../../data/insights';
+export function getStaticPaths(){return articles.map(a=>({params:{slug:a.slug},props:{article:a}}));}
+const {article}=Astro.props as {article:Article};
+---
+<Base title={`${article.title} | Tidewater Insights`} description={article.description} canonical={`/insights/${article.slug}`} schema={[{'@context':'https://schema.org','@type':'Article',headline:article.title,description:article.description,datePublished:article.date,author:{'@type':'Organization',name:'Tidewater Advisory LLC'},publisher:{'@type':'Organization',name:'Tidewater Advisory LLC'}}]}>
+<section class="section"><div class="container"><article class="article"><p class="eyebrow"><a href="/insights">Insights</a> / {article.series}</p><h1>{article.title}</h1><p class="lead">{article.description}</p><p class="eyebrow">{article.date}</p><hr class="divider"/>{article.sections.map(s=><section><h2>{s.heading}</h2>{s.paragraphs.map(p=><p>{p}</p>)}</section>)}<div class="callout" style="margin-top:3rem"><h2>Take the next step.</h2><p>We can screen a contract or help you prepare for your first bid.</p><a class="button" href={article.series==='Readiness Myths'?'/readiness':'/contact'}>{article.cta}</a></div></article></div></section>
+</Base>

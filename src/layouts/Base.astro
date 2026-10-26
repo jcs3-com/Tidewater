@@ -1,0 +1,56 @@
+---
+import '../styles/global.css';
+import {pageUrl,siteUrl,indexable} from '../lib/config';
+const {title='Tidewater | The bid desk for DMV hospitality and service operators', description='Find relevant government contracts. Understand the price, paperwork and process. Tidewater helps hospitality and service operators prepare bids.', canonical=Astro.url.pathname, ogImage='/assets/og-default.png', schema=[]} = Astro.props;
+const structured=[{'@context':'https://schema.org','@type':'Organization',name:'Tidewater',legalName:'Tidewater Advisory LLC',url:siteUrl,description:'Bid preparation and restaurant operations advisory for hospitality and service operators.'},...(Array.isArray(schema)?schema:[schema])];
+const safeJson = JSON.stringify(structured).replace(/</g,'\\u003c');
+const analytics=import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#2B5266" />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  {(Astro.props.noindex || !indexable) && <meta name="robots" content="noindex, nofollow" />}
+  <meta name="description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Tidewater" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={pageUrl(canonical)} />
+  <meta property="og:image" content={pageUrl(ogImage)} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href={pageUrl(canonical)} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Lora:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script type="application/ld+json" set:html={safeJson} />
+  {analytics && <script defer data-domain={analytics} src="https://plausible.io/js/script.js"></script>}
+  <title>{title}</title>
+  <script is:inline>
+    try {const theme=localStorage.getItem('tidewater-theme');if(theme==='dark'||theme==='light')document.documentElement.dataset.theme=theme;}catch{}
+  </script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="container header-inner">
+  <a class="logo" href="/" aria-label="Tidewater homepage">Tidewater<span class="sr-only"> Advisory</span><em>.</em></a>
+  <nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><ul class="nav-list">
+    <li><a href="/bids">Bid desk</a></li><li><a href="/open-bids">Open bids</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/restaurant-advisory">Restaurant advisory</a></li><li><a href="/insights">Insights</a></li><li><a href="/about">About</a></li>
+  </ul></nav>
+  <div class="header-actions"><button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch color theme" title="Switch color theme">◐</button><a class="button header-cta" href="/readiness">Readiness check</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" id="menu-toggle">Menu</button></div>
+</div></header>
+<main id="main"><slot /></main>
+<footer class="footer"><div class="container">
+  <div class="footer-layout"><div><a href="/" class="logo">Tidewater<em>.</em></a><p class="fine">Where the river meets the tide.</p></div><nav class="footer-links" aria-label="Footer"><a href="/contact">Contact</a><a href="/readiness">Readiness check</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/sitemap.xml">Sitemap</a></nav></div>
+  <p class="footer-small">Tidewater is a trade name of Tidewater Advisory LLC. Not affiliated with any government agency. We do not guarantee contract awards.</p>
+  <p class="footer-small">© {new Date().getFullYear()} Tidewater Advisory LLC · [[TODO: Publishable business mailing address]] · <a href="mailto:james.c.simpsoniii@gmail.com">james.c.simpsoniii@gmail.com</a></p>
+</div></footer>
+<script is:inline>
+  const menu=document.getElementById('menu-toggle');const nav=document.getElementById('primary-nav');
+  menu?.addEventListener('click',()=>{let opened=nav?.dataset.open!=='true';if(nav)nav.dataset.open=String(opened);menu.setAttribute('aria-expanded',String(opened));});
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{const root=document.documentElement;const dark=root.dataset.theme==='dark'||(!root.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);root.dataset.theme=dark?'light':'dark';try{localStorage.setItem('tidewater-theme',root.dataset.theme)}catch{}});
+</script>
+</body></html>

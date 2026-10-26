@@ -1,0 +1,53 @@
+# Tidewater v1 — launch checklist
+
+`[[TODO]]` items are deliberately not guessed. Resolve these before the site goes live.
+
+## Identity, offers and copy
+
+- [ ] **[[TODO: Set temporary `*.pages.dev` hostname as canonical SITE_URL after creating the Cloudflare Pages project; custom domain later.]]**
+- [x] Public contact email temporarily set to `james.c.simpsoniii@gmail.com`. [[TODO: Replace with dedicated domain mailbox if desired.]]
+- [ ] **[[TODO: Supply actual company postal mailing address]]** for site footer and CAN-SPAM email footer.
+- [x] Founder bio drafted from known operator history. **[[TODO: Founder final copy review before public launch.]]**
+- [ ] **[[TODO: Confirm final trademark/trade-name use and logo/brand approval.]]**
+- [ ] **[[TODO: Approve pricing scope and written engagement terms, including one-firm-per-solicitation exclusivity.]]**
+- [ ] **[[TODO: Verify actual availability and fee terms for ORP shell pickups; only then advertise free pickups if documented.]]**
+- [ ] **[[TODO: Recheck Maryland shell-credit law before any active tax-credit claim.]]** Existing site correctly says the prior up-to-$1,500 credit expired.
+- [ ] **[[TODO: Approve attorney-reviewed privacy, terms, jurisdiction, retention, deletion process, legal email and effective dates.]]**
+
+## Airtable operating setup
+
+- [x] Published [Tidewater Operations interface](https://airtable.com/app5wO7MKQ92y16f1/pbdIvVY5uPBCfHfMK) with Lead Inbox, Bid Board, Prospect Matches.
+- [x] Created [new-lead notification automation](https://airtable.com/app5wO7MKQ92y16f1/wflOZq1GHTG4nayoX) to send to personal email.
+- [ ] **[[TODO: Review and turn on Airtable lead notification automation in the Airtable UI.]]**
+
+## Data and forms
+
+- [x] Airtable base and Prospects, RFPs, Matches tables created and verified: https://airtable.com/app5wO7MKQ92y16f1
+- [ ] **[[TODO: Create restricted Airtable access tokens; configure builder read-only and Worker read/write.]]**
+- [ ] **[[TODO: Email delivery: verify Resend sender/domain, mailing address and unsubscribe secret.]]** Personal Gmail is the public contact and internal recipient, not an authenticated bulk sender.
+- [ ] **[[TODO: Set production SITE_URL and deploy Pages with its same-origin Functions; configure runtime secrets in Cloudflare.]]** Separate Worker is optional, not required for the default Pages deploy.
+- [ ] **[[TODO: Perform actual contact, quiz, packet and newsletter form submissions; verify all fields in Airtable.]]**
+- [ ] **[[TODO: Click actual double-opt-in link, verify Pending → Confirmed; test expiry and unsubscribe → Unsubscribed.]]**
+- [x] Added one verified Montgomery County public solicitation (Wheaton Arts and Cultural Center operator RFP 1200454; due December 15, 2026) to the Airtable RFPs table.
+- [ ] **[[TODO: Expand the reviewed list of public bids and recheck the above RFP for addenda/status changes.]]**
+- [x] Three clearly marked SAMPLE records loaded in Airtable; `DEMO_SEED=0` excludes them from public site builds. [[TODO: Verify production env setting.]]
+- [ ] **[[TODO: Confirm agency due times and timezone manually (UI counts calendar days only).]]**
+- [ ] **[[TODO: Create an Airtable view/review that expires 48-hour match offers and blocks exclusivity conflicts.]]**
+- [ ] **[[TODO: Decide newsletter cadence/editorial workflow, suppression rules and data retention.]]**
+- [ ] **[[TODO: Enable Turnstile with both public site key and Worker secret, then verify live form submission and rejected bot submissions.]]**
+
+## Infrastructure and QA
+
+- [ ] **[[TODO: Create a blank `jcs3-com/tidewater` GitHub repository, then push this bundle.]]** GitHub connector can edit existing repos but has no create-repository action in this chat. Generate package-lock.json after npm install.
+- [ ] **[[TODO: Create Cloudflare Pages project from `jcs3-com/tidewater` and deploy static site plus Pages Functions.]]** Cloudflare API action is not connected in this chat. A custom domain can be added later.
+- [ ] **[[TODO: Configure Cloudflare Pages build variables and secrets; separately configure GitHub Actions for daily RFP rebuild.]]**
+- [ ] **[[TODO: Configure Plausible domain and `lead` event goal, or choose Cloudflare Web Analytics and adapt A/B conversion tracking.]]**
+- [ ] **[[TODO: Verify email authentication SPF, DKIM and DMARC.]]**
+- [ ] **[[TODO: Run a real Astro production build and fix any dependency-specific errors.]]** Network-restricted artifact environment could not fetch npm packages.
+- [ ] **[[TODO: Run Playwright or browser screenshots at 360px and 1440px; verify no horizontal overflow, menus, quiz, filters, focus states and dark mode.]]**
+- [ ] **[[TODO: Audit rendered routes with axe for keyboard, contrast and ARIA compliance.]]**
+- [ ] **[[TODO: Run mobile Lighthouse and achieve 90+ for performance, accessibility, best practices and SEO.]]** Target is not yet measured.
+- [ ] **[[TODO: Validate production sitemap, robots, canonical URLs, OG PNGs, JSON-LD and noindex on sample records.]]**
+- [ ] **[[TODO: Create Google Search Console property and submit sitemap.]]**
+- [ ] **[[TODO: Create current official agency source monitoring and human verification process for daily bid ingestion.]]** Build is daily; sourcing/curation is not automated in v1.
+- [ ] **[[TODO: Verify mail, privacy and procurement claims with counsel and relevant agencies before publishing.]]**

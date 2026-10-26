@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+import BidCard from '../components/BidCard.astro';
+import {getBidBoardRfps,effectiveStatus} from '../lib/rfps';
+import {categories,jurisdictions} from '../lib/config';
+const bids=await getBidBoardRfps();
+const samples=bids.filter(b=>effectiveStatus(b)==='SAMPLE').length;
+const open=bids.filter(b=>effectiveStatus(b)==='Open').length;
+---
+<Base title="Open Government Bids | Tidewater" description="Browse open catering, concessions, cleaning, security and event contracts in DC, Maryland and Northern Virginia. Verify official solicitation details before bidding.">
+<section class="section"><div class="container"><div class="section-head"><p class="eyebrow">Open bids</p><h1>Contracts worth a closer look.</h1><p class="lead">Filter by work, geography and deadline. Every real solicitation should link to the issuing agency's official posting.</p><p class="fine">{open} verified open {open===1?'listing':'listings'} at last build. Updated during scheduled daily deployment. Always confirm deadlines on the agency's site.</p></div>
+{samples>0 && <div class="notice"><strong>Demo mode:</strong> SAMPLE cards are fictional. They are for layout and workflow testing, not real contracting opportunities. Replace sample mode with verified Airtable data before launch.</div>}
+<div class="filter-bar" id="filters"><div class="field"><label for="category-filter">Category</label><select id="category-filter"><option value="all">All categories</option>{categories.map(c=><option value={c.slug}>{c.name}</option>)}</select></div><div class="field"><label for="jurisdiction-filter">Jurisdiction</label><select id="jurisdiction-filter"><option value="all">All jurisdictions</option>{jurisdictions.map(j=><option value={j.slug}>{j.name}</option>)}</select></div><div class="field"><label for="due-filter">Due window</label><select id="due-filter"><option value="all">Any date</option><option value="7">Next 7 days</option><option value="30">Next 30 days</option><option value="60">Next 60 days</option></select></div></div>
+<p id="filter-count" class="eyebrow" aria-live="polite">{bids.length} listings</p>
+<div class="bid-list" id="bid-results">{bids.map(b=><BidCard bid={b}/>)}</div>
+<p id="no-results" class="notice" hidden>No bids match these filters. Try a wider window or another jurisdiction.</p>
+{bids.length===0&&<div class="panel"><h2>No published listings yet.</h2><p>The board is ready. Verified opportunities will appear when the RFP table has public records.</p><a class="button" href="/readiness">Check your readiness instead</a></div>}
+</div></section>
+<script src="/scripts/bid-filters.js" defer></script>
+</Base>

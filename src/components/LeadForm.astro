@@ -1,0 +1,26 @@
+---
+import {apiUrl,categories,jurisdictions} from '../lib/config';
+const {kind='contact', bidId='', compact=false, source='site', heading='Tell us what you need'} = Astro.props;
+const uid=`form-${kind}-${bidId||'main'}`;
+const turnstileKey=import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+---
+<form class="lead-form form-body" action={`${apiUrl}/api/lead`} method="POST" data-lead-form data-kind={kind} data-variant="a" aria-label={heading}>
+  <input type="hidden" name="kind" value={kind} /><input type="hidden" name="source" value={source} /><input type="hidden" name="bidId" value={bidId} />
+  <div class="sr-only" aria-hidden="true"><label>Leave this field blank<input name="website" tabindex="-1" autocomplete="off" /></label></div>
+  {kind==='newsletter' ? <div class="form-grid"><div class="field full"><label for={`${uid}-email`}>Work email</label><input id={`${uid}-email`} type="email" name="email" autocomplete="email" required maxlength="254" placeholder="you@business.com" /></div></div> :
+    <div class="form-grid">
+      <div class="field"><label for={`${uid}-name`}>Your name</label><input id={`${uid}-name`} name="name" autocomplete="name" required maxlength="120" /></div>
+      <div class="field"><label for={`${uid}-business`}>Business</label><input id={`${uid}-business`} name="business" autocomplete="organization" required maxlength="160" /></div>
+      <div class="field"><label for={`${uid}-email`}>Email</label><input id={`${uid}-email`} type="email" name="email" autocomplete="email" required maxlength="254" /></div>
+      <div class="field"><label for={`${uid}-phone`}>Phone (optional)</label><input id={`${uid}-phone`} type="tel" name="phone" autocomplete="tel" maxlength="40" /></div>
+      {!compact && <><div class="field"><label for={`${uid}-category`}>Primary service</label><select id={`${uid}-category`} name="categories"><option value="">Select a category</option>{categories.map(c=><option value={c.slug}>{c.name}</option>)}</select></div>
+      <div class="field"><label for={`${uid}-jurisdiction`}>Primary service area</label><select id={`${uid}-jurisdiction`} name="jurisdictions"><option value="">Select an area</option>{jurisdictions.map(j=><option value={j.slug}>{j.name}</option>)}</select></div></>}
+      {(kind==='contact'||kind==='bid_packet') && <div class="field full"><label for={`${uid}-notes`}>What should we know? (optional)</label><textarea id={`${uid}-notes`} name="notes" maxlength="2000" placeholder={kind==='bid_packet'?'Tell us your questions about this solicitation.':'Tell us what your operation does and where you work.'}></textarea></div>}
+    </div>}
+  <div class="form-section"><label class="checkline"><input type="checkbox" name="consent" value="yes" required /><span>{kind==='newsletter'?'I agree to receive the Tidewater bid digest. I understand I must confirm my subscription by email and can unsubscribe anytime.':'I agree to receive email follow-up from Tidewater about this request. I can opt out anytime.'} <a href="/privacy">Privacy policy</a>.</span></label></div>
+  {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="auto"></div>}
+  <button type="submit" class="button">{kind==='newsletter'?'Send confirmation email':kind==='bid_packet'?'Request the bid packet':'Send request'}</button>
+  <div class="form-feedback" role="status" aria-live="polite"></div>
+</form>
+{turnstileKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+<script src="/scripts/forms.js" defer></script>

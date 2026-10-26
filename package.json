@@ -1,0 +1,33 @@
+{
+  "name": "tidewater-bid-desk",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0",
+    "build": "astro build",
+    "preview": "astro preview --host 0.0.0.0",
+    "worker:dev": "wrangler dev --config worker/wrangler.toml --port 8787",
+    "worker:deploy": "wrangler deploy --config worker/wrangler.toml",
+    "site:deploy": "wrangler pages deploy dist --project-name tidewater",
+    "test": "node --test tests/*.test.mjs",
+    "check:contrast": "node scripts/contrast.mjs",
+    "check:copy": "node scripts/copy-guard.mjs",
+    "check": "npm run test && npm run check:contrast && npm run check:copy && astro check",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "astro": "^5.16.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^22.20.5",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.25.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

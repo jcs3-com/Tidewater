@@ -1,0 +1,20 @@
+[
+  {
+    "id": "recSAMPLE0001", "title": "SAMPLE — Municipal event catering services", "agency": "Example Municipal Agency (fictional)",
+    "jurisdiction": "washington-dc", "category": "catering", "slug": "sample-event-catering",
+    "dueDate": "2027-01-15", "estimatedValue": null, "solicitationUrl": "", "requirements": ["Confirm current food-service license", "Provide required insurance documents", "Complete pricing schedule", "Acknowledge addenda"],
+    "summary": "Fictional example to demonstrate the bid detail page. This is not an active government solicitation.", "status": "SAMPLE", "awardAmount": null, "bidTabUrl": "", "publishedAt": "2026-10-25"
+  },
+  {
+    "id": "recSAMPLE0002", "title": "SAMPLE — Building janitorial services", "agency": "Example County Facilities Office (fictional)",
+    "jurisdiction": "montgomery-county-md", "category": "janitorial", "slug": "sample-janitorial-services",
+    "dueDate": "2027-02-01", "estimatedValue": null, "solicitationUrl": "", "requirements": ["Submit cleaning schedule", "Document staffing coverage", "Review insurance requirements"],
+    "summary": "Fictional example of janitorial procurement. Not issued by any agency.", "status": "SAMPLE", "awardAmount": null, "bidTabUrl": "", "publishedAt": "2026-10-24"
+  },
+  {
+    "id": "recSAMPLE0003", "title": "SAMPLE — Venue event support", "agency": "Example Parks Department (fictional)",
+    "jurisdiction": "arlington-county-va", "category": "event-services", "slug": "sample-event-support",
+    "dueDate": "2027-02-20", "estimatedValue": null, "solicitationUrl": "", "requirements": ["List available personnel", "Describe event setup capacity", "Provide required registrations"],
+    "summary": "Fictional example for layout testing only. Not an actual open bid.", "status": "SAMPLE", "awardAmount": null, "bidTabUrl": "", "publishedAt": "2026-10-23"
+  }
+]

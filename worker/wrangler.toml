@@ -1,0 +1,12 @@
+name = "tidewater-leads"
+main = "src/index.js"
+compatibility_date = "2026-09-15"
+workers_dev = true
+
+[vars]
+SITE_URL = "http://localhost:4321"
+ALLOWED_ORIGIN = "http://localhost:4321"
+WORKER_URL = "http://127.0.0.1:8787"
+# Production: update these to real HTTPS origins and set secrets using wrangler secret put.
+# Required secrets: AIRTABLE_PAT, AIRTABLE_BASE_ID, RESEND_API_KEY,
+# FROM_EMAIL, MAILING_ADDRESS, HMAC_SECRET.
