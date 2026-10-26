@@ -1,0 +1,86 @@
+{
+  "verified_at": "2026-10-26",
+  "title": "File:An aerial view of Swan Island in the Chesapeake Bay in Maryland, 2017-12-01 - 171201-A-ZZ999-001.jpeg",
+  "description_url": "https://commons.wikimedia.org/wiki/File:An_aerial_view_of_Swan_Island_in_the_Chesapeake_Bay_in_Maryland,_2017-12-01_-_171201-A-ZZ999-001.jpeg",
+  "original_download_url": "https://upload.wikimedia.org/wikipedia/commons/b/b4/An_aerial_view_of_Swan_Island_in_the_Chesapeake_Bay_in_Maryland%2C_2017-12-01_-_171201-A-ZZ999-001.jpeg",
+  "source_metadata": {
+    "DateTime": {
+      "value": "2020-11-06 18:20:31",
+      "source": "mediawiki-metadata",
+      "hidden": ""
+    },
+    "ObjectName": {
+      "value": "An aerial view of Swan Island in the Chesapeake Bay in Maryland, 2017-12-01 - 171201-A-ZZ999-001",
+      "source": "mediawiki-metadata"
+    },
+    "CommonsMetadataExtension": {
+      "value": 1.2,
+      "source": "extension",
+      "hidden": ""
+    },
+    "Categories": {
+      "value": "PD US Army USACE|Aerial photographs of Maryland|Swan Island, Chesapeake Bay",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "Assessments": {
+      "value": "",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "ImageDescription": {
+      "value": "An aerial view of Swan Island in the Chesapeake Bay in Maryland, Dec. 1, 2017. Material dredged from the Big Thorofare and Twitch Cove federal channels by the U.S. Army Corps of Engineers, Baltimore District, will be beneficially reused to restore habitat at Swan Island, which is part of the Martin National Wildlife Refuge on Smith Island. The intent is for the material to restore dune habitat and to create high and low marsh habitats; act as a buffer for restored habitat from wind and waves; and provide a natural breakwater for the Town of Ewell.",
+      "source": "commons-desc-page"
+    },
+    "DateTimeOriginal": {
+      "value": "2017-12-01",
+      "source": "commons-desc-page"
+    },
+    "Credit": {
+      "value": "<a rel=\"nofollow\" class=\"external free\" href=\"https://www.nad.usace.army.mil/Media/Images/igphoto/2001880743/\">https://www.nad.usace.army.mil/Media/Images/igphoto/2001880743/</a>",
+      "source": "commons-desc-page"
+    },
+    "Artist": {
+      "value": "Miles Simmons",
+      "source": "commons-desc-page"
+    },
+    "Permission": {
+      "value": "<i>This image or file is a work of a <a href=\"//commons.wikimedia.org/wiki/US_Army_Corps_of_Engineers\" title=\"US Army Corps of Engineers\">U.S. Army Corps of Engineers</a> soldier or employee, taken or made as part of that person's official duties. As a <a href=\"https://en.wikipedia.org/wiki/Work_of_the_United_States_Government\" class=\"extiw\" title=\"en:Work of the United States Government\">work</a> of the <a href=\"https://en.wikipedia.org/wiki/Federal_Government_of_the_United_States\" class=\"extiw\" title=\"en:Federal Government of the United States\">U.S. federal government</a>, the image is in the <b><a href=\"https://en.wikipedia.org/wiki/public_domain\" class=\"extiw\" title=\"w:public domain\">public domain</a></b>.</i>",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "LicenseShortName": {
+      "value": "Public domain",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "UsageTerms": {
+      "value": "Public domain",
+      "source": "commons-desc-page"
+    },
+    "AttributionRequired": {
+      "value": "false",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Copyrighted": {
+      "value": "False",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Restrictions": {
+      "value": "",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "License": {
+      "value": "pd",
+      "source": "commons-templates",
+      "hidden": ""
+    }
+  },
+  "revision_id": 911847693,
+  "revision_timestamp": "2024-08-18T12:16:05Z",
+  "source_wikitext": "== {{int:filedesc}} ==\n{{Information\n|Description={{en|1=An aerial view of Swan Island in the Chesapeake Bay in Maryland, Dec. 1, 2017. Material dredged from the Big Thorofare and Twitch Cove federal channels by the U.S. Army Corps of Engineers, Baltimore District, will be beneficially reused to restore habitat at Swan Island, which is part of the Martin National Wildlife Refuge on Smith Island. The intent is for the material to restore dune habitat and to create high and low marsh habitats; act as a buffer for restored habitat from wind and waves; and provide a natural breakwater for the Town of Ewell.}}\n{{VIRIN|171201-A-ZZ999-001}}\n|Source=https://www.nad.usace.army.mil/Media/Images/igphoto/2001880743/\n|Date=2017-12-01\n|Author=Miles Simmons\n|Permission={{PD-USGov-ACE}}\n|other_versions=\n}}\n[[Category:Aerial photographs of Maryland]]\n[[Category:Swan Island, Chesapeake Bay]]",
+  "original_sha256": "f5ec5a1e6d096bbe344e99c64ba0e18d671301a94f97680bb4b3622630b69dc3"
+}

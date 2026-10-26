@@ -1,4 +1,29 @@
-# Tidewater v1 — launch checklist
+# Tidewater — launch checklist
+
+## v2 visual candidate — 2026-10-26
+
+The redesign can be released visually with Airtable credentials pending. This
+does not clear the indexing, newsletter, legal or operational gates below.
+
+- [x] Locally hosted Chesapeake photographs, verified source/license register,
+  self-hosted open-license fonts, original decorative contour illustration.
+- [x] Responsive home and interior redesign; no pricing/API/schema changes.
+- [x] Browser QA at 360/390/768/1440px; 19 Playwright tests passed on local Pages
+  output; light/dark axe audits of 13 primary routes had zero A/AA violations.
+- [x] Prepared release log, design system, asset register, source-archive command
+  and an opt-in Drive sync workflow. See `docs/DRIVE_SYNC.md` for exact OAuth setup.
+- [ ] **[[TODO: Restore GitHub integration Contents/Workflows write access. Both
+  Git push and connector branch creation currently return HTTP 403.]]** v2 is
+  not pushed, no PR exists, and it is not deployed.
+- [ ] **[[TODO: After publication, verify the production Cloudflare check and
+  `/release.json` source SHA, then run the live v2 browser suite.]]**
+- [ ] **[[TODO: Configure Google OAuth secrets and enable DRIVE_SYNC_ENABLED
+  only after a successful verified sync. Automatic sync is not active.]]**
+- [ ] **[[TODO: Complete actual production Airtable/Resend delivery checks after
+  restricted credentials are configured; do not use a visual pass as proof.]]**
+
+The generated release manifest and Drive receipt distinguish the candidate
+source SHA, remote main, actual production evidence and manually archived files.
 
 `[[TODO]]` items are deliberately not guessed. Resolve these before the site goes live.
 

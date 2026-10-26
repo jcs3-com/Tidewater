@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 export default defineConfig({
-  site: process.env.SITE_URL || 'https://tidewateradvisory.example',
+  site: process.env.SITE_URL || 'https://tidewater-6ik.pages.dev',
   output: 'static',
   trailingSlash: 'never',
   // Emit /pricing.html rather than /pricing/index.html. Cloudflare Pages serves
