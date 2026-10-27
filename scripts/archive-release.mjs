@@ -2,13 +2,14 @@ import {execFileSync} from 'node:child_process';
 import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 
-const root=resolve(new URL('..',import.meta.url).pathname);
+const root=fileURLToPath(new URL('..',import.meta.url));
 const git=(...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8'}).trim();
 const sha=git('rev-parse','HEAD');
 const version=JSON.parse(readFileSync(resolve(root,'package.json'),'utf8')).version;
 const tracked=git('ls-tree','-r','--name-only',sha).split('\n');
-const allowed=/^(src\/|public\/|functions\/|worker\/|scripts\/|tests\/|seed\/|docs\/|\.github\/workflows\/|README\.md$|LAUNCH_CHECKLIST\.md$|package(?:-lock)?\.json$|astro\.config\.mjs$|playwright\.config\.mjs$|tsconfig\.json$|\.gitignore$|\.env\.example$)/;
+const allowed=/^(src\/|public\/|functions\/|worker\/|scripts\/|tests\/|seed\/|docs\/|\.github\/workflows\/|AGENTS\.md$|README\.md$|LAUNCH_CHECKLIST\.md$|package(?:-lock)?\.json$|astro\.config\.mjs$|playwright\.config\.mjs$|tsconfig\.json$|\.gitignore$|\.env\.example$)/;
 const files=tracked.filter(p=>allowed.test(p));
 const privateName=/(^|\/)(?:\.env(?:\..+)?|\.dev\.vars|credentials[^/]*|[^/]+\.(?:pem|key|p12|pfx))$/i;
 const secretValue=/(?:gh[pousr]_[A-Za-z0-9]{24,}|github_pat_[A-Za-z0-9_]{40,}|AIza[A-Za-z0-9_-]{30,}|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)/;

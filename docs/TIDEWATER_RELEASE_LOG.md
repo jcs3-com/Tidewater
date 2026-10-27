@@ -1,5 +1,15 @@
 # Tidewater release log
 
+## Development takeover and verification — 2026-10-26
+
+Inspected current `main` at `869e5bf3b50679f554da4bf88e5ef8fb8bd5285b`; both production domains returned that SHA. The v2 redesign was already published, so the older Drive candidate was not reapplied. Existing visuals, routes, business copy, integrations and Cloudflare deployment configuration are preserved.
+
+Added root `AGENTS.md` with architecture, business positioning and constraints, visual direction, development conventions, credential boundaries and deployment verification. Corrected obsolete README setup/design/A-B-test statements and the completed Pages setup checklist item. Fixed file-URL conversion in copy checking and release archiving for Windows; release archives now include `AGENTS.md`.
+
+Validation in a local Windows checkout: `npm ci`; `npm run check` (9 backend tests, 27 contrast pairs, copy guard, zero Astro errors/warnings/hints); production-oriented build with samples/indexing/newsletter disabled (59 pages); all 21 Playwright tests against `wrangler pages dev`, including light/dark axe, four responsive widths, keyboard navigation, readiness, media fallbacks and Pages middleware. `npm run release:archive` succeeded and archive contents included the new guide. Browser form-delivery failures were mocked; no live leads or newsletter messages were sent. Airtable runtime writes and credential configuration were not verified or changed.
+
+This entry records preparation and local verification; the resulting PR, merged commit and production marker must be checked before describing this update as deployed. The photographs remain licensed animated stills, not video footage.
+
 ## Custom domain — 2026-10-26
 
 `tidewaterbid.com` was registered through Cloudflare Registrar (Cloudflare nameservers). Repository defaults, release tests, the source-archive manifest and the opt-in Drive workflow now use it as the canonical origin. Production canonical URLs keep following the Cloudflare Pages `SITE_URL` variable, which remains `https://tidewater-6ik.pages.dev` until the domain is attached to the Pages project and serving HTTPS; then switch the variable and redeploy. Release verification still reads `https://tidewater-6ik.pages.dev/release.json`, which always serves the production deployment. Email Routing is enabled for the domain and the site's public contact is `hello@tidewaterbid.com`; no personal email address is published on the site or in repository docs.

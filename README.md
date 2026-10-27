@@ -1,6 +1,6 @@
 # Tidewater — bid desk + restaurant advisory
 
-## Tidewater v2 candidate status
+## Tidewater v2 status
 
 The v2 institutional/coastal redesign was published through [PR #1](https://github.com/jcs3-com/Tidewater/pull/1) from
 `main` baseline `c8dbde3138d2722ecf1e4fd2f1f01dcb914018e4` and deploys through the
@@ -15,6 +15,8 @@ These status notes must be updated after a verified production release.
 Production-oriented **Astro static site** for **Tidewater**, a trade name of Tidewater Advisory LLC. The frontend builds to Cloudflare Pages. Cloudflare Pages Functions (on the Workers runtime) accept form submissions, writes to Airtable, and handle newsletter double confirmation on the same domain. A daily GitHub Action rebuilds public bids from Airtable.
 
 **Status:** Code and full page copy included. Airtable base and operational interface are created. Three fictional SAMPLE RFPs are in Airtable but are hidden from production builds (`DEMO_SEED=0`). **Do not launch before resolving `LAUNCH_CHECKLIST.md` and running the browser tests.**
+
+Read [AGENTS.md](AGENTS.md) before development for architecture, business guardrails, visual direction, testing and the existing deployment workflow.
 
 ## Quick start
 
@@ -40,7 +42,7 @@ Build static output: `npm run build` (creates `dist/`). A deliberate Airtable bu
 ## File map
 
 - `src/pages/` — final page copy: Home, Bids, Pricing, Restaurant Advisory, Open Bids, bid details, 40 category-by-jurisdiction pages, readiness, three insight articles, About, Contact, Privacy, Terms, newsletter results, 404
-- `src/styles/global.css` — mobile-first petrol/cream/oxblood design and dark mode
+- `src/styles/global.css` — responsive oyster-gray/marine-blue design and dark mode
 - `src/lib/rfps.ts` — Airtable read, normalization, status rules and sample fallback
 - `src/pages/og/bids/...png.ts` — generated PNG social cards for every bid page
 - `src/pages/sitemap.xml.ts` — full static and dynamic XML sitemap; excludes SAMPLE bids
@@ -159,11 +161,11 @@ The Worker requires all sending fields before creating a newsletter signup and b
 
 **Connected Airtable is already configured at the schema level.** Base ID: `app5wO7MKQ92y16f1`. Records: 3 fictional SAMPLE RFPs plus one publicly sourced Montgomery County operator solicitation (RFP 1200454), due December 15, 2026. Confirm official addenda and closing time before client-facing outreach.
 
-1. **[[TODO: Create `jcs3-com/tidewater` on GitHub.]]** Repository creation is not exposed by the connected GitHub actions in this chat. Upload or push this repo from the ZIP. Keep it private until you review the code, then public if desired.
-2. **[[TODO: Create Cloudflare Pages project, name `tidewater`, connect the GitHub repo.]]** Set production branch `main`, build command `npm run build`, output directory `dist`, Node version 22. Cloudflare assigns a `*.pages.dev` domain; no custom domain required at launch. Git integration automatically deploys commits. Pages Functions in `functions/` deploy alongside the static site, using the Workers runtime; **no second Worker deployment** or API DNS record is needed.
+1. Work in the existing `jcs3-com/Tidewater` repository. Create a feature branch from current `main`; preserve newer changes and do not restore an older Drive candidate over it.
+2. Use the existing Cloudflare Pages project `tidewater`, connected to `main`: build command `npm run build`, output `dist`, Node 22. Git integration deploys merged commits. Pages Functions deploy alongside the static site; no second Worker or project is needed. Both `https://tidewaterbid.com` and `https://tidewater-6ik.pages.dev` serve production. Verify `/release.json` and the homepage commit marker after each deployment.
 3. **[[TODO: Enter production environment variables.]]** Cloudflare Pages build variables: `SITE_URL=https://tidewaterbid.com` (only after the custom domain is active), `AIRTABLE_PAT=[[TODO: restricted PAT]]`, `AIRTABLE_BASE_ID=app5wO7MKQ92y16f1`, `DEMO_SEED=0`, `PUBLIC_API_URL=` (blank). Set optional analytics/Turnstile public keys. At runtime add secret `AIRTABLE_PAT` (read/write), `AIRTABLE_BASE_ID`, and, once available, `RESEND_API_KEY`, `FROM_EMAIL`, `HMAC_SECRET`, `MAILING_ADDRESS`. The Pages Functions automatically derive same-origin `SITE_URL`, `WORKER_URL` and allowed origin from request URL if not explicitly set.
 4. **[[TODO: Set sender and physical address before activating newsletter email.]]** Public contact is `hello@tidewaterbid.com`. Airtable has a draft [lead-notification automation](https://airtable.com/app5wO7MKQ92y16f1/wflOZq1GHTG4nayoX) for new lead notices to the operator's private inbox; you must review and turn it on in Airtable. Newsletter sending through Resend is **not configured**; use a verified email domain and physical mailing address to comply with email requirements. Until then newsletter confirmation returns a configuration error rather than silently subscribing.
-5. **[[TODO: GitHub Action for daily rebuild.]]** GitHub secrets: `AIRTABLE_PAT`, `AIRTABLE_BASE_ID`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. GitHub variables: `SITE_URL` for the assigned Pages domain and optional `PUBLIC_ANALYTICS_DOMAIN`; `PUBLIC_API_URL` can remain blank. The Action runs daily from Airtable and uses `wrangler pages deploy dist` to update the same Pages project, including its Functions.
+5. **Existing opt-in GitHub Action for daily rebuild.** Enable scheduled runs only after setup with `DAILY_REBUILD=1`. GitHub secrets: `AIRTABLE_PAT`, `AIRTABLE_BASE_ID`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. GitHub variables: `SITE_URL` for the assigned Pages domain and optional `PUBLIC_ANALYTICS_DOMAIN`; `PUBLIC_API_URL` can remain blank. The Action runs daily from Airtable and uses `wrangler pages deploy dist` to update the same Pages project, including its Functions.
 6. **[[TODO: Test deployed form submissions.]]** Submit contact, bid packet, quiz, newsletter confirm and unsubscribe in production, then verify Airtable state. Run Playwright, axe, mobile Lighthouse and verify site canonical URLs before announcing launch.
 
 **Security:** The ChatGPT Airtable connector authorizes actions in this chat, but does **not** provide an Airtable Personal Access Token to the Cloudflare build system. Create a separate least-privilege Airtable token for Cloudflare at `https://airtable.com/create/tokens`; do not commit it. Pages Functions need data records read/write permission; build needs read only. Avoid entering credentials or private mailing addresses into repo files. Cloudflare secrets stay server-side.
@@ -172,7 +174,7 @@ The Worker requires all sending fields before creating a newsletter signup and b
 
 ## A/B positioning
 
-The home page tests two user-supplied headline lines, 50/50 on a per-session basis, via `sessionStorage`. Version A is the primary positioning line; B is the secondary. Version persists during the browser session. The form script sends a `lead` event to Plausible when enabled (with form type and headline variant as custom properties). Configure a Plausible `lead` goal to compare conversions; do not substitute headline preference for a randomized conversion experiment. Without Plausible, the variant still changes but **conversion comparison is not available**.
+The v2 homepage uses the fixed headline `Government contracts. Within reach.` The earlier randomized headline experiment is no longer active. Optional form analytics do not establish an active A/B test or measured conversion improvement.
 
 ## SEO and build behavior
 
@@ -180,7 +182,7 @@ All content is statically generated with semantic elements, page-specific titles
 
 ## Visual and accessibility requirements
 
-Baseline responsive width is 360px, gutters 16px, no fixed wide child on mobile, interactive targets 44px or larger, reduced-motion support, accessible labels and error messages, keyboard navigation, color-theme toggle, Fraunces/Lora/IBM Plex Mono typography, no stock images. The `npm run check:contrast` script verifies the main palette, status badges, dark mode and form-feedback combinations at 4.5:1 or better. **This is not an exhaustive rendered-DOM audit**; run `npm run test:e2e`, axe and Lighthouse after deploying and check at 360px and 1440px. Lighthouse 90+ in all categories is a **target, not a measured claim**.
+Baseline responsive width is 360px, gutters 16px, no fixed wide child on mobile, interactive targets 44px or larger, reduced-motion support, accessible labels and error messages, keyboard navigation, color-theme toggle, self-hosted Cormorant Garamond/DM Sans typography and licensed Chesapeake aerial photographs. The `npm run check:contrast` script verifies the main palette, status badges, dark mode and form-feedback combinations at 4.5:1 or better. **This is not an exhaustive rendered-DOM audit**; run `npm run test:e2e`, axe and Lighthouse after deploying and check at 360px and 1440px. Lighthouse 90+ in all categories is a **target, not a measured claim**.
 
 ## How to publish a verified bid
 
@@ -198,4 +200,4 @@ Baseline responsive width is 360px, gutters 16px, no fixed wide child on mobile,
 
 ## Remaining launch tasks
 
-See [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md). This implementation has automated unit tests, contrast checks, and a connected Airtable base populated through the Airtable connector, **not** a verified Cloudflare deployment, end-to-end live form submission or full mobile Lighthouse run. Keep those separate from completed code.
+See [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md). Cloudflare publication and historical visual QA are recorded in the release log. Actual Airtable writes, newsletter sending, legal approvals and launch gates require separate verification; do not infer their completion from a successful deployment. For the complete browser suite, target a Pages runtime with `BASE_URL`; Astro dev alone does not serve the middleware or API routes.

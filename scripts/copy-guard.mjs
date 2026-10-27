@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync,readdirSync} from 'node:fs';
 import {join} from 'node:path';
-const root=new URL('../src/pages/',import.meta.url).pathname;
+import {fileURLToPath} from 'node:url';
+const root=fileURLToPath(new URL('../src/pages/',import.meta.url));
 function walk(p){return readdirSync(p,{withFileTypes:true}).flatMap(d=>d.isDirectory()?walk(join(p,d.name)):[join(p,d.name)]);}
 const source=walk(root).filter(p=>p.endsWith('.astro')).map(p=>readFileSync(p,'utf8')).join('\n');
 for(const forbidden of [/success[ -]?fee/i,/commission\b/i,/percent(?:age)?\s+of\s+(?:the\s+)?contract\s+value/i]) {
