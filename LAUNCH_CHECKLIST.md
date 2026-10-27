@@ -74,7 +74,7 @@ source SHA, remote main, actual production evidence and manually archived files.
 ## Infrastructure and QA
 
 - [x] Source pushed to `jcs3-com/Tidewater` `main` with `package-lock.json` (2026-10-26).
-- [ ] **[[TODO: Create Cloudflare Pages project from `jcs3-com/tidewater` and deploy static site plus Pages Functions.]]** Cloudflare API action is not connected in this chat. A custom domain can be added later.
+- [x] Existing Cloudflare Pages project `tidewater` deploys this repository with Pages Functions; both production domains serve v2. Preserve the project and verify the release marker for each new deployment.
 - [ ] **[[TODO: Configure Cloudflare Pages build variables and secrets; separately configure GitHub Actions for daily RFP rebuild.]]**
 - [ ] **[[TODO: Configure Plausible domain and `lead` event goal, or choose Cloudflare Web Analytics and adapt A/B conversion tracking.]]**
 - [ ] **[[TODO: Verify email authentication SPF, DKIM and DMARC.]]**
