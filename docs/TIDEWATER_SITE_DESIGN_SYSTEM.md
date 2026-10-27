@@ -24,7 +24,7 @@ The home headline panel retains oyster shell and slate in both themes. Blue pane
 
 - Display: locally hosted Cormorant Garamond variable, weight 500; Georgia fallback. Body/navigation: locally hosted DM Sans variable; Arial fallback. System monospace is reserved for bid data and micro-labels. Both font licenses are in `docs/licenses/`.
 - Maximum content width 1248px; 48px desktop gutters, 24px tablet and 20px mobile. Major section spacing scales from 56–112px. Breakpoints 1200, 970 and 600px.
-- Panoramic photographic home hero, opaque oyster-shell headline banner, one primary readiness CTA. Editorial three-column section headings and two practice summaries; quiet rules replace excessive boxes. Forms and bid records remain clearly delineated.
+- Panoramic photographic home hero, opaque oyster-shell headline banner, one primary contact CTA and a secondary opportunity-browsing link. Editorial three-column section headings and two practice summaries; quiet rules replace excessive boxes. Forms and bid records remain clearly delineated.
 - Interior first sections and closing calls to action share the original decorative estuary contour study. The drawing is expressly non-geographic and not suitable for navigation.
 - Shared header, footer, forms, cards, pricing table, FAQs, quizzes, error pages, legal and content routes use the same tokens. Public image credits are at `/credits`.
 
@@ -45,3 +45,7 @@ A 24-second alternating transform provides gentle cinematic movement of a still 
 Pricing, flat-fee model, bid sourcing/filtering, readiness scoring, Cloudflare Pages Functions, Worker handlers and Airtable schema/interfaces remain intact. A form delivery failure leaves entries available and exposes a direct mailto fallback. No fabricated award results, client claims, address or registrations. No automatic headline variant promising a winning bid.
 
 `SITE_INDEXABLE` and `NEWSLETTER_ENABLED` remain off. Airtable/Resend production submission verification remains a separate pending operational task. Do not clear legal TODOs or turn on gates as a consequence of the visual release.
+
+## Bid-desk focus update
+
+The homepage now presents government bidding only: introduction, audience/scope, engagement process, current opportunities and contact. The regional photograph is on About; newsletter signup remains gated on Insights. The food-waste project has a quiet footer link to its existing subpage and a dedicated enquiry form. Readiness is an optional tool reached through Becoming a contractor. These hierarchy changes preserve the palette, typography, aerial assets and decorative estuary contours. Tidewater Food Waste remains a working label, not a newly approved division name.
