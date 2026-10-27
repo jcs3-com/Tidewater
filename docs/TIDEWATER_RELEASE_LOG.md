@@ -1,6 +1,17 @@
 # Tidewater release log
 
-## v3.0.0 Restaurant Advisory and funding desk — 2026-10-27 (feature branch, NOT deployed)
+## Production verification, v3.0.0 — 2026-10-27 ~02:50 ET
+
+**v3.0.0 is live on Cloudflare Pages production**, verified against the live site.
+
+- Owner approved deployment and the dual-practice headline "Find the opportunity. Realize the value." (contact-first hero actions kept). [PR #8](https://github.com/jcs3-com/Tidewater/pull/8) merged to `main` as `d0cdf5851f7980344a40e921e0c1c3d29dab150b` (branch head `6a61a3e`).
+- The Cloudflare Pages production build succeeded. `https://tidewaterbid.com/release.json`, `https://tidewater-6ik.pages.dev/release.json` and the homepage `tidewater-commit` meta tag all reported `3.0.0` / `d0cdf58…`.
+- Live routes returned 200: `/`, `/bids`, `/open-bids`, `/pricing`, `/restaurant-advisory`, `/restaurant-advisory/food-waste`, `/restaurant-advisory/funding`, `/readiness`, `/becoming-a-contractor`, `/contact`, `/credits`, `/health`, `/sitemap.xml`, `/robots.txt`. `noindex` was still present (launch gate unchanged). The open-bid board was still populated (11 cards).
+- The funding desk built from **Airtable**, not the snapshot (no snapshot notice). 14 Approved records published, each with an official https source and a 2026-10-27 verified date. No listing with a past deadline showed Open. The Draft Charlottesville CDBG record was excluded. Ten of the 14 records were added to Airtable after the v3 branch review; their content was not independently re-verified in this session.
+- The food-waste page at `/restaurant-advisory/food-waste` carries the current copy: "Waste less. Give more back.", all five stages, and the `food-waste-project` form source.
+- No leads or newsletter messages were sent. Pages environment variables and credentials were not changed.
+
+## v3.0.0 Restaurant Advisory and funding desk — 2026-10-27 (branch preparation)
 
 Source: owner-supplied `Tidewater_v3_Claude_Overlay.zip` (`docs/V3_HANDOFF.md`), packaged from a Drive mirror that predates main commits `46cc049` (bid-desk focus), `7854407` (bid-card due dates), `c241d13` (food-waste repositioning) and `561f33a` (homepage flow). Applied as a three-way merge against base `b0b1d57` on branch `feature/tidewater-3-restaurant-advisory`, not as a file replacement. Wherever main had changed since the snapshot, main's newer copy was kept.
 
