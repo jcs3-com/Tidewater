@@ -1,20 +1,49 @@
 ---
 import Base from '../layouts/Base.astro';
 import CTA from '../components/CTA.astro';
+import FundingCard from '../components/FundingCard.astro';
+import {getFundingOpportunities} from '../lib/funding';
+import {stages,deliverables} from '../data/restaurant-process';
+const {items}=await getFundingOpportunities();
+const current=items.filter(o=>o.status==='Open'||o.status==='Upcoming');
+const featured=current.slice(0,4);
 const schema=[{'@context':'https://schema.org','@type':'Service',name:'Restaurant operations and funding advisory',provider:{'@type':'Organization',name:'Tidewater Advisory LLC'},areaServed:['Washington, DC','Maryland','Virginia','Charlottesville, Virginia']}];
 ---
-<Base title="Restaurant Advisory | Funding, Operations & Implementation | Tidewater" description="Identify restaurant grants and incentives across the DMV and Charlottesville. Improve purchasing, inventory, labor and food waste; implement projects from assessment through measurable results." schema={schema}>
+<Base title="The Restaurant Advisory | Funding, Operations & Implementation | Tidewater" description="Identify restaurant grants and incentives across DC, Maryland and Virginia. Improve purchasing, inventory, labor and food waste, and manage projects from assessment through measurable results." schema={schema}>
   <section class="restaurant-hero section"><div class="container restaurant-hero-grid">
-    <div><p class="eyebrow">Tidewater Advisory / 02 Restaurant Advisory</p><h1>Make the operation better.</h1><p class="lead">Find the funding. Protect the margin. Put improvements into practice.</p><p>For independent restaurants, hospitality groups and food businesses across Washington, DC, Maryland, Northern Virginia and the Charlottesville region.</p><div class="actions"><a class="button" href="/restaurant-advisory/funding">Explore grants & incentives ↗</a><a class="button-quiet" href="/contact">Discuss an improvement project ↗</a></div></div>
+    <div><p class="eyebrow">Tidewater Advisory / 02 The Restaurant Advisory</p><h1>Make the operation better.</h1><p class="lead">Find the funding. Protect the margin. Put improvements into practice.</p><p>For independent restaurants, hospitality groups and food businesses across Washington, DC, Maryland and Virginia, including the Charlottesville region.</p><div class="actions"><a class="button" href="/contact">Discuss an improvement project <span aria-hidden="true">&#8599;</span></a><a class="button-quiet" href="#funding-opportunities">See open funding</a></div></div>
     <figure class="restaurant-hero-visual"><picture><source type="image/webp" srcset="/assets/tidal-oysters-640.webp 640w"/><img src="/assets/tidal-oysters.jpg" width="640" height="480" alt="Tidal water flowing around a cluster of oysters." fetchpriority="high" decoding="async"/></picture><figcaption>Small improvements compound. Like water finding the better channel.</figcaption></figure>
   </div></section>
+
+  <section class="section reverse method-section fw-how" aria-labelledby="ra-process-heading"><div class="container">
+   <div class="editorial-heading">
+    <p class="eyebrow">Our five-stage process</p>
+    <h2 id="ra-process-heading">From opportunity to implementation.</h2>
+    <p class="lead">A structured, evidence-based approach. Our work doesn't end with a report: Tidewater builds the business case and the roadmap, then manages the project through execution and evaluation.</p>
+   </div>
+   <ol class="fw-stages">
+    {stages.map(s=><li class="fw-stage"><span class="fw-stage-marker" aria-hidden="true"></span><span class="step-number">{s.n} /</span><h3>{s.t}</h3><p>{s.d}</p></li>)}
+   </ol>
+   <div class="fw-deliverables"><h3 class="small-kicker">Deliverables</h3><ul>{deliverables.map(d=><li>{d}</li>)}</ul></div>
+  </div></section>
+
+  <section class="section funding-directory-section" id="funding-opportunities" aria-labelledby="ra-funding-heading"><div class="container">
+   <div class="funding-directory-heading"><div><p class="eyebrow">Open opportunities</p><h2 id="ra-funding-heading">Funding open now.</h2><p>Grants, rebates and incentives currently accepting applications. Official sources first, with status and verification dates on every listing. Eligibility is not an award guarantee.</p></div><div class="funding-count">{current.length} open of {items.length} tracked</div></div>
+   {featured.length>0 ? <div class="funding-list">{featured.map(o=><FundingCard o={o}/>)}</div> : <div class="panel"><p>No programs are open right now. Browse the full funding desk for upcoming and monitored programs.</p></div>}
+   <div class="actions"><a class="button-quiet" href="/restaurant-advisory/funding">Browse all {items.length} funding opportunities</a></div>
+  </div></section>
+
   <section class="section"><div class="container"><div class="editorial-heading"><p class="eyebrow">What we do</p><h2>Three ways to unlock value.</h2><p class="lead">From the first question through the last implementation milestone.</p></div>
     <div class="grid-3">
-      <article class="advisory-panel"><span class="step-number">01 / Capital & support</span><h3>Funding & incentives</h3><p>Research and qualify grants, public programs, utility rebates and other incentives. Translate eligibility rules into a scoped project, application and practical delivery plan.</p><a class="link-arrow" href="/restaurant-advisory/funding">Browse opportunities ↗</a></article>
-      <article class="advisory-panel"><span class="step-number">02 / Margin protection</span><h3>Operational performance</h3><p>Review purchasing, recipes, yields, inventory, prep, labor deployment and equipment. Identify the handful of changes most likely to return real value.</p><a class="link-arrow" href="/contact">Request an assessment ↗</a></article>
-      <article class="advisory-panel"><span class="step-number">03 / Stewardship & savings</span><h3>Food waste & recovery</h3><p>Start upstream: prevent overbuying, spoilage and avoidable prep waste. Then build appropriate donation and resource-recovery systems with qualified partners.</p><a class="link-arrow" href="/restaurant-advisory/food-waste">Read the food waste playbook ↗</a></article>
+      <article class="advisory-panel"><span class="step-number">01 / Capital & support</span><h3>Funding & incentives</h3><p>Research and qualify grants, public programs, utility rebates and other incentives. Translate eligibility rules into a scoped project, application and practical delivery plan.</p><a class="link-arrow" href="/restaurant-advisory/funding">Browse opportunities <span aria-hidden="true">&#8599;</span></a></article>
+      <article class="advisory-panel"><span class="step-number">02 / Margin protection</span><h3>Operational performance</h3><p>Review purchasing, recipes, yields, inventory, prep, labor deployment and equipment. Identify the handful of changes most likely to return real value.</p><a class="link-arrow" href="/contact">Request an assessment <span aria-hidden="true">&#8599;</span></a></article>
+      <article class="advisory-panel"><span class="step-number">03 / Stewardship & savings</span><h3>Food waste & recovery</h3><p>Start upstream: prevent overbuying, spoilage and avoidable prep waste. Then build appropriate donation and resource-recovery systems with qualified partners.</p><a class="link-arrow" href="/restaurant-advisory/food-waste">Read the food waste playbook <span aria-hidden="true">&#8599;</span></a></article>
     </div></div></section>
-  <section class="section reverse method-section"><div class="container"><div class="editorial-heading"><p class="eyebrow">Our operating method</p><h2>Assess. Fund. Implement.</h2><p class="lead">No handoff after a report. Tidewater stays with the project through coordination and measurement.</p></div><div class="grid-3"><div class="panel"><span class="step-number">01 / Establish the baseline</span><h3>Find the constraint.</h3><p>Understand current processes and real economics. Prioritize opportunities worth a manager's time.</p></div><div class="panel"><span class="step-number">02 / Build the business case</span><h3>Make the numbers work.</h3><p>Validate funding eligibility, investment, payback assumptions, partners, and timelines before committing.</p></div><div class="panel"><span class="step-number">03 / Execute & measure</span><h3>See the work through.</h3><p>Coordinate vendors, people and milestones; measure outcomes against the agreed baseline.</p></div></div></div></section>
-  <section class="section"><div class="container grid-2 restaurant-bottom-cta"><div><p class="eyebrow">Funding intelligence</p><h2>Find funding for your next improvement.</h2><p>We track relevant programs across the District, Maryland and Virginia—including Charlottesville and Central Virginia. Each opportunity shows eligibility caveats, official source, application status and when it was checked.</p><a class="button" href="/restaurant-advisory/funding">Browse the funding desk ↗</a></div><div class="panel"><p class="eyebrow">Tidewater Food Waste</p><h3>Waste less. Give more back.</h3><p>Our food waste program is now part of Restaurant Advisory: prevention first, then donation and resource recovery with qualified partners. Tidewater provides advisory and project management; we do not operate collection, hauling, composting or disposal.</p><a class="link-arrow" href="/restaurant-advisory/food-waste">Food waste & resource recovery ↗</a></div></div></section>
+
+  <section class="section" style="background:var(--subtle)"><div class="container grid-2 restaurant-bottom-cta"><div><p class="eyebrow">Tidewater Food Waste</p><h2>Waste less. Give more back.</h2><p>Our food waste program applies the same five stages to prevention, donation and resource recovery with qualified partners. Tidewater provides advisory and project management; we do not operate collection, hauling, composting or disposal.</p><a class="button" href="/restaurant-advisory/food-waste">Explore Tidewater Food Waste <span aria-hidden="true">&#8599;</span></a></div><div class="panel"><p class="eyebrow">Funding intelligence</p><h3>Every tracked program in one place.</h3><p>Search and filter grants, rebates and incentives across DC, Maryland and Virginia, including programs that are upcoming or being monitored for a new round.</p><a class="link-arrow" href="/restaurant-advisory/funding">Open the funding desk <span aria-hidden="true">&#8599;</span></a></div></div></section>
   <CTA title="An improvement is only valuable when it sticks." body="Start with a scoped conversation about the project, its economics, and who must deliver it." href="/contact" label="Discuss your operation" />
+  <script is:inline>
+  (()=>{const d=new Date();const day=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+   document.querySelectorAll('#funding-opportunities .funding-card').forEach(c=>{if(c.dataset.status==='Open'&&c.dataset.deadline&&c.dataset.deadline<day){c.dataset.status='Closed';const b=c.querySelector('[data-status-label]');if(b){b.textContent='Closed';b.className='funding-status status-closed';}}});})();
+  </script>
 </Base>

@@ -22,8 +22,10 @@ test('mobile nav opens and links to pricing',async({page})=>{
  await expect(button).toHaveAttribute('aria-expanded','false');
  await expect(button).toBeFocused();
  await button.press('Enter');
- await page.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:'Pricing'}).click();
- await expect(page).toHaveURL(/\/pricing$/);
+ const mnav=page.getByRole('navigation',{name:'Main navigation'});
+ await expect(mnav.getByRole('link',{name:'Contact Tidewater'})).toBeVisible();
+ await mnav.getByRole('link',{name:'The Bid Desk'}).click();
+ await expect(page).toHaveURL(/\/bids$/);
 });
 test('theme toggle switches to dark',async({page})=>{
  await page.goto('/');await page.locator('#theme-toggle').click();
@@ -33,12 +35,16 @@ test('theme toggle switches to dark',async({page})=>{
 test('bid desk leads with contact, keeps readiness interior and separates food waste',async({page})=>{
  await page.goto('/');
  const hero=page.locator('.hero-shell');
- await expect(hero.getByRole('link',{name:'Contact Tidewater'})).toHaveAttribute('href','/contact');
- await expect(hero.getByRole('link',{name:'Browse opportunities'})).toHaveAttribute('href','/open-bids');
+ await expect(hero.getByRole('link')).toHaveCount(0);
+ const header=page.locator('.site-header');
+ await expect(header.getByRole('link',{name:'Contact Tidewater'}).first()).toHaveAttribute('href','/contact');
+ const nav=page.getByRole('navigation',{name:'Main navigation'});
+ await expect(nav.locator('li:not(.nav-contact) a')).toHaveText(['The Bid Desk','The Restaurant Advisory','About']);
+ await expect(page.locator('main .bid-list')).toHaveCount(0);
  await expect(page.locator('main a[href="/readiness"]')).toHaveCount(0);
  await expect(page.locator('.division-image-card[href="/bids"]')).toBeVisible();
  await expect(page.locator('.division-image-card[href="/restaurant-advisory"]')).toBeVisible();
- await hero.getByRole('link',{name:'Contact Tidewater'}).click();
+ await page.locator('.header-cta').click();
  await expect(page.getByRole('form',{name:'Contact Tidewater'})).toBeVisible();
  await page.goto('/bids');
  await page.getByRole('link',{name:'Becoming a government contractor',exact:true}).click();
@@ -58,6 +64,9 @@ test('restaurant advisory hub links food waste and funding desk',async({page})=>
  await page.goto('/restaurant-advisory');
  await expect(page.getByRole('heading',{level:1})).toContainText('Make the operation better.');
  await expect(page.locator('main img[src^="http"]')).toHaveCount(0);
+ await expect(page.locator('main .fw-stage')).toHaveCount(5);
+ await expect(page.locator('#funding-opportunities')).toBeVisible();
+ await expect(page.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:'The Restaurant Advisory'})).toHaveAttribute('aria-current','page');
  await page.locator('main').getByRole('link',{name:'Read the food waste playbook'}).click();
  await expect(page).toHaveURL(/\/restaurant-advisory\/food-waste$/);
  await page.goto('/restaurant-advisory/funding');
@@ -77,6 +86,16 @@ test('funding desk never shows an expired deadline as Open',async({page})=>{
   const d=await card.getAttribute('data-deadline');
   if(d && d<'2026-11-02') await expect(card.locator('[data-status-label]')).not.toHaveText('Open');
  }
+});
+test('bid desk landing explains the RFP process then lists open bids',async({page})=>{
+ await page.goto('/bids');
+ const process=page.locator('.bid-process');
+ await expect(process.getByRole('heading',{level:2})).toContainText('Implementation');
+ await expect(process.locator('.panel')).toHaveCount(4);
+ await expect(page.locator('#open-opportunities')).toBeVisible();
+ expect(await page.locator('.bid-process').evaluate(el=>!!(el.compareDocumentPosition(document.querySelector('#open-opportunities'))&Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
+ await page.locator('#open-opportunities').getByRole('link',{name:'Browse all opportunities'}).click();
+ await expect(page).toHaveURL(/\/open-bids$/);
 });
 test('readiness calculates score and reveals lead capture',async({page})=>{
  await page.goto('/readiness');
@@ -106,7 +125,7 @@ test('canonical URLs are clean, served directly and marked in navigation',async(
   expect((await request.get(path,{maxRedirects:0})).status(),`${path} must not redirect`).toBe(200);
  }
  await page.goto('/pricing');
- await expect(page.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:'Pricing'})).toHaveAttribute('aria-current','page');
+ await expect(page.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:'The Bid Desk'})).toHaveAttribute('aria-current','true');
 });
 
 test('retired v1 source paths return uncacheable 410 and never expose source',async({request})=>{

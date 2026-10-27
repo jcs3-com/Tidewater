@@ -1,19 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
 import LeadForm from '../../components/LeadForm.astro';
+import {stages,deliverables} from '../../data/restaurant-process';
 const irs='https://www.irs.gov/publications/p526';
 const statute='https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title26-section170&num=0&edition=prelim';
 const orp='https://www.oysterrecovery.org/get-involved/shell-recycling';
 const md='https://services.marylandcomptroller.gov/taxes/en/tax-credits-deductions-and-subtractions?id=kb_article_view&sys_kb_id=733587b61b97d290168d6424604bcb8a&sysparm_rank=2&sysparm_tsqueryId=86ebb7b01bf136146cba8593604bcbe8';
 const mealconnect='https://www.capitalareafoodbank.org/how-to-help/donate-food/mealconnect/';
-const stages=[
- {n:'01',t:'Assess & Measure',d:'Evaluate purchasing, inventory, preparation, service, and waste streams. Establish a baseline and identify where resources are being lost or underutilized.'},
- {n:'02',t:'Analyze & Prioritize',d:'Identify realistic opportunities and assess potential financial, operational, community, and environmental returns. Evaluate feasibility, costs, funding, and constraints.'},
- {n:'03',t:'Design the Roadmap',d:'Build a prioritized proposal with project scope, expected benefits, milestones, responsibilities, implementation timelines, and measures of success.'},
- {n:'04',t:'Manage Implementation',d:'Coordinate participating organizations, vendors, and operational teams. Manage schedules, dependencies, deliverables, and progress while minimizing disruption to daily service.'},
- {n:'05',t:'Measure & Sustain',d:'Evaluate results against the original baseline. Establish tracking and operating procedures that help improvements become lasting practices.'}
-];
-const deliverables=['Opportunity assessment','Prioritized business case','Implementation roadmap','Project timeline','Measurable KPIs','Project management through implementation'];
 const schema=[{'@context':'https://schema.org','@type':'Service',name:'Tidewater Food Waste: advisory and project management for restaurant and hospitality operators',serviceType:'Food waste reduction advisory and implementation project management',provider:{'@type':'Organization',name:'Tidewater Advisory LLC'}}];
 ---
 <Base title="Tidewater Food Waste | Restaurant Advisory | Tidewater" description="Tidewater Food Waste helps restaurant and hospitality operators reduce food waste, recover value and manage improvement projects through implementation." schema={schema}>

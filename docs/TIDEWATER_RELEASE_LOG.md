@@ -1,5 +1,17 @@
 # Tidewater release log
 
+## v3.1.0 Homepage restructure around two practices — 2026-10-27
+
+Owner direction: the hero should cover both practices; remove the "Who we help" block and the homepage bid board; the split panels route to each practice's landing page, which explains its process and then lists open opportunities; nav becomes The Bid Desk, The Restaurant Advisory, About (Contact stays as the header button); Northern Virginia becomes Virginia on the homepage; remove the hero buttons.
+
+- Homepage: hero (inclusive intro, no buttons, "DC / Maryland / Virginia") → split panels → contact CTA. "Who we help", "What you receive", the four-phase approach and the bid board were removed from the homepage.
+- `/bids`: the Opportunity → Proposal → Award → Implementation flow and its four phases moved here as "Our RFP process", followed by up to six current open bids and a link to the full board. The existing who/what/your part/FAQ/basics content follows.
+- `/restaurant-advisory`: the five-stage process (shared with the food-waste page through `src/data/restaurant-process.ts`, so the copy cannot drift), followed by up to four Open/Upcoming funding cards (shared `FundingCard` component) with a link to the full desk.
+- Nav: three items, with section-aware `aria-current`. The header Contact button is now visible at every desktop width (it was previously hidden below 1200px) and appears as the last mobile-menu item. The footer adds Open bids and Funding desk.
+- Bid-desk pages still say Northern Virginia where they describe the bid markets (Fairfax, Arlington, Alexandria, Loudoun).
+
+Validation: `npm run check` (0 diagnostics); production-oriented build; 25/25 Playwright tests against `wrangler pages dev dist`, including the new Bid Desk landing-order test, the restaurant landing test (5 stages, funding list, nav current state), the mobile menu with Contact, and light/dark axe across routes.
+
 ## Production verification, v3.0.0 — 2026-10-27 ~02:50 ET
 
 **v3.0.0 is live on Cloudflare Pages production**, verified against the live site.
