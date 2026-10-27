@@ -14,7 +14,7 @@ const open=bids.filter(b=>effectiveStatus(b)==='Open').length;
 <p id="filter-count" class="eyebrow" aria-live="polite">{bids.length} listings</p>
 <div class="bid-list" id="bid-results">{bids.map(b=><BidCard bid={b}/>)}</div>
 <p id="no-results" class="notice" hidden>No bids match these filters. Try a wider window or another jurisdiction.</p>
-{bids.length===0&&<div class="panel"><h2>No published listings yet.</h2><p>The board is ready. Verified opportunities will appear when the RFP table has public records.</p><a class="button" href="/readiness">Check your readiness instead</a></div>}
+{bids.length===0&&<div class="panel"><h2>No published listings yet.</h2><p>The board is ready. Verified opportunities will appear when the RFP table has public records.</p><a class="button" href="/contact">Talk to us about opportunities</a></div>}
 </div></section>
 <script src="/scripts/bid-filters.js" defer></script>
 </Base>

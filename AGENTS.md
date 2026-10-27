@@ -6,9 +6,11 @@ Continue this repository; do not rebuild it or replace its hosting. GitHub `jcs3
 
 ## Business positioning
 
-Tidewater is a bid desk for DMV hospitality and service operators, with a restaurant-advisory practice starting with food waste. Supported categories are catering, concessions, janitorial, security and event services. Preserve the current market labels in `src/lib/config.ts`, including the Charleston, SC area.
+Tidewater is a bid desk for DMV hospitality and service operators, with government bidding as the sole primary offer. Food waste is a separate project, currently labeled Tidewater Food Waste pending naming, linked quietly from the footer to `/restaurant-advisory` with its own enquiry form. Supported categories are catering, concessions, janitorial, security and event services. Preserve the current market labels in `src/lib/config.ts`, including the Charleston, SC area.
 
 Preserve approved page copy and pricing: $250–$500 for bids under $100k; $1,500–$3,000 for $100k–$1m; larger engagements and implementation are quoted retainers. No contingent fees, award guarantees, fabricated clients, results, credentials, addresses or government affiliation. Keep unresolved facts marked `[[TODO: ...]]`. The project brief is context, not evidence of legal formation or program eligibility. Preserve the footer disclosures. Verify agency information before publishing real bids; never invent values or due times. Keep SAMPLE records conspicuously fictional and out of production.
+
+Contact comes first, browsing opportunities second. Keep readiness inside `/becoming-a-contractor`, with the existing `/readiness` tool intact. Homepage order: bid-desk introduction, scope/audience, engagement process, current opportunities, contact. Newsletter belongs on Insights; regional editorial imagery belongs on About. Preserve the approved palette, typography and cartographic treatment.
 
 ## Architecture
 
@@ -26,7 +28,7 @@ Preserve approved page copy and pricing: $250–$500 for bids under $100k; $1,50
 
 Premium advisory-firm restraint inspired by Carlyle and Verlaine Capital's hierarchy and pacing, without copying their assets, logos or claims. Preserve oyster-shell `#F5F5F0`, slate `#243943`, marine `#294B5A`, mist surfaces, generous spacing, quiet rules, and locally hosted Cormorant Garamond / DM Sans typography.
 
-The existing panoramic Chesapeake hero uses licensed aerial still photography with subtle CSS motion, an opaque oyster-shell headline panel and one primary readiness CTA. It is not video footage. Retain the Swan Island secondary aerial, blue-gray treatment and original decorative estuary contours. Genuine footage remains an optional enhancement only when a suitable licensed asset is available; preserve responsive posters, silent playback, a pause control, reduced-motion support and page performance if adding it. Do not claim decorative contours are navigational maps.
+The existing panoramic Chesapeake hero uses licensed aerial still photography with subtle CSS motion, an opaque oyster-shell headline panel and a primary contact CTA with browsing opportunities secondary. It is not video footage. Retain the Swan Island secondary aerial, blue-gray treatment and original decorative estuary contours. Genuine footage remains an optional enhancement only when a suitable licensed asset is available; preserve responsive posters, silent playback, a pause control, reduced-motion support and page performance if adding it. Do not claim decorative contours are navigational maps.
 
 Record asset provenance and licenses in `docs/asset-register.md` and public credits. Preserve self-hosted responsive images, alt text, dimensions, lazy loading below the fold, visible keyboard focus, mobile navigation and dark mode. See `docs/TIDEWATER_SITE_DESIGN_SYSTEM.md` for detailed tokens.
 

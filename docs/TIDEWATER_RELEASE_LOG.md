@@ -1,5 +1,13 @@
 # Tidewater release log
 
+## Government bid desk focus — 2026-10-27
+
+User direction: government bidding is the primary offer; contact comes first, browsing opportunities second. Preserve the palette, typography, aerial imagery and decorative cartography. Reordered the homepage into bid-desk introduction, audience/scope, process, current listings and contact. Removed the competing restaurant-practice pitch, readiness quiz promotion and newsletter panel from the home flow. Regional editorial imagery moved to About; gated newsletter remains on Insights.
+
+Food waste remains accessible at `/restaurant-advisory` through a quiet footer link, with its own enquiry form using the existing contact handler and a distinct source value. `Tidewater Food Waste` is a working label pending naming. Added `/becoming-a-contractor` as an interior starting point linking to the preserved `/readiness` quiz. Contact now leads the header, service/pricing and market-page calls to action. Existing routes, bids, pricing, Airtable/API behavior, disclosures and launch gates remain intact.
+
+Validated with backend tests, contrast and copy checks, zero Astro diagnostics, production-oriented build, and 22 Playwright tests against local Cloudflare Pages. Coverage includes the new contact/contractor/food-waste path, four responsive widths and light/dark axe audits; desktop visual review also completed. No real leads or newsletter messages sent. Production publication is verified separately against the resulting merged commit.
+
 ## Development takeover and verification — 2026-10-26
 
 Inspected current `main` at `869e5bf3b50679f554da4bf88e5ef8fb8bd5285b`; both production domains returned that SHA. The v2 redesign was already published, so the older Drive candidate was not reapplied. Existing visuals, routes, business copy, integrations and Cloudflare deployment configuration are preserved.

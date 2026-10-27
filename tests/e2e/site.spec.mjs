@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 const demo=process.env.DEMO_SEED!=='0';
-export const routes=['/','/bids','/pricing','/restaurant-advisory','/open-bids','/readiness','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md',...(demo?['/bids/washington-dc/sample-event-catering']:[])];
+export const routes=['/','/bids','/pricing','/restaurant-advisory','/open-bids','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md',...(demo?['/bids/washington-dc/sample-event-catering']:[])];
 for(const width of [360,390,768,1440]){
  test(`routes usable at ${width}px without horizontal scrolling`,async({page})=>{
   await page.setViewportSize({width,height:800});
@@ -28,6 +28,29 @@ test('mobile nav opens and links to pricing',async({page})=>{
 test('theme toggle switches to dark',async({page})=>{
  await page.goto('/');await page.locator('#theme-toggle').click();
  const t=await page.locator('html').getAttribute('data-theme');expect(['dark','light']).toContain(t);
+});
+
+test('bid desk leads with contact, keeps readiness interior and separates food waste',async({page})=>{
+ await page.goto('/');
+ const hero=page.locator('.hero-shell');
+ await expect(hero.getByRole('link',{name:'Contact Tidewater'})).toHaveAttribute('href','/contact');
+ await expect(hero.getByRole('link',{name:'Browse opportunities'})).toHaveAttribute('href','/open-bids');
+ await expect(page.locator('main a[href="/readiness"]')).toHaveCount(0);
+ await expect(page.locator('main a[href="/restaurant-advisory"]')).toHaveCount(0);
+ await hero.getByRole('link',{name:'Contact Tidewater'}).click();
+ await expect(page.getByRole('form',{name:'Contact Tidewater'})).toBeVisible();
+ await page.goto('/bids');
+ await page.getByRole('link',{name:'Becoming a government contractor',exact:true}).click();
+ await expect(page).toHaveURL(/\/becoming-a-contractor$/);
+ await page.getByRole('link',{name:'Take the readiness check'}).click();
+ await expect(page.locator('#readiness-form')).toBeVisible();
+ await page.locator('footer').getByRole('link',{name:'Explore the food waste project'}).click();
+ await expect(page).toHaveURL(/\/restaurant-advisory$/);
+ await page.getByRole('link',{name:'Ask about a waste audit'}).click();
+ const form=page.getByRole('form',{name:'Ask about food waste'});
+ await expect(form).toBeVisible();
+ await expect(form.locator('[name=source]')).toHaveValue('food-waste-project');
+ await expect(form.locator('[name=categories]')).toHaveCount(0);
 });
 test('readiness calculates score and reveals lead capture',async({page})=>{
  await page.goto('/readiness');
