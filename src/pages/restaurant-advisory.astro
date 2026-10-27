@@ -5,17 +5,84 @@ const irs='https://www.irs.gov/publications/p526';
 const statute='https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title26-section170&num=0&edition=prelim';
 const orp='https://www.oysterrecovery.org/get-involved/shell-recycling';
 const md='https://services.marylandcomptroller.gov/taxes/en/tax-credits-deductions-and-subtractions?id=kb_article_view&sys_kb_id=733587b61b97d290168d6424604bcb8a&sysparm_rank=2&sysparm_tsqueryId=86ebb7b01bf136146cba8593604bcbe8';
-const faq=[
- {q:'Can a restaurant claim a deduction for donated food?',a:'A federal enhanced deduction may apply to qualifying, apparently wholesome food inventory from any trade or business. Limits and documentation depend on entity type and facts. Ask your tax advisor.'},
- {q:'Can oyster shells be collected from my restaurant?',a:'The Oyster Recovery Partnership has a Shell Recycling Alliance with eligibility requirements, including geographic coverage, volume and storage. Check directly with the program for current pickup and fee terms.'}
+const mealconnect='https://www.capitalareafoodbank.org/how-to-help/donate-food/mealconnect/';
+const stages=[
+ {n:'01',t:'Assess & Measure',d:'Evaluate purchasing, inventory, preparation, service, and waste streams. Establish a baseline and identify where resources are being lost or underutilized.'},
+ {n:'02',t:'Analyze & Prioritize',d:'Identify realistic opportunities and assess potential financial, operational, community, and environmental returns. Evaluate feasibility, costs, funding, and constraints.'},
+ {n:'03',t:'Design the Roadmap',d:'Build a prioritized proposal with project scope, expected benefits, milestones, responsibilities, implementation timelines, and measures of success.'},
+ {n:'04',t:'Manage Implementation',d:'Coordinate participating organizations, vendors, and operational teams. Manage schedules, dependencies, deliverables, and progress while minimizing disruption to daily service.'},
+ {n:'05',t:'Measure & Sustain',d:'Evaluate results against the original baseline. Establish tracking and operating procedures that help improvements become lasting practices.'}
 ];
-const schema=[{'@context':'https://schema.org','@type':'Service',name:'Restaurant waste and yield advisory',provider:{'@type':'Organization',name:'Tidewater Advisory LLC'}},{'@context':'https://schema.org','@type':'FAQPage',mainEntity:faq.map(x=>({'@type':'Question',name:x.q,acceptedAnswer:{'@type':'Answer',text:x.a}}))}];
+const deliverables=['Opportunity assessment','Prioritized business case','Implementation roadmap','Project timeline','Measurable KPIs','Project management through implementation'];
+const schema=[{'@context':'https://schema.org','@type':'Service',name:'Tidewater Food Waste: advisory and project management for restaurant and hospitality operators',serviceType:'Food waste reduction advisory and implementation project management',provider:{'@type':'Organization',name:'Tidewater Advisory LLC'}}];
 ---
-<Base title="Tidewater Food Waste | Restaurant Waste & Yield" description="Cut food waste, improve yield and build donation and recycling processes that fit restaurant operations." schema={schema}>
-<section class="section"><div class="container alt-hero"><p class="eyebrow">Tidewater Food Waste</p><h1>Find the money going into the bin.</h1><p>A separate Tidewater project for restaurant operators.</p><p class="lead">Start with what you're buying, preparing, throwing away and donating. Build a practical system that cuts waste without making service harder.</p><a class="button" href="#food-waste-enquiry">Ask about a waste audit</a></div></section>
-<section class="section reverse"><div class="container"><p class="eyebrow">The first engagement</p><h2>Waste audit → yield fixes → operating routine.</h2><div class="grid-3"><div class="panel"><span class="step-number">01</span><h3>Measure the loss</h3><p>Track trim, spoilage, overproduction and plate waste. Put quantities and costs against the categories that matter.</p></div><div class="panel"><span class="step-number">02</span><h3>Fix the yield</h3><p>Review recipes, purchasing units, batch sizes, pars, prep methods and storage. Test changes with the team.</p></div><div class="panel"><span class="step-number">03</span><h3>Recover what you can</h3><p>Establish safe donation and recycling workflows where qualified partners and local rules allow.</p></div></div></div></section>
-<section class="section"><div class="container"><div class="section-head"><p class="eyebrow">Food donation</p><h2>Don't throw away eligible food without checking the alternatives.</h2><p>Federal law offers an enhanced deduction for certain donated, apparently wholesome food inventory from businesses of different entity types. The general 15% cap applies to <strong>taxable income for C corporations</strong> and <strong>qualifying business net income for other entities</strong>, with additional rules and limits. <strong>Ask your tax advisor</strong> about eligibility, valuation and recordkeeping.</p><p class="fine">Sources: <a href={irs} target="_blank" rel="noopener noreferrer">IRS Publication 526</a> and <a href={statute} target="_blank" rel="noopener noreferrer">26 U.S.C. § 170(e)(3)(C)</a>. Tidewater does not provide tax advice.</p></div></div></section>
-<section class="section" style="background:var(--subtle)"><div class="container grid-2"><div><p class="eyebrow">Oyster shell recycling</p><h2>Keep the shell out of the dumpster.</h2><p>Oyster Recovery Partnership's <a href={orp} target="_blank" rel="noopener noreferrer">Shell Recycling Alliance</a> serves qualifying restaurants in central Maryland, Washington, DC and Northern Virginia. It offers regular shell pickup for eligible operators. Confirm current pickup availability and any charges directly with the program.</p><p>Maryland <a href={md} target="_blank" rel="noopener noreferrer">previously offered an oyster-shell recycling tax credit of up to $1,500 a year</a>, but the state says no new credit could be earned for tax years beginning on or after January 1, 2023. Do not budget for that credit without verifying a change in law with your tax advisor.</p></div><div class="panel"><h3>Check program fit</h3><p>ORP lists conditions including location, 500 or more oysters served per week and appropriate covered shell storage. Source: <a href={orp} target="_blank" rel="noopener noreferrer">Shell Recycling Alliance eligibility</a>.</p><p class="fine">[[TODO: Confirm any no-cost pickup commitment with ORP before advertising “free pickups.”]]</p></div></div></section>
-<section class="section"><div class="container"><p class="eyebrow">Coming next</p><h2>Other ways to build the business.</h2><div class="grid-3"><div class="panel"><h3>Catering channels</h3><p>Identify and price repeatable off-premise catering opportunities.</p></div><div class="panel"><h3>Event space</h3><p>Put underused dining rooms and private areas to work.</p></div><div class="panel"><h3>Recruiting and retention</h3><p>Clarify roles, improve onboarding and reduce avoidable turnover.</p></div></div></div></section>
-<section class="section" id="food-waste-enquiry"><div class="container grid-2"><div><p class="eyebrow">Tidewater Food Waste</p><h2>Tell us about your operation.</h2><p>Start with a conversation about waste, prep and recovery.</p><p>Looking for government bid support? <a href="/">Return to the Tidewater bid desk</a>.</p></div><div class="panel"><LeadForm kind="contact" heading="Ask about food waste" compact={true} source="food-waste-project" /></div></div></section>
+<Base title="Tidewater Food Waste | Advisory & Implementation for Hospitality" description="Tidewater Food Waste helps restaurant and hospitality operators reduce food waste, recover value and manage improvement projects through implementation." schema={schema}>
+<section class="section fw-hero" aria-labelledby="fw-heading"><div class="container alt-hero">
+ <p class="eyebrow">Tidewater / Food Waste</p>
+ <h1 id="fw-heading">Waste less. Give&nbsp;more&nbsp;back.</h1>
+ <p class="fw-subhead">Better operations. Stronger communities. A healthier environment.</p>
+ <p class="lead">Food waste is more than a disposal problem. It's an opportunity to improve operations, recover valuable resources, and strengthen the communities and ecosystems that support our industry.</p>
+ <p class="fw-hero-note">Tidewater helps restaurant and hospitality operators identify those opportunities—and manage the projects that turn them into measurable results.</p>
+ <a class="button" href="#food-waste-enquiry">Request an Opportunity Assessment <span aria-hidden="true">↓</span></a>
+</div></section>
+
+<section class="section fw-why" aria-labelledby="fw-why-heading"><div class="container"><div class="editorial-heading">
+ <p class="eyebrow">01 / Why</p>
+ <h2 id="fw-why-heading">Good stewardship is good business.</h2>
+ <p class="lead">Every ingredient represents an investment of land, water, energy, labor, and money.</p>
+</div>
+<div class="grid-2 fw-why-body">
+ <p>We believe hospitality businesses have an opportunity to be better stewards of those resources. Preventing unnecessary waste, recovering usable food, and returning valuable materials to the environment can create benefits well beyond the kitchen.</p>
+ <p class="fw-goal"><span class="small-kicker">Our goal is simple</span>Help operators build more efficient businesses while leaving a positive impact on the world around them.</p>
+</div></div></section>
+
+<section class="section reverse method-section fw-how" aria-labelledby="fw-how-heading"><div class="container">
+ <div class="editorial-heading">
+  <p class="eyebrow">02 / How</p>
+  <h2 id="fw-how-heading">From opportunity to implementation.</h2>
+  <p class="lead">We take a structured, evidence-based approach to reducing waste and creating value. Our work doesn't end with a report. Tidewater develops the business case, builds the implementation roadmap, and manages the project through execution and evaluation.</p>
+ </div>
+ <p class="fw-method-note">A five-stage process inspired by Lean Six Sigma DMAIC and professional project management practices.</p>
+ <ol class="fw-stages">
+  {stages.map(s=><li class="fw-stage"><span class="fw-stage-marker" aria-hidden="true"></span><span class="step-number">{s.n} /</span><h3>{s.t}</h3><p>{s.d}</p></li>)}
+ </ol>
+ <div class="fw-deliverables"><h3 class="small-kicker">Deliverables</h3><ul>{deliverables.map(d=><li>{d}</li>)}</ul></div>
+</div></section>
+
+<section class="section fw-what" aria-labelledby="fw-what-heading"><div class="container">
+ <div class="editorial-heading">
+  <p class="eyebrow">03 / What</p>
+  <h2 id="fw-what-heading">Practical opportunities. Real-world impact.</h2>
+  <p class="lead">Four areas where better operations, community benefit and environmental value can line up.</p>
+ </div>
+ <div class="fw-cards">
+  <article class="fw-card"><span class="step-number">A / Prevention</span><h3>Food Waste Prevention</h3><p>Reduce avoidable purchasing and preparation losses through improved forecasting, inventory management, storage, ingredient utilization, and production practices. Improve food-cost performance without compromising quality or service.</p></article>
+  <article class="fw-card"><span class="step-number">B / Recovery</span><h3>Food Recovery &amp; Donation</h3><p>Develop safe, repeatable surplus-food donation programs. Explore partnerships with Food Rescue US and Capital Area Food Bank's <a href={mealconnect} target="_blank" rel="noopener noreferrer">MealConnect</a> to redirect eligible food to communities that need it.</p></article>
+  <article class="fw-card"><span class="step-number">C / Restoration</span><h3>Oyster Shell Recovery &amp; Restoration</h3><p>Help seafood operators participate in shell recycling initiatives supporting Chesapeake Bay oyster reef restoration. Evaluate collection logistics, restoration partners, and applicable financial incentives.</p></article>
+  <article class="fw-card"><span class="step-number">D / Resources</span><h3>Grants, Incentives &amp; Resource Recovery</h3><p>Identify potential grants, recycling incentives, and waste-diversion strategies. Evaluate the economics of composting, resource recovery, and other operational improvements.</p></article>
+ </div>
+ <div class="fw-notes">
+  <h3 class="small-kicker">Before you count on a program or incentive</h3>
+  <ul>
+   <li>Tidewater provides advisory and project management services. We do not operate food collection, transportation, composting, or waste disposal, and we are not affiliated with Food Rescue US, Capital Area Food Bank, the Oyster Recovery Partnership or the Chesapeake Bay Foundation.</li>
+   <li>Grant and incentive eligibility depends on each program's current rules, funding and deadlines. We verify current program information before including it in a business case.</li>
+   <li>A federal enhanced deduction may apply to qualifying donated food inventory, with limits that depend on entity type (<a href={irs} target="_blank" rel="noopener noreferrer">IRS Publication 526</a>; <a href={statute} target="_blank" rel="noopener noreferrer">26 U.S.C. § 170(e)(3)(C)</a>). We do not provide tax advice or guarantee deductions; ask your tax advisor.</li>
+   <li>The Oyster Recovery Partnership's <a href={orp} target="_blank" rel="noopener noreferrer">Shell Recycling Alliance</a> sets its own eligibility, service area and fee terms. Maryland's former oyster-shell recycling tax credit <a href={md} target="_blank" rel="noopener noreferrer">stopped accruing for tax years beginning on or after January 1, 2023</a>.</li>
+   <li>Environmental and financial outcomes depend on each operation and are measured against its own baseline; none are guaranteed.</li>
+  </ul>
+ </div>
+</div></section>
+
+<section class="section reverse closing-cta fw-closing" aria-labelledby="fw-closing-heading"><div class="container"><div class="section-head">
+ <p class="eyebrow">Tidewater Food Waste</p>
+ <h2 id="fw-closing-heading">A better outcome for your business and beyond.</h2>
+ <p class="lead">Less unnecessary waste. Better use of resources. Stronger local partnerships. Measurable environmental and operational improvement.</p>
+ <p class="fw-closing-line">Let's find the opportunities—and build the plan to make them happen.</p>
+ <a class="button" href="#food-waste-enquiry">Request an Opportunity Assessment <span aria-hidden="true">↓</span></a>
+</div></div></section>
+
+<section class="section" id="food-waste-enquiry" aria-labelledby="fw-form-heading"><div class="container grid-2">
+ <div><p class="eyebrow">Opportunity assessment</p><h2 id="fw-form-heading">Tell us about your operation.</h2><p>Share your concept, locations and where you see waste today. We'll follow up to discuss whether an opportunity assessment is a fit and how it would be scoped.</p><p class="fine">Looking for government bid support? <a href="/">Return to the Tidewater bid desk</a>.</p></div>
+ <div class="panel"><LeadForm kind="contact" heading="Request an Opportunity Assessment" compact={true} source="food-waste-project" /></div>
+</div></section>
 </Base>
