@@ -80,7 +80,7 @@ li{margin:.4rem 0}
 .hero-disclosure{grid-column:1/-1;border-top:1px solid #A8B5B8;padding-top:1rem;margin:1rem 0 0;font-size:.67rem;letter-spacing:.02em}
 .oyster-band{background:var(--page);border-bottom:1px solid var(--line);padding:1.25rem 0;color:var(--muted)}
 .oyster-band>.container{display:flex;justify-content:space-between;gap:1rem;font-size:.7rem}
-.oyster-band>.container>span:first-child{font:500 1.15rem var(--display);color:var(--text)}
+.oyster-band>.container>span:first-child:not(.landscape-credit){font:500 1.15rem var(--display);color:var(--text)}
 .landscape-credit{font-size:.62rem}
 @keyframes tidal-drift{from{transform:scale(1.01) translateY(0)}to{transform:scale(1.07) translateY(-1%)}}
 .hero-cinematic[data-motion=enabled] .hero-image{animation:tidal-drift 24s ease-in-out infinite alternate}
@@ -95,6 +95,17 @@ li{margin:.4rem 0}
 .practice .link-arrow{margin-top:1rem}
 .grid-2,.grid-3{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem}
 .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2rem}
+.practice-lead{border-top:0;padding:0 0 2.5rem;margin-bottom:3rem;border-bottom:1px solid var(--line);max-width:none}
+.practice-lead h3{max-width:24ch}
+.practice-receive{padding-left:0;max-width:none}
+.practice-receive h3{max-width:26ch}
+.practice-receive p{max-width:68ch}
+.flow-heading{grid-template-columns:.6fr 2.5fr}
+.flow-heading h2{max-width:none}
+.flow-arrow{color:var(--muted);font-family:var(--body);font-weight:300;padding:0 .1em}
+.nowrap{white-space:nowrap}
+.oyster-band>.container:has(>.landscape-credit:only-child){justify-content:flex-end}
 .panel{border:1px solid var(--line);padding:clamp(1.4rem,3vw,2.5rem);background:var(--surface);min-width:0}
 .panel h3{margin:.65rem 0 1rem}
 .panel p:last-child{margin-bottom:0}
@@ -235,6 +246,8 @@ th:first-child,td:first-child{padding-left:0}
  .editorial-heading>.eyebrow{grid-column:1/-1;margin-bottom:.6rem}
  .editorial-heading>.lead{font-size:1.05rem}
  .grid-3{grid-template-columns:1fr}
+ .grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .flow-heading{grid-template-columns:1fr}
  .method-section .panel{padding-bottom:1rem}
  .method-section .panel h3{margin-top:1rem}
  .landscape-story{grid-template-columns:1fr}
@@ -277,6 +290,7 @@ th:first-child,td:first-child{padding-left:0}
  .editorial-heading h2{margin-bottom:.5rem}
  .editorial-heading>.lead{max-width:29ch}
  .grid-2{grid-template-columns:1fr;gap:2rem}
+ .grid-4{grid-template-columns:1fr}
  .practice,.practice+.practice{padding:1.75rem 0 0}
  .practice h3{font-size:2.5rem;margin-top:1rem}
  .practice .link-arrow{margin-top:.5rem}
@@ -301,7 +315,6 @@ th:first-child,td:first-child{padding-left:0}
 .fw-why-body p{max-width:56ch}
 .fw-goal{border-left:1px solid var(--line);padding-left:1.75rem;font:400 clamp(1.55rem,2.4vw,2.05rem)/1.25 var(--display);color:var(--text)}
 .fw-goal .small-kicker{display:block;margin-bottom:.8rem}
-.fw-method-note{font-size:.9rem;color:#DCE7E8;margin:-1.75rem 0 2.5rem;max-width:62ch}
 .fw-stages{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.5rem;position:relative}
 .fw-stages:before{content:'';position:absolute;left:0;right:0;top:.45rem;border-top:1px solid #8AA2AD}
 .fw-stage{position:relative;padding-top:1.7rem;min-width:0}
@@ -330,7 +343,6 @@ th:first-child,td:first-child{padding-left:0}
  .fw-stage-marker{top:.15rem}
  .fw-stage h3{margin-top:.5rem}
  .fw-stage p{max-width:60ch}
- .fw-method-note{margin-top:-1rem}
 }
 @media(max-width:600px){
  .fw-cards{grid-template-columns:1fr}
