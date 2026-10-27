@@ -7,7 +7,7 @@ const verified=await getOpenRfps();
 const preview=verified.length?verified.slice(0,3):(await getBidBoardRfps()).filter(x=>x.status==='SAMPLE').slice(0,3);
 const isDemo=!verified.length && !!preview.length;
 ---
-<Base title="Tidewater | Government bid desk for DMV operators" description="The bid desk for DMV hospitality and service operators. Find contracts, understand pricing, prepare paperwork and produce a submission-ready response.">
+<Base title="Tidewater Advisory | Find the opportunity. Realize the value." description="Two practices: government bid support and proposal development for DMV hospitality and service operators, and restaurant funding, operations and food waste advisory.">
 <section class="hero-cinematic" aria-labelledby="home-heading">
  <div class="hero-landscape">
   <picture><source type="image/webp" srcset="/assets/chesapeake-marsh-960.webp 960w, /assets/chesapeake-marsh-1847.webp 1847w" sizes="100vw" /><img class="hero-image" src="/assets/chesapeake-marsh.jpg" width="1847" height="1114" alt="Tidal channels winding through marsh and woodland near Aberdeen, Maryland." fetchpriority="high" decoding="async" /></picture>
@@ -15,7 +15,7 @@ const isDemo=!verified.length && !!preview.length;
  <div class="container hero-frame">
   <div class="hero-topline"><p>Washington, DC <span aria-hidden="true">/</span> Maryland <span aria-hidden="true">/</span> Northern Virginia</p><button id="motion-toggle" class="motion-toggle" type="button" aria-pressed="false" hidden>Pause image motion</button></div>
   <div class="hero-shell">
-   <div><p class="eyebrow">Your government bid desk</p><h1 id="home-heading">Government contracts.<br/><em>Within reach.</em></h1></div>
+   <div><p class="eyebrow">Independent advisory / Government contracts + Restaurant operations</p><h1 id="home-heading">Find the opportunity.<br/><em>Realize the value.</em></h1></div>
    <div class="hero-intro"><p class="lead">You run the business.<br/>We help prepare the bid.</p><p>We help hospitality and service operators find relevant government contracts, understand the requirements and prepare a response.</p><div class="actions"><a class="button" href="/contact">Contact Tidewater <span aria-hidden="true">&#8599;</span></a><a class="link-arrow" href="/open-bids">Browse opportunities <span aria-hidden="true">&#8599;</span></a></div></div>
    <p class="hero-disclosure">Independent advisory. No government affiliation. No award guarantee.</p>
   </div>

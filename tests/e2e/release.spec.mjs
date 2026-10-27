@@ -35,7 +35,7 @@ test('poster assets are local and loaded; pause and reduced motion work',async({
 });
 test('headline and action remain readable when photographs fail',async({page})=>{
  await page.route(/\/assets\/.*\.(webp|jpg)$/,route=>route.abort());await page.goto('/');
- await expect(page.getByRole('heading',{level:1})).toContainText('Within reach.');
+ await expect(page.getByRole('heading',{level:1})).toContainText('Realize the value.');
  await expect(page.locator('.hero-shell').getByRole('link',{name:'Contact Tidewater'})).toBeVisible();
  await expect(page.locator('#motion-toggle')).toBeHidden();
 });
