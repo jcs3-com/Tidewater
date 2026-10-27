@@ -122,7 +122,7 @@ The Worker creates up to five preliminary suggestions for a completed quiz when 
 
 Categories: `catering`, `concessions`, `janitorial`, `security`, `event-services`.
 
-Jurisdictions: `washington-dc`, `montgomery-county-md`, `prince-georges-county-md`, `fairfax-county-va`, `arlington-county-va`, `alexandria-va`, `annapolis-md`, `charleston-sc`.
+Jurisdictions: `washington-dc`, `montgomery-county-md`, `prince-georges-county-md`, `fairfax-county-va`, `arlington-county-va`, `alexandria-va`, `loudoun-county-va`, `annapolis-md`, `charleston-sc`.
 
 ## Environment variables
 
@@ -178,7 +178,7 @@ The v2 homepage uses the fixed headline `Government contracts. Within reach.` Th
 
 ## SEO and build behavior
 
-All content is statically generated with semantic elements, page-specific titles and descriptions, canonical URLs, Open Graph image URLs, Organization schema, Service + FAQPage schema where relevant, and a static XML sitemap. The programmatic routes generate **40 category × jurisdiction pages**. Bid pages generate PNG Open Graph assets with Resvg. Closed/awarded bids stay indexed, but SAMPLE pages have `noindex` and are excluded from the XML sitemap. `robots.txt` points to the sitemap. Set `SITE_URL` before publishing to avoid `.example` canonical URLs.
+All content is statically generated with semantic elements, page-specific titles and descriptions, canonical URLs, Open Graph image URLs, Organization schema, Service + FAQPage schema where relevant, and a static XML sitemap. The programmatic routes generate **45 category × jurisdiction pages**. Bid pages generate PNG Open Graph assets with Resvg. Closed/awarded bids stay indexed, but SAMPLE pages have `noindex` and are excluded from the XML sitemap. `robots.txt` points to the sitemap. Set `SITE_URL` before publishing to avoid `.example` canonical URLs.
 
 ## Visual and accessibility requirements
 
