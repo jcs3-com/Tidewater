@@ -143,7 +143,17 @@ li{margin:.4rem 0}
 .badge.awarded{background:#D5DDEC;color:#203F65}
 .bid-meta{font:.76rem/1.7 var(--body);color:var(--muted)}
 .bid-meta strong{font-weight:600}
-.bid-value{font:.8rem/1.7 var(--mono);text-align:right}
+.bid-main{min-width:0}
+.bid-due{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:.15rem;min-width:8.5rem}
+.bid-due-label,.bid-value-label{font:.68rem/1.4 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.bid-due strong{font:600 .95rem/1.4 var(--body)}
+.days-left{font:600 .78rem/1.5 var(--mono);color:var(--text)}
+.days-left.is-urgent{color:#913C40}
+.days-left.is-closed{color:var(--muted)}
+.bid-value{grid-column:1/-1;margin:.2rem 0 0;font:.85rem/1.5 var(--body)}
+.bid-value strong{font-weight:600}
+.facts.facts-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.fact-due .days-left{margin:.35rem 0 0}
 .notice{border-left:3px solid var(--muted);padding:1.2rem 1.5rem;background:var(--surface);margin:1.5rem 0}
 .notice p:last-child{margin:0}
 .filter-bar{background:var(--surface);border:1px solid var(--line);padding:1.4rem;margin-bottom:1.5rem;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
@@ -235,7 +245,8 @@ th:first-child,td:first-child{padding-left:0}
  .footer-links{justify-content:start}
  .facts{grid-template-columns:1fr}
  .bid-card{grid-template-columns:1fr}
- .bid-value{text-align:left}
+ .bid-due{text-align:left;align-items:flex-start;flex-direction:row;flex-wrap:wrap;gap:.2rem .6rem;align-items:baseline}
+ .facts.facts-2{grid-template-columns:1fr}
  .filter-bar{grid-template-columns:1fr}
 }
 @media(max-width:600px){
@@ -278,6 +289,8 @@ th:first-child,td:first-child{padding-left:0}
  .footer{padding-top:3rem}
 }
 :root[data-theme=dark] .form-feedback[data-state=error]{color:#FFBDC0}
+:root[data-theme=dark] .days-left.is-urgent{color:#FFBDC0}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .days-left.is-urgent{color:#FFBDC0}}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .form-feedback[data-state=error]{color:#FFBDC0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.motion-toggle{display:none!important}}
 @media(forced-colors:active){.button,.button-quiet{border:1px solid ButtonText}.hero-shell{border:1px solid CanvasText}}

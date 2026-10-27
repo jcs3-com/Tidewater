@@ -23,6 +23,17 @@ export const siteUrl = import.meta.env.SITE || 'https://tidewaterbid.com';
 export const apiUrl = import.meta.env.PUBLIC_API_URL || (import.meta.env.PROD ? '' : 'http://127.0.0.1:8787');
 export const todayUTC = () => new Date().toISOString().slice(0,10);
 export const displayDate = (iso:string) => !iso ? 'Not published' : new Intl.DateTimeFormat('en-US', {month:'short', day:'numeric', year:'numeric', timeZone:'UTC'}).format(new Date(iso.slice(0,10)+'T12:00:00Z'));
+export const hasValue = (amount:number|null|undefined) => amount !== null && amount !== undefined && Number.isFinite(amount);
+// Build-time label; public/scripts/days-left.js refreshes it in the browser.
+export const daysLeftLabel = (iso:string, status:string, now=new Date()) => {
+  if(status==='SAMPLE') return 'Example';
+  if(status==='Awarded') return 'Awarded';
+  if(status==='Closed') return 'Closed';
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return '';
+  const today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
+  const days=Math.round((Date.parse(iso+'T00:00:00Z')-today)/86400000);
+  return days<0 ? 'Closed' : days===0 ? 'Due today' : `${days} ${days===1?'day':'days'} left`;
+};
 export const displayValue = (amount:number|null|undefined) => amount === null || amount === undefined || !Number.isFinite(amount) ? 'Not published' : '$'+Math.round(amount).toLocaleString('en-US');
 export const pageUrl = (path:string) => new URL(path, siteUrl).toString();
 // Launch gates. Both default OFF; set to "1" in the Cloudflare Pages build environment only when ready.
