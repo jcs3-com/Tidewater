@@ -1,11 +1,14 @@
 ---
 import {bidUrl,effectiveStatus,type Rfp} from '../lib/rfps';
-import {categoryName,jurisdictionName,displayDate,displayValue} from '../lib/config';
+import {categoryName,jurisdictionName,displayDate,displayValue,hasValue,daysLeftLabel} from '../lib/config';
 const {bid}=Astro.props as {bid:Rfp};
 const status=effectiveStatus(bid);
+const showValue=hasValue(bid.estimatedValue);
 ---
 <a class="bid-card" href={bidUrl(bid)} data-bid-row data-category={bid.category} data-jurisdiction={bid.jurisdiction} data-due={bid.dueDate} data-status={status}>
-  <div><span class={`badge ${status.toLowerCase()}`}>{status}</span><span class="badge" style="margin-left:.35rem">{categoryName(bid.category)}</span>
-  <h3>{bid.title}</h3><p class="bid-meta">{jurisdictionName(bid.jurisdiction)} · {bid.agency}</p><p class="bid-meta">Due {displayDate(bid.dueDate)}</p></div>
-  <div class="bid-value"><strong>{displayValue(bid.estimatedValue)}</strong><div class="fine">Estimated value</div></div>
+  <div class="bid-main"><span class={`badge ${status.toLowerCase()}`}>{status}</span><span class="badge" style="margin-left:.35rem">{categoryName(bid.category)}</span>
+  <h3>{bid.title}</h3><p class="bid-meta">{jurisdictionName(bid.jurisdiction)} · {bid.agency}</p></div>
+  <div class="bid-due"><span class="bid-due-label">Due</span><strong>{displayDate(bid.dueDate)}</strong><span class="days-left" data-days-left data-date={bid.dueDate} data-status={status}>{daysLeftLabel(bid.dueDate,status)}</span></div>
+  {showValue&&<p class="bid-value"><span class="bid-value-label">Est. value</span> <strong>{displayValue(bid.estimatedValue)}</strong></p>}
 </a>
+<script src="/scripts/days-left.js" defer></script>
