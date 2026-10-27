@@ -12,6 +12,7 @@ export const jurisdictions = [
   {slug:'fairfax-county-va', name:'Fairfax County, VA', short:'Fairfax County'},
   {slug:'arlington-county-va', name:'Arlington County, VA', short:'Arlington County'},
   {slug:'alexandria-va', name:'Alexandria, VA', short:'City of Alexandria'},
+  {slug:'loudoun-county-va', name:'Loudoun County, VA', short:'Loudoun County'},
   {slug:'annapolis-md', name:'Annapolis, MD', short:'Annapolis'},
   {slug:'charleston-sc', name:'Charleston, SC area', short:'Charleston, Berkeley and Dorchester counties'}
 ] as const;
