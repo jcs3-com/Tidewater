@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-const routes=['/','/bids','/open-bids','/pricing','/restaurant-advisory','/readiness','/becoming-a-contractor','/about','/insights','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md','/credits'];
+const routes=['/','/bids','/open-bids','/pricing','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/readiness','/becoming-a-contractor','/about','/insights','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md','/credits'];
 
 for(const theme of ['light','dark']){
  test(`WCAG A/AA automated audit across primary routes, ${theme}`,async({page})=>{
@@ -22,8 +22,8 @@ test('poster assets are local and loaded; pause and reduced motion work',async({
  expect(await page.locator('.hero-image').evaluate(el=>getComputedStyle(el).animationPlayState)).toBe('paused');
  await pause.click();await expect(hero).toHaveAttribute('data-paused','false');
  for(const img of await page.locator('main img').all()){
-  await expect(img).toBeVisible();
-  expect(await img.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);
+  await img.evaluate(el=>el.scrollIntoView({block:'center'}));await expect(img).toBeVisible();
+  await expect.poll(()=>img.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);
   expect(await img.evaluate(el=>new URL(el.currentSrc).origin===location.origin)).toBe(true);
  }
  await page.emulateMedia({reducedMotion:'reduce'});
@@ -35,7 +35,7 @@ test('poster assets are local and loaded; pause and reduced motion work',async({
 });
 test('headline and action remain readable when photographs fail',async({page})=>{
  await page.route(/\/assets\/.*\.(webp|jpg)$/,route=>route.abort());await page.goto('/');
- await expect(page.getByRole('heading',{level:1})).toContainText('Within reach.');
+ await expect(page.getByRole('heading',{level:1})).toContainText('Realize the value.');
  await expect(page.locator('.hero-shell').getByRole('link',{name:'Contact Tidewater'})).toBeVisible();
  await expect(page.locator('#motion-toggle')).toBeHidden();
 });
@@ -60,7 +60,7 @@ test('failed form delivery preserves entries and offers direct email',async({pag
 test('launch gates and deployed-source marker stay explicit',async({page,request})=>{
  await page.goto('/');await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','noindex, nofollow');
  const marker=await (await request.get('/release.json')).json();
- expect(marker.version).toBe('2.0.0');expect(marker.commit).toMatch(/^[a-f0-9]{40}$/);
+ expect(marker.version).toBe('3.0.0');expect(marker.commit).toMatch(/^[a-f0-9]{40}$/);
  await expect(page.locator('meta[name=tidewater-commit]')).toHaveAttribute('content',marker.commit);
  const robots=await (await request.get('/robots.txt')).text();expect(robots).toContain('Disallow: /');
  // Canonical origin follows the SITE_URL the build used (Cloudflare env in production).

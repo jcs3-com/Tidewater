@@ -4,9 +4,9 @@ import {pageUrl,siteUrl,indexable} from '../lib/config';
 import {release} from '../data/release';
 // build.format 'file' renders /pricing as pricing.html; Pages serves it at /pricing (and 308s the .html form).
 const cleanPath=Astro.url.pathname.replace(/\.html$/,'').replace(/\/index$/,'/')||'/';
-const navigation=[{href:'/bids',label:'Bid desk'},{href:'/open-bids',label:'Open bids'},{href:'/pricing',label:'Pricing'},{href:'/insights',label:'Insights'},{href:'/about',label:'About'},{href:'/contact',label:'Contact'}];
+const navigation=[{href:'/bids',label:'The Bid Desk'},{href:'/open-bids',label:'Open bids'},{href:'/pricing',label:'Pricing'},{href:'/restaurant-advisory',label:'Restaurant advisory'},{href:'/restaurant-advisory/funding',label:'Funding'},{href:'/about',label:'About'},{href:'/contact',label:'Contact'}];
 const {title='Tidewater | The bid desk for DMV hospitality and service operators', description='Find relevant government contracts. Understand the price, paperwork and process. Tidewater helps hospitality and service operators prepare bids.', canonical=cleanPath, ogImage='/assets/og-default.png', schema=[]} = Astro.props;
-const structured=[{'@context':'https://schema.org','@type':'Organization',name:'Tidewater',legalName:'Tidewater Advisory LLC',url:siteUrl,description:'Government bid preparation for hospitality and service operators.'},...(Array.isArray(schema)?schema:[schema])];
+const structured=[{'@context':'https://schema.org','@type':'Organization',name:'Tidewater',legalName:'Tidewater Advisory LLC',url:siteUrl,description:'Government bid support, restaurant funding intelligence, operational advisory and implementation management for service and hospitality operators.'},...(Array.isArray(schema)?schema:[schema])];
 const safeJson = JSON.stringify(structured).replace(/</g,'\\u003c');
 const analytics=import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
 ---
@@ -50,9 +50,8 @@ const analytics=import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
 </div></header>
 <main id="main"><slot /></main>
 <footer class="footer"><div class="container">
-  <div class="footer-layout"><div><a href="/" class="logo">Tidewater<span class="logo-subtitle">Advisory</span></a></div><nav class="footer-links" aria-label="Footer"><a href="/contact">Contact</a><a href="/becoming-a-contractor">Becoming a contractor</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/sitemap.xml">Sitemap</a></nav></div>
-  <p class="footer-project">Looking for Tidewater Food Waste? <a href="/restaurant-advisory">Explore the food waste project <span aria-hidden="true">&#8599;</span></a></p>
-  <p class="footer-small">Tidewater is a trade name of Tidewater Advisory LLC. Not affiliated with any government agency. We do not guarantee contract awards.</p>
+  <div class="footer-layout"><div><a href="/" class="logo">Tidewater<span class="logo-subtitle">Advisory</span></a></div><nav class="footer-links" aria-label="Footer"><a href="/contact">Contact</a><a href="/pricing">Bid pricing</a><a href="/becoming-a-contractor">Becoming a contractor</a><a href="/insights">Insights</a><a href="/restaurant-advisory/food-waste">Tidewater Food Waste</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/sitemap.xml">Sitemap</a></nav></div>
+  <p class="footer-small">Tidewater is a trade name of Tidewater Advisory LLC. Not affiliated with any government agency. We do not guarantee contract awards or grant funding.</p>
   <p class="footer-small">© {new Date().getFullYear()} Tidewater Advisory LLC · [[TODO: Publishable business mailing address]] · <a href="mailto:hello@tidewaterbid.com">hello@tidewaterbid.com</a></p>
   <p class="footer-small release-label">Website v{release.version} · <a href="/credits">Image &amp; typography credits</a></p>
 </div></footer>
