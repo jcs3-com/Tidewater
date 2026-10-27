@@ -1,5 +1,17 @@
 # Tidewater release log
 
+## v3.0.0 Restaurant Advisory and funding desk — 2026-10-27 (feature branch, NOT deployed)
+
+Source: owner-supplied `Tidewater_v3_Claude_Overlay.zip` (`docs/V3_HANDOFF.md`), packaged from a Drive mirror that predates main commits `46cc049` (bid-desk focus), `7854407` (bid-card due dates), `c241d13` (food-waste repositioning) and `561f33a` (homepage flow). Applied as a three-way merge against base `b0b1d57` on branch `feature/tidewater-3-restaurant-advisory`, not as a file replacement. Wherever main had changed since the snapshot, main's newer copy was kept.
+
+- New `/restaurant-advisory` hub (overlay copy; food-waste panel aligned to current page). Main's current food-waste page moved unchanged in substance to `/restaurant-advisory/food-waste`, keeping its enquiry form and `food-waste-project` source.
+- New `/restaurant-advisory/funding` directory with build-time `src/lib/funding.ts` (Airtable `Funding Opportunities`, `Publication Status=Approved` gate, expired deadlines retired at build and in the browser, configured-but-failing read fails the build) and a 4-record editorial snapshot used only without `AIRTABLE_PAT`.
+- Homepage keeps the contact-first hero, Opportunity → Proposal → Award → Implementation flow and bid board; adds the overlay's two-practice image panels. Nav adds Restaurant advisory and Funding and keeps Pricing and Contact; Insights moves to the footer. Footer adds Bid pricing, Insights, Tidewater Food Waste and the grant-funding disclaimer; the removed tagline stays removed.
+- The overlay's hotlinked Pexels image was not shipped. Two owner-supplied photographs are self-hosted instead; their provenance is an open launch gate in `docs/asset-register.md` and `/credits`.
+- Sitemap includes both restaurant subroutes and keeps `/becoming-a-contractor` (the overlay's sitemap had dropped it).
+
+Validation (local Linux container, Node 22): `npm ci`; `npm run check` (backend tests, contrast, copy guard, 0 Astro errors/warnings/hints); `DEMO_SEED=0 SITE_INDEXABLE=0 NEWSLETTER_ENABLED=0 npm run build`; 24/24 Playwright tests against `wrangler pages dev dist`, including light/dark axe on all primary routes plus the two new restaurant routes, four widths with no horizontal scroll, and new hub/funding tests (official https source and verified date on every card, region filter, no expired deadline shown as Open). The Airtable schema and live records were checked through the Airtable connector: field names match the loader; 4 Approved records will publish and the Charlottesville Draft will not. The loader was exercised with mocked Airtable pagination and a 403. AFID Fall 2026 terms (closes Oct 30, 2026; $50,000 maximum; equal locality cash match, reduced for distressed localities) were re-checked against VDACS's spring 2026 release and a secondary listing. The VDACS program page itself could not be fetched from this environment. No leads or emails were sent. Nothing was merged or deployed.
+
 ## Government bid desk focus — 2026-10-27
 
 User direction: government bidding is the primary offer; contact comes first, browsing opportunities second. Preserve the palette, typography, aerial imagery and decorative cartography. Reordered the homepage into bid-desk introduction, audience/scope, process, current listings and contact. Removed the competing restaurant-practice pitch, readiness quiz promotion and newsletter panel from the home flow. Regional editorial imagery moved to About; gated newsletter remains on Insights.

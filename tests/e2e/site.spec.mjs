@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 const demo=process.env.DEMO_SEED!=='0';
-export const routes=['/','/bids','/pricing','/restaurant-advisory','/open-bids','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md',...(demo?['/bids/washington-dc/sample-event-catering']:[])];
+export const routes=['/','/bids','/pricing','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/open-bids','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md',...(demo?['/bids/washington-dc/sample-event-catering']:[])];
 for(const width of [360,390,768,1440]){
  test(`routes usable at ${width}px without horizontal scrolling`,async({page})=>{
   await page.setViewportSize({width,height:800});
@@ -36,7 +36,8 @@ test('bid desk leads with contact, keeps readiness interior and separates food w
  await expect(hero.getByRole('link',{name:'Contact Tidewater'})).toHaveAttribute('href','/contact');
  await expect(hero.getByRole('link',{name:'Browse opportunities'})).toHaveAttribute('href','/open-bids');
  await expect(page.locator('main a[href="/readiness"]')).toHaveCount(0);
- await expect(page.locator('main a[href="/restaurant-advisory"]')).toHaveCount(0);
+ await expect(page.locator('.division-image-card[href="/bids"]')).toBeVisible();
+ await expect(page.locator('.division-image-card[href="/restaurant-advisory"]')).toBeVisible();
  await hero.getByRole('link',{name:'Contact Tidewater'}).click();
  await expect(page.getByRole('form',{name:'Contact Tidewater'})).toBeVisible();
  await page.goto('/bids');
@@ -44,14 +45,38 @@ test('bid desk leads with contact, keeps readiness interior and separates food w
  await expect(page).toHaveURL(/\/becoming-a-contractor$/);
  await page.getByRole('link',{name:'Take the readiness check'}).click();
  await expect(page.locator('#readiness-form')).toBeVisible();
- await page.locator('footer').getByRole('link',{name:'Explore the food waste project'}).click();
- await expect(page).toHaveURL(/\/restaurant-advisory$/);
+ await page.locator('footer').getByRole('link',{name:'Tidewater Food Waste'}).click();
+ await expect(page).toHaveURL(/\/restaurant-advisory\/food-waste$/);
  await expect(page.getByRole('heading',{level:1})).toContainText('Waste less.');
  await page.getByRole('link',{name:'Request an Opportunity Assessment'}).first().click();
  const form=page.getByRole('form',{name:'Request an Opportunity Assessment'});
  await expect(form).toBeVisible();
  await expect(form.locator('[name=source]')).toHaveValue('food-waste-project');
  await expect(form.locator('[name=categories]')).toHaveCount(0);
+});
+test('restaurant advisory hub links food waste and funding desk',async({page})=>{
+ await page.goto('/restaurant-advisory');
+ await expect(page.getByRole('heading',{level:1})).toContainText('Make the operation better.');
+ await expect(page.locator('main img[src^="http"]')).toHaveCount(0);
+ await page.locator('main').getByRole('link',{name:'Read the food waste playbook'}).click();
+ await expect(page).toHaveURL(/\/restaurant-advisory\/food-waste$/);
+ await page.goto('/restaurant-advisory/funding');
+ const cards=page.locator('.funding-card');
+ expect(await cards.count()).toBeGreaterThan(0);
+ for(const card of await cards.all()){
+  await expect(card.locator('.funding-card-footer a')).toHaveAttribute('href',/^https:\/\//);
+  await expect(card.locator('.funding-card-footer')).toContainText('Verified:');
+ }
+ await page.locator('#funding-region').selectOption('DC');
+ for(const card of await cards.all()) if(await card.isVisible()) expect(await card.getAttribute('data-geography')).toContain('DC');
+});
+test('funding desk never shows an expired deadline as Open',async({page})=>{
+ await page.clock.setFixedTime(new Date('2026-11-02T12:00:00'));
+ await page.goto('/restaurant-advisory/funding');
+ for(const card of await page.locator('.funding-card[data-deadline]').all()){
+  const d=await card.getAttribute('data-deadline');
+  if(d && d<'2026-11-02') await expect(card.locator('[data-status-label]')).not.toHaveText('Open');
+ }
 });
 test('readiness calculates score and reveals lead capture',async({page})=>{
  await page.goto('/readiness');

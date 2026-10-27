@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import {getFundingOpportunities} from '../../lib/funding';
+const {items,source,warning}=await getFundingOpportunities();
+const allGeographies=['All regions','DC','Maryland','Virginia','Charlottesville / Central VA'];
+const allTypes=['All types','Grant','Rebate / Incentive','Tax Credit','Loan / Financing','Technical Assistance'];
+const iso=(s?:string)=>s ? new Date(`${s}T12:00:00`).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric',timeZone:'UTC'}):'Not announced';
+---
+<Base title="Restaurant Grants & Incentives | Tidewater Advisory" description="Find verified restaurant-relevant grants, rebates, and incentives in Washington DC, Maryland, Virginia and Charlottesville. Understand eligibility, deadlines, matches and implementation requirements.">
+<section class="section funding-intro"><div class="container"><p class="eyebrow"><a href="/restaurant-advisory">Restaurant Advisory</a> / Funding intelligence</p><h1>Find funding for a better operation.</h1><p class="lead">Grants, incentives and rebates for food businesses in DC, Maryland and Virginia—including Charlottesville and Central Virginia.</p><p>See what an opportunity could support, who can apply, and what needs to happen before a dollar is spent. Tidewater can help evaluate the project, prepare materials, coordinate partners and manage implementation.</p><div class="actions"><a class="button" href="/contact">Review my project ↗</a><a class="button-quiet" href="/restaurant-advisory/food-waste">Explore food waste services ↗</a></div></div></section>
+<section class="section funding-directory-section"><div class="container"><div class="funding-directory-heading"><div><p class="eyebrow">Funding watch / DMV + Charlottesville</p><h2>Opportunity desk.</h2><p>Official sources first. Status and verification dates shown on every listing. Eligibility is not an award guarantee.</p></div><div class="funding-count" id="funding-count">{items.length} tracked</div></div>
+{source==='editorial-snapshot'&&<p class="funding-notice" role="status">{warning} Airtable live publishing is not connected in this build. Snapshot verified October 27, 2026.</p>}
+<div class="funding-filters" role="search" aria-label="Filter funding opportunities"><label>Search <input id="funding-search" type="search" placeholder="Try refrigeration, food waste, energy…" /></label><label>Location<select id="funding-region">{allGeographies.map((x)=><option value={x==='All regions'?'':x}>{x}</option>)}</select></label><label>Program type<select id="funding-type">{allTypes.map((x)=><option value={x==='All types'?'':x}>{x}</option>)}</select></label><label>Status<select id="funding-status"><option value="">All statuses</option><option value="Open">Open</option><option value="Upcoming">Upcoming</option><option value="Monitoring">Monitoring</option><option value="Closed">Closed</option><option value="Unverified">Unverified</option></select></label></div>
+<div class="funding-list" id="funding-list">
+{items.map(o=><article class="funding-card" data-search={`${o.program} ${o.funder} ${o.summary} ${o.eligibleExpenses}`.toLowerCase()} data-geography={o.geography.join('|')} data-type={o.type} data-status={o.status} data-deadline={o.deadline||''}>
+<div class="funding-card-top"><span class="small-kicker">{o.geography.join(' · ')||'Regional'}</span><span class={`funding-status status-${o.status.toLowerCase()}`} data-status-label>{o.status}</span></div>
+<h3>{o.program}</h3><p class="funding-funder">{o.funder}</p><p>{o.summary}</p><div class="funding-meta"><div><span>Funding / incentive</span><strong>{o.amountNotes||'Refer to official program'}</strong></div><div><span>Application deadline</span><strong>{iso(o.deadline)}</strong></div><div><span>Match or sponsor</span><strong>{o.match||'Confirm with the program'}</strong></div></div>
+<details><summary>Eligibility & eligible improvements</summary><div class="funding-detail-grid"><div><strong>Who can apply</strong><p>{o.eligibleApplicants||'See official program'}</p></div><div><strong>What can be funded</strong><p>{o.eligibleExpenses||'See official program'}</p></div>{o.nextRound&&<div><strong>Next round</strong><p>{o.nextRound}</p></div>}</div></details>
+<div class="funding-card-footer"><span>Verified: {iso(o.verified)}</span><a href={o.url} target="_blank" rel="noopener noreferrer">Official program ↗</a></div>
+</article>)}
+</div>
+<div id="funding-empty" class="panel" hidden><p>No opportunities match those filters. Try a wider location or status, or <a href="/contact">tell us the project you're planning</a>.</p></div>
+{items.length===0&&<div class="panel"><h3>No approved listings available yet.</h3><p>We only publish source-checked records. Ask Tidewater to review your improvement project in the meantime.</p></div>}
+<p class="fine funding-fine">Last verification is not a guarantee that a program remains open. Always review the official program notice for timing, funding availability and eligibility. Tidewater is independent of the funders shown.</p></div></section>
+<section class="section reverse method-section"><div class="container grid-2"><div><p class="eyebrow">From eligibility to execution</p><h2>Don't chase a grant. Build a worthwhile project.</h2><p class="lead">We assess whether the operational improvement stands on its own, then pursue funding that fits its economics and timetable.</p></div><div><div class="panel"><h3>How we help</h3><p>1. Define the improvement and baseline.</p><p>2. Check eligibility, match and documentation.</p><p>3. Prepare the budget, narrative and vendor scope.</p><p>4. Coordinate implementation and measure the result.</p><p class="fine">Fees and eligible grant costs vary by program. We do not guarantee awards or imply advisory fees will be reimbursed.</p><a class="button" href="/contact">Discuss a funding project ↗</a></div></div></div></section>
+<script is:inline>
+(()=>{
+  const list=document.querySelector('#funding-list');if(!list)return;
+  const cards=[...list.querySelectorAll('.funding-card')];const search=document.querySelector('#funding-search');const region=document.querySelector('#funding-region');const type=document.querySelector('#funding-type');const status=document.querySelector('#funding-status');const empty=document.querySelector('#funding-empty');const count=document.querySelector('#funding-count');
+  const today=new Date();const day=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  cards.forEach(c=>{if(c.dataset.status==='Open'&&c.dataset.deadline&&c.dataset.deadline<day){c.dataset.status='Closed';let b=c.querySelector('[data-status-label]');if(b){b.textContent='Closed';b.className='funding-status status-closed';}}});
+  const refresh=()=>{const q=search.value.trim().toLowerCase(),g=region.value,t=type.value,s=status.value;let n=0;cards.forEach(c=>{const match=(!q||c.dataset.search.includes(q))&&(!g||c.dataset.geography.split('|').includes(g))&&(!t||c.dataset.type===t)&&(!s||c.dataset.status===s);c.hidden=!match;if(match)n++;});count.textContent=`${n} shown`;empty.hidden=n>0||cards.length===0;};
+  [search,region,type,status].forEach(x=>x.addEventListener('input',refresh));refresh();
+})();
+</script>
+</Base>
