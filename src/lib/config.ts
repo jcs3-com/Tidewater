@@ -13,7 +13,7 @@ export const jurisdictions = [
   {slug:'arlington-county-va', name:'Arlington County, VA', short:'Arlington County'},
   {slug:'alexandria-va', name:'Alexandria, VA', short:'City of Alexandria'},
   {slug:'annapolis-md', name:'Annapolis, MD', short:'Annapolis'},
-  {slug:'charleston-sc', name:'Charleston, SC', short:'Charleston'}
+  {slug:'charleston-sc', name:'Charleston, SC area', short:'Charleston, Berkeley and Dorchester counties'}
 ] as const;
 export const categoryName = (s:string) => categories.find(x=>x.slug===s)?.name || s.replaceAll('-', ' ');
 export const jurisdictionName = (s:string) => jurisdictions.find(x=>x.slug===s)?.name || s.replaceAll('-', ' ');
