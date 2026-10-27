@@ -46,8 +46,9 @@ test('bid desk leads with contact, keeps readiness interior and separates food w
  await expect(page.locator('#readiness-form')).toBeVisible();
  await page.locator('footer').getByRole('link',{name:'Explore the food waste project'}).click();
  await expect(page).toHaveURL(/\/restaurant-advisory$/);
- await page.getByRole('link',{name:'Ask about a waste audit'}).click();
- const form=page.getByRole('form',{name:'Ask about food waste'});
+ await expect(page.getByRole('heading',{level:1})).toContainText('Waste less.');
+ await page.getByRole('link',{name:'Request an Opportunity Assessment'}).first().click();
+ const form=page.getByRole('form',{name:'Request an Opportunity Assessment'});
  await expect(form).toBeVisible();
  await expect(form.locator('[name=source]')).toHaveValue('food-waste-project');
  await expect(form.locator('[name=categories]')).toHaveCount(0);

@@ -294,3 +294,46 @@ th:first-child,td:first-child{padding-left:0}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .form-feedback[data-state=error]{color:#FFBDC0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.motion-toggle{display:none!important}}
 @media(forced-colors:active){.button,.button-quiet{border:1px solid ButtonText}.hero-shell{border:1px solid CanvasText}}
+/* Tidewater Food Waste page */
+.fw-subhead{font:500 clamp(1.05rem,1.6vw,1.22rem)/1.5 var(--body);margin:-.4rem 0 1.4rem;max-width:52ch}
+.fw-hero-note{max-width:58ch;margin-bottom:1.6rem}
+.fw-why-body{align-items:start}
+.fw-why-body p{max-width:56ch}
+.fw-goal{border-left:1px solid var(--line);padding-left:1.75rem;font:400 clamp(1.55rem,2.4vw,2.05rem)/1.25 var(--display);color:var(--text)}
+.fw-goal .small-kicker{display:block;margin-bottom:.8rem}
+.fw-method-note{font-size:.9rem;color:#DCE7E8;margin:-1.75rem 0 2.5rem;max-width:62ch}
+.fw-stages{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.5rem;position:relative}
+.fw-stages:before{content:'';position:absolute;left:0;right:0;top:.45rem;border-top:1px solid #8AA2AD}
+.fw-stage{position:relative;padding-top:1.7rem;min-width:0}
+.fw-stage-marker{position:absolute;top:0;left:0;width:.95rem;height:.95rem;border:1px solid #F5F5F0;border-radius:50%;background:#294B5A}
+.fw-stage:last-child .fw-stage-marker{background:#F5F5F0}
+.fw-stage h3{font-size:clamp(1.45rem,1.9vw,1.75rem);margin:.85rem 0 .7rem}
+.fw-stage p{font-size:.9rem;line-height:1.6;margin:0}
+.fw-deliverables{margin-top:3.25rem;border-top:1px solid #8AA2AD;padding-top:1.5rem}
+.fw-deliverables h3{margin:0}
+.fw-deliverables ul{list-style:none;padding:0;margin:.9rem 0 0;display:flex;flex-wrap:wrap;gap:.6rem}
+.fw-deliverables li{border:1px solid #8AA2AD;padding:.5rem .85rem;font-size:.85rem;line-height:1.4}
+.fw-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.25rem}
+.fw-card{position:relative;background:var(--surface);border:1px solid var(--line);padding:clamp(1.5rem,3vw,2.5rem);min-width:0;isolation:isolate;overflow:hidden}
+.fw-card:before{content:'';position:absolute;inset:0;background:url('/assets/estuary-contours.svg') right bottom/150% auto no-repeat;opacity:.06;z-index:-1;pointer-events:none}
+.fw-card h3{font-size:clamp(1.8rem,2.6vw,2.35rem);margin:1.1rem 0 .9rem;max-width:18ch}
+.fw-card p{max-width:52ch;margin:0}
+.fw-notes{margin-top:2.5rem;padding:1.5rem 0 0;border-top:1px solid var(--line);max-width:900px}
+.fw-notes h3{margin:0 0 .6rem}
+.fw-notes ul{margin:0;padding-left:1.1rem;color:var(--muted);font-size:.86rem;line-height:1.6}
+.fw-notes li+li{margin-top:.4rem}
+.fw-closing-line{font-weight:600;margin:.4rem 0 1rem}
+@media(max-width:970px){
+ .fw-stages{grid-template-columns:1fr;gap:2rem}
+ .fw-stages:before{left:.45rem;right:auto;top:0;bottom:0;border-top:0;border-left:1px solid #8AA2AD}
+ .fw-stage{padding:0 0 0 2.25rem}
+ .fw-stage-marker{top:.15rem}
+ .fw-stage h3{margin-top:.5rem}
+ .fw-stage p{max-width:60ch}
+ .fw-method-note{margin-top:-1rem}
+}
+@media(max-width:600px){
+ .fw-cards{grid-template-columns:1fr}
+ .fw-goal{padding-left:1.1rem}
+ .fw-why-body{gap:1.5rem}
+}
