@@ -2,6 +2,8 @@
 
 ## v3.1.0 Homepage restructure around two practices — 2026-10-27
 
+**Live in production, verified ~03:10 ET.** [PR #9](https://github.com/jcs3-com/Tidewater/pull/9) merged as `b5e190cd25d23a92acaba7afc80706ec1c7a7456`; the Pages production build succeeded and `/release.json` reported `3.1.0` / `b5e190c…`. Live checks: all practice routes returned 200; the homepage nav lists The Bid Desk, The Restaurant Advisory, About (+ mobile Contact); the topline reads Virginia; the homepage has no bid list. `/bids` shows "Our RFP process" before "Current open bids" with 6 live bid cards. `/restaurant-advisory` shows 5 stages and 4 live funding cards ("8 open of 14 tracked", Airtable source).
+
 Owner direction: the hero should cover both practices; remove the "Who we help" block and the homepage bid board; the split panels route to each practice's landing page, which explains its process and then lists open opportunities; nav becomes The Bid Desk, The Restaurant Advisory, About (Contact stays as the header button); Northern Virginia becomes Virginia on the homepage; remove the hero buttons.
 
 - Homepage: hero (inclusive intro, no buttons, "DC / Maryland / Virginia") → split panels → contact CTA. "Who we help", "What you receive", the four-phase approach and the bid board were removed from the homepage.
