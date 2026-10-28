@@ -1,5 +1,30 @@
 # Tidewater release log
 
+## v3.2.1 Lead-intake spam gates and region-scoped finder fallback — 2026-10-28
+
+**Live in production, verified 2026-10-28 ~13:06 ET by Claude.** [PR #14](https://github.com/jcs3-com/Tidewater/pull/14) squash-merged as `a3f62a7fa9163188941db16a7bd505a0795c7136`; `/release.json` on `tidewaterbid.com` reported `3.2.1` / `a3f62a7…`, matching the homepage `tidewater-commit` meta tag. Preceded by docs-only [PR #13](https://github.com/jcs3-com/Tidewater/pull/13) (`f851c8d`, verified live), which makes Claude the operator of record.
+
+Takeover reconciliation: before this release, live `/release.json` reported `dbecd1e` (docs-only PR #12 on top of the reported v3.2.0 merge `b52cf30`), equal to `main`. The abandoned Codex transition left no branches, PRs or commits.
+
+- **Intake:** `/api/lead` rejects POSTs with neither a same-origin `Origin` nor `Referer` (403); previously requests without `Origin` skipped the CORS check. Contact messages with two or more vendor-pitch signals receive a neutral 200 and are not stored (both 2026-10-28 SEO-agency submissions are caught by test fixtures). Free text with more than two links is refused with an explicit message. Turnstile remains opt-in pending owner-provisioned keys.
+- **Finder:** the "other areas" bid fallback is scoped to the visitor's market `region` (`dmv`, `charleston`) from `src/lib/config.ts`; DMV leads no longer see Charleston, SC work by default.
+- **Data (Airtable, not code):** Montgomery County RFP 1196087 (due 2026-10-28, closing time not verifiable this session) set Closed; two SEO-spam Prospects relabelled `Lead Type=spam`.
+
+Production checks after deployment:
+- Playwright against `https://tidewaterbid.com`: **31/31 passed** (2.7 min).
+- Live data: 5 Open sourced bids, 14 approved funding records.
+- Scripted lead POST → 403; labelled same-origin QA contact → 201, Airtable `recQoblHFrS3tO8UN`.
+- `/api/checkout` 503; `robots.txt` disallows all; homepage `noindex`; `$1,250` / `$2,500` on `/pricing`, no retired prices.
+- Not fixed (needs zone access): `www.tidewaterbid.com` still serves 200 rather than 301 to the apex.
+- Pages preview builds lack the production Airtable token and render 0 bids / snapshot funding; production data checks must be run on production.
+
+### Validation (local production output under `wrangler pages dev`)
+
+- `npm run check`: 20 unit tests (4 new: origin/referer gate, vendor-pitch drop, link cap, region-scoped fallback), contrast, copy guard, Astro 0 errors.
+- `DEMO_SEED=0 SITE_INDEXABLE=0 NEWSLETTER_ENABLED=0 npm run build`: 70 pages. Playwright 31/31.
+
+Rollback: revert the PR #14 squash commit on `main` (`git revert a3f62a7`) and merge; the Pages Git integration redeploys and `/release.json` should report the revert commit.
+
 ## v3.2.0 Approved brand, Bid Desk pricing and free Opportunity Finder — 2026-10-28
 
 **Live in production, verified 2026-10-28 ~10:25 ET.** [PR #11](https://github.com/jcs3-com/Tidewater/pull/11) squash-merged as `b52cf30129c83ad3af1bf178cee9515307261877`. The Cloudflare Pages production build deployed it; `/release.json` on `tidewaterbid.com`, `www.tidewaterbid.com` and `tidewater-6ik.pages.dev` all reported `3.2.0` / `b52cf30…`, matching the homepage `tidewater-commit` meta tag. This documentation follow-up lands in a separate commit; the live marker then reports that commit.
