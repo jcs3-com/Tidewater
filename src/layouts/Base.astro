@@ -7,7 +7,7 @@ const cleanPath=Astro.url.pathname.replace(/\.html$/,'').replace(/\/index$/,'/')
 const navigation=[{href:'/bids',label:'The Bid Desk',section:['/bids','/open-bids','/pricing','/becoming-a-contractor','/readiness','/contracts']},{href:'/restaurant-advisory',label:'The Restaurant Advisory',section:['/restaurant-advisory']},{href:'/about',label:'About',section:['/about']}];
 const inSection=(paths:string[])=>paths.some(p=>cleanPath===p||cleanPath.startsWith(p+'/'));
 const {title='Tidewater | The bid desk for DMV hospitality and service operators', description='Find relevant government contracts. Understand the price, paperwork and process. Tidewater helps hospitality and service operators prepare bids.', canonical=cleanPath, ogImage='/assets/og-default.png', schema=[]} = Astro.props;
-const structured=[{'@context':'https://schema.org','@type':'Organization',name:'Tidewater',legalName:'Tidewater Advisory LLC',url:siteUrl,description:'Government bid support, restaurant funding intelligence, operational advisory and implementation management for service and hospitality operators.'},...(Array.isArray(schema)?schema:[schema])];
+const structured=[{'@context':'https://schema.org','@type':'Organization',name:'Tidewater',legalName:'Tidewater Advisory LLC',url:siteUrl,logo:pageUrl('/assets/brand/apple-touch-icon.png'),slogan:'Read the current. Find the opportunity.',email:'hello@tidewaterbid.com',description:'Government bid support, restaurant funding intelligence, operational advisory and implementation management for service and hospitality operators.'},...(Array.isArray(schema)?schema:[schema])];
 const safeJson = JSON.stringify(structured).replace(/</g,'\\u003c');
 const analytics=import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
 ---
@@ -16,10 +16,13 @@ const analytics=import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#F5F5F0" />
+  <meta name="theme-color" content="#F7F5EF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1A2C35" media="(prefers-color-scheme: dark)" />
   <meta name="tidewater-release" content={release.version} />
   <meta name="tidewater-commit" content={release.commit} />
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png" />
   {(Astro.props.noindex || !indexable) && <meta name="robots" content="noindex, nofollow" />}
   <meta name="description" content={description} />
   <meta property="og:type" content="website" />
@@ -28,12 +31,15 @@ const analytics=import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
   <meta property="og:description" content={description} />
   <meta property="og:url" content={pageUrl(canonical)} />
   <meta property="og:image" content={pageUrl(ogImage)} />
+  <meta property="og:image:alt" content="Tidewater Advisory: an engraved oyster beside the wordmark and the line Read the current. Find the opportunity." />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="canonical" href={pageUrl(canonical)} />
   <link rel="preload" href="/assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
   <script type="application/ld+json" set:html={safeJson} />
   {analytics && <script defer data-domain={analytics} src="https://plausible.io/js/script.js"></script>}
+  {analytics && <script is:inline>window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)}</script>}
+  {analytics && <script src="/scripts/track.js" defer></script>}
   <title>{title}</title>
   <noscript><style>@media(max-width:970px){.primary-nav{display:block;position:static;box-shadow:none}.header-inner{flex-wrap:wrap}.primary-nav{order:3;width:100%}.menu-toggle,.theme-toggle{display:none}}</style></noscript>
   <script is:inline>
@@ -43,7 +49,7 @@ const analytics=import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header"><div class="container header-inner">
-  <a class="logo" href="/">Tidewater<span class="logo-subtitle"> Advisory</span><span class="sr-only"> homepage</span></a>
+  <a class="logo" href="/"><span class="logo-mark" aria-hidden="true"><img class="mark-ink" src="/assets/brand/oyster-mark-ink-header.webp" width="60" height="43" alt="" decoding="async" /><img class="mark-shell" src="/assets/brand/oyster-mark-shell-header.webp" width="60" height="43" alt="" decoding="async" /></span><span class="logo-type"><span class="logo-word">Tidewater</span><span class="logo-subtitle">Advisory</span></span><span class="sr-only"> homepage</span></a>
   <nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><ul class="nav-list">
     {navigation.map(item=><li><a href={item.href} aria-current={cleanPath===item.href?'page':inSection(item.section)?'true':undefined}>{item.label}</a></li>)}
     <li class="nav-contact"><a href="/contact" aria-current={cleanPath==='/contact'?'page':undefined}>Contact Tidewater</a></li>
@@ -52,7 +58,7 @@ const analytics=import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
 </div></header>
 <main id="main"><slot /></main>
 <footer class="footer"><div class="container">
-  <div class="footer-layout"><div><a href="/" class="logo">Tidewater<span class="logo-subtitle">Advisory</span></a></div><nav class="footer-links" aria-label="Footer"><a href="/contact">Contact</a><a href="/open-bids">Open bids</a><a href="/pricing">Bid pricing</a><a href="/becoming-a-contractor">Becoming a contractor</a><a href="/restaurant-advisory/funding">Funding desk</a><a href="/restaurant-advisory/food-waste">Tidewater Food Waste</a><a href="/insights">Insights</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/sitemap.xml">Sitemap</a></nav></div>
+  <div class="footer-layout"><div><a class="logo logo-footer" href="/"><span class="logo-mark" aria-hidden="true"><img class="mark-ink" src="/assets/brand/oyster-mark-ink-header.webp" width="60" height="43" alt="" decoding="async" /><img class="mark-shell" src="/assets/brand/oyster-mark-shell-header.webp" width="60" height="43" alt="" decoding="async" /></span><span class="logo-type"><span class="logo-word">Tidewater</span><span class="logo-subtitle">Advisory</span></span><span class="sr-only"> homepage</span></a><p class="footer-tagline">Read the current. Find the opportunity.</p></div><nav class="footer-links" aria-label="Footer"><a href="/contact">Contact</a><a href="/opportunity-finder">Opportunity Finder</a><a href="/open-bids">Open bids</a><a href="/pricing">Bid pricing</a><a href="/becoming-a-contractor">Becoming a contractor</a><a href="/restaurant-advisory/funding">Funding desk</a><a href="/restaurant-advisory/food-waste">Tidewater Food Waste</a><a href="/insights">Insights</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/sitemap.xml">Sitemap</a></nav></div>
   <p class="footer-small">Tidewater is a trade name of Tidewater Advisory LLC. Not affiliated with any government agency. We do not guarantee contract awards or grant funding.</p>
   <p class="footer-small">© {new Date().getFullYear()} Tidewater Advisory LLC · [[TODO: Publishable business mailing address]] · <a href="mailto:hello@tidewaterbid.com">hello@tidewaterbid.com</a></p>
   <p class="footer-small release-label">Website v{release.version} · <a href="/credits">Image &amp; typography credits</a></p>

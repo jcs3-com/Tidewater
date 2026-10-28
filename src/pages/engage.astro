@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import {apiUrl,checkoutEnabled} from '../lib/config';
+import {bidDeskTiers,formatUsd} from '../../public/scripts/pricing.js';
+---
+<Base title="Confirm Your Engagement | Tidewater" description="Pay for a qualified, written Tidewater Bid Desk engagement." noindex>
+<section class="section"><div class="container alt-hero"><p class="eyebrow">The Bid Desk / Engagement</p><h1>Confirm your engagement.</h1><p class="lead">Payment is available only for a solicitation Tidewater has qualified with you in writing, at the flat fee for its tier.</p></div></section>
+<section class="section narrow"><div class="container form-body">
+ <div class="checkout-panel" id="engage" data-enabled={checkoutEnabled?'1':'0'}>
+  <p id="engage-offer">{checkoutEnabled ? 'Loading your quote…' : 'Online payment is not open yet. After qualification, Tidewater sends a written scope and payment instructions.'}</p>
+  {checkoutEnabled && <form id="engage-form" action={`${apiUrl}/api/checkout`} method="POST"><input type="hidden" name="quote" id="engage-quote" />
+   <div class="form-section"><label class="checkline"><input type="checkbox" name="terms" value="yes" required /><span>I have read and signed the written engagement terms for this solicitation, including scope, refund terms and the one-firm-per-solicitation commitment. I understand the fee is not contingent on any award and does not guarantee one.</span></label></div>
+   <button class="button" type="submit">Continue to secure payment</button><p class="form-feedback" role="status" aria-live="polite"></p></form>}
+ </div>
+ <p class="fine">Fees: {bidDeskTiers.map(t=>`${t.name} ${formatUsd(t.price)} (${t.range.toLowerCase()})`).join('; ')}. Questions: <a href="mailto:hello@tidewaterbid.com">hello@tidewaterbid.com</a>.</p>
+</div></section>
+<script type="module" src="/scripts/engage.js"></script>
+</Base>

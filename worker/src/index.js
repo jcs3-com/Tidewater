@@ -1,4 +1,5 @@
 import {scoreReadiness} from '../../public/scripts/score.js';
+import {bidDeskTiers} from '../../public/scripts/pricing.js';
 
 const MAX_BODY = 16000;
 async function verifyTurnstile(fields,env) {
@@ -10,7 +11,16 @@ async function verifyTurnstile(fields,env) {
   return res.ok && (await res.json()).success===true;
 }
 
-const allowedKinds = new Set(['contact','newsletter','bid_packet','quiz']);
+const allowedKinds = new Set(['contact','newsletter','bid_packet','quiz','restaurant_finder']);
+// Opportunity Finder (restaurant path) answers are validated against fixed choices; free text is length-capped.
+const RESTAURANT = {
+  location:new Set(['washington-dc','maryland','northern-virginia','charlottesville','virginia-other','other']),
+  businessType:new Set(['independent-restaurant','restaurant-group','bar','cafe-bakery','caterer','food-producer','hotel-venue','other']),
+  tenure:new Set(['own','lease','unsure']),
+  interests:new Set(['funding','efficiency','equipment','operations','food-waste'])
+};
+const PROJECT_SERVICE = {funding:'Funding & Incentives',efficiency:'Operational Performance',equipment:'Operational Performance',operations:'Operational Performance','food-waste':'Food Waste & Resource Recovery'};
+const CONTACT_PREFS = new Set(['email','phone','either']);
 const clean = (v,max=2000) => typeof v==='string' ? v.trim().slice(0,max) : '';
 const isEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) && e.length<=254;
 const now = () => new Date().toISOString();
@@ -60,6 +70,13 @@ async function makeMatches(env,prospectId,values,score) {
     for(const r of matchesFound)await airtable(env,'Matches',{method:'POST',body:{fields:{Match:`${prospectId} / ${r.id}`,Prospect:[prospectId],RFP:[r.id],'Fit Score':Math.min(100,Math.round(score*.35+65)),Status:'offered','Offer Expiry':new Date(Date.now()+48*3600*1000).toISOString()}}});
   }catch(err){console.error('Match follow-up failed',String(err));/* Lead is still safely captured. */}
 }
+async function makeRestaurantLead(env,business,r,prospectId){
+  // Best-effort pipeline row in the private Restaurant Projects tracker; the Prospect record above is authoritative.
+  try{
+    const services=[...new Set(r.interests.map(i=>PROJECT_SERVICE[i]).filter(Boolean))];
+    await airtable(env,'Restaurant Projects',{method:'POST',body:{fields:{'Project':`${business} — Opportunity Finder lead`,'Client / Organization':business,'Service':services,'Location':r.location,'Stage':'Lead','Next Action':'Qualify the request and reply with a scoped next step.','Notes':`Website Opportunity Finder submission. Prospect ${prospectId}. Business type ${r.businessType}; tenure ${r.tenure}.`},typecast:false}});
+  }catch(err){console.error('Restaurant project follow-up failed',String(err));}
+}
 async function createLead(req,env,headers) {
   let fields;
   try{fields=await parseBody(req);}catch{return bad('Invalid form data.',400,headers);}
@@ -73,14 +90,26 @@ async function createLead(req,env,headers) {
   if(!(await verifyTurnstile(fields,env)))return bad('Please complete the verification and try again.',422,headers);
   const name=clean(fields.name,120),business=clean(fields.business,160);
   if(kind!=='newsletter'&&(!name||!business))return bad('Name and business are required.',422,headers);
+  const pref=clean(fields.contactPreference,20);
+  const noteLines=[];
+  if(pref){if(!CONTACT_PREFS.has(pref))return bad('Choose a follow-up preference.',422,headers);noteLines.push(`Contact preference: ${pref}`);}
+  if(clean(fields.services,600))noteLines.push(`Services: ${clean(fields.services,600)}`);
+  let restaurant=null;
+  if(kind==='restaurant_finder'){
+    const interests=clean(fields.interests,200).split(',').map(x=>x.trim()).filter(Boolean);
+    restaurant={location:clean(fields.location,40),businessType:clean(fields.businessType,40),tenure:clean(fields.tenure,20),interests};
+    if(!RESTAURANT.location.has(restaurant.location)||!RESTAURANT.businessType.has(restaurant.businessType)||!RESTAURANT.tenure.has(restaurant.tenure)||!interests.length||interests.some(i=>!RESTAURANT.interests.has(i)))return bad('Complete the restaurant questions.',422,headers);
+    noteLines.push(`Restaurant: ${restaurant.businessType}; location ${restaurant.location}; tenure ${restaurant.tenure}; interests ${interests.join(', ')}`);
+  }
+  if(clean(fields.notes,2000))noteLines.push(clean(fields.notes,2000));
   const payload={
     'Name':name||email,'Business':business,'Email':email,'Phone':clean(fields.phone,40),
-    'Categories':clean(fields.categories,100),'Jurisdictions':clean(fields.jurisdictions,100),
+    'Categories':kind==='restaurant_finder'?`restaurant:${restaurant.businessType}`:clean(fields.categories,100),'Jurisdictions':kind==='restaurant_finder'?restaurant.location:clean(fields.jurisdictions,100),
     'Insurance Status':kind==='quiz'?`GL: ${clean(fields.gl,30)}; WC: ${clean(fields.wc,30)}`:'',
     'Registrations':kind==='quiz'?`Entity: ${clean(fields.entity,30)}; Licenses: ${clean(fields.licenses,30)}; Portals: ${clean(fields.portals,30)}; Bond: ${clean(fields.bond,30)}`:'',
     'Staff Size':kind==='quiz'?clean(fields.staff,40):'',
     'Source':clean(fields.source,250)||kind,'Consent Timestamp':now(),
-    'Lead Type':kind,'Bid ID':clean(fields.bidId,80),'Notes':clean(fields.notes,2000),
+    'Lead Type':kind,'Bid ID':clean(fields.bidId,80),'Notes':noteLines.join('\n').slice(0,4000),
     'Gap List':'','Newsletter Status':kind==='newsletter'?'Pending':''
   };
   let score=0;
@@ -103,6 +132,7 @@ async function createLead(req,env,headers) {
     return json({message:'Check your email. Your subscription is not active until you confirm.'},201,headers);
   }
   if(kind==='quiz')await makeMatches(env,record.id,fields,score);
+  if(kind==='restaurant_finder')await makeRestaurantLead(env,business,restaurant,record.id);
   return json({message:kind==='bid_packet'?'Request received. We will follow up about the bid packet.':'Request received. We will follow up by email.'},201,headers);
 }
 async function confirm(env,url){
@@ -124,6 +154,27 @@ async function unsubscribe(env,url){
   await airtable(env,'Prospects',{method:'PATCH',id:record,body:{fields:{'Newsletter Status':'Unsubscribed'}}});
   return Response.redirect(env.SITE_URL+'/newsletter-unsubscribed',302);
 }
+// P2 gated checkout for Single Bid Architecture. OFF unless CHECKOUT_ENABLED=1 and Stripe is configured.
+// A payment link is only valid for a written, qualified quote: the operator issues an HMAC-signed token
+// "<prospectRecordId>.<tierId>.<expiryEpochSeconds>.<signature>" after confirming fit, tier and signed terms.
+// The amount always comes from the server-side tier table, never from the browser.
+export function signQuote(env,prospect,tierId,expires){return signature(env,`quote:${prospect}.${tierId}.${expires}`);}
+async function checkout(req,env,headers){
+  if(env.CHECKOUT_ENABLED!=='1')return bad('Online payment is not available yet. Tidewater will send a written scope and payment instructions after qualification.',503,headers);
+  if(!env.STRIPE_SECRET_KEY||!env.HMAC_SECRET||!env.SITE_URL)return bad('Payment is not configured.',503,headers);
+  let fields;try{fields=await parseBody(req);}catch{return bad('Invalid request.',400,headers);}
+  const [prospect,tierId,expires,sig]=clean(fields.quote,300).split('.');
+  if(!/^rec[a-zA-Z0-9]{14}$/.test(prospect||'')||!/^[0-9]{9,11}$/.test(expires||'')||!/^[a-f0-9]{64}$/.test(sig||''))return bad('This payment link is not valid.',403,headers);
+  const tier=bidDeskTiers.find(t=>t.id===tierId);
+  if(!tier)return bad('This payment link is not valid.',403,headers);
+  if(Number(expires)*1000<Date.now())return bad('This payment link has expired. Ask Tidewater for a new one.',410,headers);
+  if(!safeCompare(await signQuote(env,prospect,tierId,expires),sig))return bad('This payment link is not valid.',403,headers);
+  const form=new URLSearchParams({mode:'payment',success_url:`${env.SITE_URL}/engagement-received`,cancel_url:`${env.SITE_URL}/pricing`,'line_items[0][quantity]':'1','line_items[0][price_data][currency]':'usd','line_items[0][price_data][unit_amount]':String(tier.price*100),'line_items[0][price_data][product_data][name]':tier.name,client_reference_id:prospect,'metadata[tier]':tier.id,'metadata[prospect]':prospect});
+  const r=await fetch('https://api.stripe.com/v1/checkout/sessions',{method:'POST',headers:{authorization:`Bearer ${env.STRIPE_SECRET_KEY}`,'content-type':'application/x-www-form-urlencoded'},body:form});
+  if(!r.ok){console.error('Stripe session failed',r.status);return bad('Payment could not be started. No charge was made.',502,headers);}
+  const session=await r.json();
+  return json({url:session.url},200,headers);
+}
 export default {
  async fetch(req,env) {
   const url=new URL(req.url);const path=url.pathname.replace(/\/$/,'')||'/';const c=cors(req,env);
@@ -133,6 +184,12 @@ export default {
     if(req.method==='POST'){const f=await req.formData();const u=new URL(req.url);u.searchParams.set('record',clean(f.get('record')));u.searchParams.set('sig',clean(f.get('sig')));return await unsubscribe(env,u);}
     return await unsubscribe(env,url);
   }catch(e){console.error(String(e));return bad('Unsubscribe request failed.',500);}
+  if(path==='/api/checkout'){
+    if(req.method==='OPTIONS')return c?new Response(null,{status:204,headers:c}):bad('Origin not allowed.',403);
+    if(req.method!=='POST')return bad('Method not allowed.',405);
+    if(req.headers.has('origin')&&!c)return bad('Origin not allowed.',403);
+    try{return await checkout(req,env,c||{});}catch(e){console.error(String(e));return bad('Payment could not be started. No charge was made.',503,c||{});}
+  }
   if(path!=='/api/lead')return bad('Not found.',404);
   if(req.method==='OPTIONS')return c?new Response(null,{status:204,headers:c}):bad('Origin not allowed.',403);
   if(req.method!=='POST')return bad('Method not allowed.',405);

@@ -42,3 +42,34 @@ test('newsletter unsubscribe requires a valid signed link',async()=>{
  assert.equal(denied.status,403);
  globalThis.fetch=oldFetch;
 });
+test('restaurant finder writes a prospect with validated answers and a private pipeline row',async()=>{
+ mock();
+ const extra=globalThis.fetch;globalThis.fetch=async(input,init={})=>{if(String(input).includes('/Restaurant%20Projects')){requests.push({url:String(input),init});return new Response(JSON.stringify({id:'recProj1'}));}return extra(input,init);};
+ const base={kind:'restaurant_finder',name:'Test',business:'Oyster Bar LLC',email:'test@example.org',consent:'yes',contactPreference:'phone',location:'charlottesville',businessType:'independent-restaurant',tenure:'lease',interests:'funding,food-waste'};
+ const ok=await handler.fetch(req(base),env);assert.equal(ok.status,201);
+ const prospect=JSON.parse(requests.find(r=>r.url.includes('/Prospects')&&r.init.method==='POST').init.body).fields;
+ assert.equal(prospect['Lead Type'],'restaurant_finder');assert.equal(prospect['Jurisdictions'],'charlottesville');assert.match(prospect['Notes'],/Contact preference: phone/);
+ const project=JSON.parse(requests.find(r=>r.url.includes('/Restaurant%20Projects')).init.body).fields;
+ assert.equal(project.Stage,'Lead');assert.deepEqual(project.Service,['Funding & Incentives','Food Waste & Resource Recovery']);
+ requests=[];
+ assert.equal((await handler.fetch(req({...base,interests:'free-money'}),env)).status,422);
+ assert.equal((await handler.fetch(req({...base,location:'mars'}),env)).status,422);
+ assert.equal(requests.length,0);
+ globalThis.fetch=oldFetch;
+});
+test('checkout is disabled by default and only accepts a signed, unexpired, server-priced quote',async()=>{
+ const {signQuote}=await import('../worker/src/index.js');
+ const creq=(body)=>new Request('https://api.example.test/api/checkout',{method:'POST',headers:{origin:'https://example.test','content-type':'application/json'},body:JSON.stringify(body)});
+ assert.equal((await handler.fetch(creq({quote:'x'}),env)).status,503);
+ const on={...env,CHECKOUT_ENABLED:'1',STRIPE_SECRET_KEY:'sk_test_x'};
+ const exp=String(Math.floor(Date.now()/1000)+3600);
+ const good=`recAAAAAAAAAAAAAA.sba-2.${exp}.${await signQuote(on,'recAAAAAAAAAAAAAA','sba-2',exp)}`;
+ let stripeBody='';globalThis.fetch=async(input,init={})=>{if(String(input).includes('api.stripe.com')){stripeBody=String(init.body);return new Response(JSON.stringify({url:'https://checkout.stripe.test/s'}));}return new Response('{}',{status:404});};
+ assert.equal((await handler.fetch(creq({quote:good.replace('sba-2','sba-1')}),on)).status,403);
+ assert.equal((await handler.fetch(creq({quote:good.slice(0,-1)+'0'}),on)).status,403);
+ const past=String(Math.floor(Date.now()/1000)-10);
+ assert.equal((await handler.fetch(creq({quote:`recAAAAAAAAAAAAAA.sba-1.${past}.${await signQuote(on,'recAAAAAAAAAAAAAA','sba-1',past)}`}),on)).status,410);
+ const res=await handler.fetch(creq({quote:good}),on);assert.equal(res.status,200);
+ assert.match(stripeBody,/unit_amount%5D=250000/);
+ globalThis.fetch=oldFetch;
+});

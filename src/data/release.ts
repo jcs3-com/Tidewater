@@ -6,4 +6,4 @@ function commit() {
   try { return execFileSync('git', ['rev-parse', 'HEAD'], {encoding:'utf8'}).trim(); }
   catch { return 'unavailable'; }
 }
-export const release = {version:'3.1.0', commit:commit()};
+export const release = {version:'3.2.0', commit:commit()};

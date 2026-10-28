@@ -1,26 +1,39 @@
-# Tidewater website design system — 2.0
+# Tidewater website design system — 3.2
 
-Prepared 2026-10-26. Implementation is a tested, unpublished candidate until the production commit marker confirms otherwise. GitHub `jcs3-com/Tidewater` is the code source of truth; Drive is documentation and archive storage.
+Updated 2026-10-28. **Visual authority:** the founder-approved master brand board (`Tidewater-Approved-Coastal-Brand-Board.png`, Drive project folder). Where a value below differs from the board as rendered, the board wins. Earlier exploratory logos, the simplistic oyster vectors and the confluence logo are retired.
 
-## Direction
+## Identity
 
-Institutional restraint, generous space and an operator's point of view. Carlyle and Verlaine Capital inform hierarchy and pacing only. No proprietary imagery, marks or site code were copied. The supplied Drive v2 ZIP and full handoff were read; unreliable external image references were replaced.
+- **Mark:** engraved oyster. Full-tone engraving (`brand/oyster-engraving-252|503.webp`) for editorial accents and social images; one-colour vector trace (`brand/oyster-mark-ink.svg`, `brand/oyster-mark-shell.svg`) for lockups and print; 2× rasters (`brand/oyster-mark-{ink,shell}-header.webp`, 120×85) for the header and footer so the 160 KB vector is not on the critical path. The supplied simplified oyster (`favicon.svg`) is used only at favicon sizes; `brand/apple-touch-icon.png` uses the traced engraving.
+- **Lockup:** mark left, `Tidewater` in Cormorant Garamond 500, `ADVISORY` in DM Sans with 0.42em tracking, centred under the wordmark. Coded in HTML, never an image of text. Light mark on light surfaces, shell mark in dark mode (switches with the theme toggle and `prefers-color-scheme`).
+- **Tagline (verbatim):** *Read the current. Find the opportunity.* Homepage H1, footer (Cormorant italic), Opportunity Finder H1, social card.
+- **Texture:** `estuary-contours.svg` (supplied), only in quiet bands: interior title areas, the finder band, closing CTA, food-waste cards. Opacity 0.06–0.24. Decorative, not a chart.
 
 ## Palette
 
-| Role | Light | Dark |
+| Token | Value | Use |
 | --- | --- | --- |
-| Oyster shell / page | `#F5F5F0` | `#182C35` |
-| Slate / text | `#243943` | `#F5F5F0` |
-| Mist / secondary surface | `#E8EEED` | `#28434E` |
-| Surface | `#FFFFFF` | `#213B46` |
-| Muted text | `#4B626D` | `#C6D5D9` |
-| Marine action | `#294B5A` with white | `#D6E5E7` with `#182C35` |
-| Rules | `#A8B5B8` | `#78919C` |
+| `--shell` / page | `#F7F5EF` | Page background (board measured `#F1EEE6`–`#F7F5EF`) |
+| `--ink` / text | `#243943` | Text, wordmark, dark panels (board swatch `#233A44`) |
+| `--deep-tide` / action | `#2E4B5B` | Primary buttons, checkbox accent, featured price card |
+| `--estuary` | `#6B8A96` | Contours, field borders (`--field-line`, 3.4:1 on shell), dark-panel rules (board swatch `#6C838A`) |
+| `--mist` | `#B7C4C7` | Channel tones; decorative rules use `--line #B3BFC2` |
+| `--oyster` | `#D8CBB8` | Warm accent, dark-mode primary button (board swatch `#D3CBBD`) |
+| `--marsh` | `#849288` | Board's sage swatch; accents only, never text |
+| surface / subtle | `#FCFBF7` / `#EEEAE1` | Cards / quiet bands |
+| muted text | `#4B626D` | Secondary text (≥5:1 on every light surface) |
 
-The home headline panel retains oyster shell and slate in both themes. Blue panels use white headings and `#DCE7E8` secondary text. Status chips retain explicit SAMPLE/Open/Closed/Awarded labels rather than relying on color. Enumerated text pairs pass AA at 4.5:1 or better; rendered pages are additionally checked with axe.
+Dark mode: page `#1A2C35`, surface `#213640`, subtle `#283F4A`, text shell, muted `#C3CFD2`, primary button oyster on `#1A2C35`. Reverse sections use dark ink with shell text, matching the board's dark lockup panel. `npm run check:contrast` enforces every enumerated text pair at 4.5:1 and field borders at 3:1.
 
-## Typography and layout
+## Typography
+
+Cormorant Garamond roman + italic (display, wordmark, tagline) and DM Sans (body, navigation, forms, controls), self-hosted WOFF2 under OFL 1.1. System monospace only for bid data micro-labels.
+
+## Components added in 3.2
+
+Price cards (`.price-card`, featured Tier II), tier checker, scope grid, Opportunity Finder path selector, step panels, results with labelled matches (`.finder-label` grant / rebate / sponsor-required / unverified), readiness meter, gated checkout panel. All honour 44px targets, visible focus, reduced motion and both themes.
+
+## Layout and motion (carried from 2.0)
 
 - Display: locally hosted Cormorant Garamond variable, weight 500; Georgia fallback. Body/navigation: locally hosted DM Sans variable; Arial fallback. System monospace is reserved for bid data and micro-labels. Both font licenses are in `docs/licenses/`.
 - Maximum content width 1248px; 48px desktop gutters, 24px tablet and 20px mobile. Major section spacing scales from 56–112px. Breakpoints 1200, 970 and 600px.

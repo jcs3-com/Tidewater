@@ -1,5 +1,23 @@
 # Tidewater release log
 
+## v3.2.0 Approved brand, Bid Desk pricing and free Opportunity Finder — 2026-10-28
+
+**Status: PENDING_PRODUCTION_VERIFICATION.** This entry is updated only after the live `/release.json` reports the merged commit.
+
+Source of truth: the founder's "Approved Brand + P0–P2 Deployment" package (2026-10-28), the Drive master brand board and `BID_DESK_PRICING_POLICY.md` v1.1, and the Airtable Offer Catalog.
+
+- **Brand:** engraved-oyster lockup in header and footer (light/dark), tagline "Read the current. Find the opportunity." as the homepage and finder H1 and footer line, palette tokens from the board (shell, deep tide, estuary, mist, oyster, dark ink; marsh swatch for accents), Cormorant italic added, supplied favicon and contour texture, new apple-touch icon, default social card and recoloured per-bid cards. Reverse panels now use dark ink, matching the board's dark lockup.
+- **Pricing:** Single Bid Architecture $1,250 under $100,000; Tier II $2,500 at $100,000 and above; custom quotes never below the tier. One shared module (`public/scripts/pricing.js`) drives the pricing page, tier checker, structured data (`Offer` 1250/2500), Bid Desk page, finder results, gated checkout and tests. Retired $250–$500, $1,500–$3,000 and $295 references removed; Bid Desk scope copy now matches the policy (architecture, not a full drafted proposal; drafting and submission support quoted separately). Inclusions, exclusions, revisions (one consolidated round, founder to confirm), client responsibilities and turnaround are on `/pricing`.
+- **Opportunity Finder** (`/opportunity-finder`): Bid Desk path (category, services, area, capacity, registrations, insurance, bonding, contact preference) returns the shared readiness score and gaps plus Open, officially sourced bids in the same category/area, with the applicable fee tier when a value is published. Restaurant path (location incl. Charlottesville/Central Virginia, business type, owner/tenant, interests) returns approved Funding Opportunities labelled grant / rebate or incentive / tax incentive / financing / sponsor-required / unverified, with owner-only cautions for tenants. Expired deadlines and records verified more than 45 days ago are never shown as open, re-checked in the browser. Honest empty states. Submissions use the existing `/api/lead` (kinds `quiz` and new `restaurant_finder`, validated server-side) and a best-effort `Restaurant Projects` Lead row. Newsletter consent remains a separate checkbox that only renders when `NEWSLETTER_ENABLED=1`.
+- **P2:** `/api/checkout` and `/engage` behind `CHECKOUT_ENABLED` (unset): 503 by default; when enabled, only an operator-signed, unexpired quote token is accepted and the amount comes from the server tier table. Privacy-friendly conversion events (`finder_start`, `finder_result`, `paid_inquiry`, `tier_check`, `checkout_start`, `lead`) fire only if Plausible is configured. Branded proposal template and email signature in `docs/collateral/`.
+- **Unchanged:** Astro/Pages Functions architecture, Airtable schema, routes, retired-path 410s, honeypot/consent/CORS/Turnstile handling, `SITE_INDEXABLE=0`, `NEWSLETTER_ENABLED=0`.
+
+### Validation (local production output under `wrangler pages dev`)
+
+- `npm run check`: 16 unit tests (incl. $99,999 / $100,000 boundary, retired-price scan, finder status rules, restaurant intake validation, checkout gating), contrast (all text pairs ≥4.5:1, field borders ≥3:1), copy guard, Astro 0 errors/warnings.
+- `DEMO_SEED=0 SITE_INDEXABLE=0 NEWSLETTER_ENABLED=0 npm run build`: 70 pages.
+- Playwright: 31/31 passed, including 360/390/768/1440px no-overflow on 17 routes, axe WCAG 2.1 A/AA light and dark on 17 routes, keyboard nav, reduced motion, broken-image readability, failed-form data retention, brand/pricing/finder/checkout specs.
+
 ## v3.1.0 Homepage restructure around two practices — 2026-10-27
 
 **Live in production, verified ~03:10 ET.** [PR #9](https://github.com/jcs3-com/Tidewater/pull/9) merged as `b5e190cd25d23a92acaba7afc80706ec1c7a7456`; the Pages production build succeeded and `/release.json` reported `3.1.0` / `b5e190c…`. Live checks: all practice routes returned 200; the homepage nav lists The Bid Desk, The Restaurant Advisory, About (+ mobile Contact); the topline reads Virginia; the homepage has no bid list. `/bids` shows "Our RFP process" before "Current open bids" with 6 live bid cards. `/restaurant-advisory` shows 5 stages and 4 live funding cards ("8 open of 14 tracked", Airtable source).
