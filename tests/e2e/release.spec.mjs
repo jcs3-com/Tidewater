@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-const routes=['/','/bids','/open-bids','/pricing','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/readiness','/becoming-a-contractor','/about','/insights','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md','/credits'];
+const routes=['/','/bids','/open-bids','/pricing','/opportunity-finder','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/readiness','/becoming-a-contractor','/about','/insights','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md','/credits'];
 
 for(const theme of ['light','dark']){
  test(`WCAG A/AA automated audit across primary routes, ${theme}`,async({page})=>{
@@ -35,7 +35,7 @@ test('poster assets are local and loaded; pause and reduced motion work',async({
 });
 test('headline and action remain readable when photographs fail',async({page})=>{
  await page.route(/\/assets\/.*\.(webp|jpg)$/,route=>route.abort());await page.goto('/');
- await expect(page.getByRole('heading',{level:1})).toContainText('Realize the value.');
+ await expect(page.getByRole('heading',{level:1})).toContainText('Find the opportunity.');
  await expect(page.locator('.header-cta')).toBeVisible();
  await expect(page.locator('#motion-toggle')).toBeHidden();
 });

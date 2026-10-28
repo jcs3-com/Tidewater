@@ -1,0 +1,86 @@
+---
+import Base from '../layouts/Base.astro';
+import {apiUrl,categories,jurisdictions,newsletterEnabled} from '../lib/config';
+import {getOpenRfps,bidUrl} from '../lib/rfps';
+import {getFundingOpportunities} from '../lib/funding';
+const turnstileKey=import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+// Only published, source-verified records reach the browser: Open RFPs with an official URL and due date
+// (enforced in rfps.ts) and editorially Approved funding records with an official https source.
+const bids=(await getOpenRfps()).filter(b=>b.status==='Open').map(b=>({title:b.title,agency:b.agency,category:b.category,jurisdiction:b.jurisdiction,dueDate:b.dueDate,estimatedValue:b.estimatedValue,page:bidUrl(b),source:b.solicitationUrl}));
+const {items:funding}=await getFundingOpportunities();
+const programs=funding.map(o=>({program:o.program,funder:o.funder,geography:o.geography,type:o.type,status:o.status,deadline:o.deadline||'',verified:o.verified,url:o.url,fit:o.fit,summary:o.summary,applicants:o.eligibleApplicants,match:o.match,amount:o.amountNotes,nextRound:o.nextRound||''}));
+const data=JSON.stringify({bids,programs,jurisdictions:jurisdictions.map(j=>({slug:j.slug,name:j.name})),categories:categories.map(c=>({slug:c.slug,name:c.name})),builtAt:new Date().toISOString().slice(0,10)}).replace(/</g,'\\u003c');
+const restaurantLocations=[['washington-dc','Washington, DC'],['maryland','Maryland'],['northern-virginia','Northern Virginia'],['charlottesville','Charlottesville / Central Virginia'],['virginia-other','Elsewhere in Virginia'],['other','Somewhere else']];
+const businessTypes=[['independent-restaurant','Independent restaurant'],['restaurant-group','Multi-unit restaurant group'],['bar','Bar or tavern'],['cafe-bakery','Café or bakery'],['caterer','Caterer'],['food-producer','Food producer or maker'],['hotel-venue','Hotel, venue or hospitality group'],['other','Other food business']];
+const interests=[['funding','Funding, grants or incentives'],['efficiency','Energy or water efficiency'],['equipment','Kitchen or refrigeration equipment'],['operations','Purchasing, labor or operating margin'],['food-waste','Food waste, donation or recovery']];
+---
+<Base title="Free Opportunity Finder | Government Bids & Restaurant Funding | Tidewater" description="A free, preliminary readiness read and the source-verified government bids or restaurant funding programs Tidewater tracks that may fit your business.">
+<section class="section"><div class="container alt-hero"><p class="eyebrow">Free Opportunity Finder</p><h1>Read the current. Find the opportunity.</h1><p class="lead">A few questions, a preliminary read on fit and readiness, and the source-verified opportunities we track. Free, with no obligation.</p><p class="fine">Preliminary guidance only. It is not an eligibility determination, an agency certification or a prediction of any award or grant.</p></div></section>
+
+<section class="section narrow"><div class="container">
+<form id="finder-form" class="form-body finder" action={`${apiUrl}/api/lead`} method="POST" novalidate data-finder>
+ <script type="application/json" id="finder-data" set:html={data}></script>
+ <input type="hidden" name="source" value="opportunity-finder" /><input type="hidden" name="kind" id="finder-kind" value="quiz" />
+ <input type="hidden" name="readinessScore" id="finder-score" /><input type="hidden" name="gapList" id="finder-gaps" />
+ <div class="sr-only" aria-hidden="true"><label>Leave blank<input name="website" tabindex="-1" autocomplete="off" /></label></div>
+
+ <fieldset class="finder-paths"><legend>What are you looking for?</legend>
+  <label class="path-option"><input type="radio" name="path" value="bids" required /><strong>Government contracts</strong><span>Bid Desk: public solicitations for catering, concessions, janitorial, security and event services.</span></label>
+  <label class="path-option"><input type="radio" name="path" value="restaurant" /><strong>Restaurant funding and improvements</strong><span>Restaurant Advisory: grants, rebates, incentives, efficiency, equipment, operations and food waste.</span></label>
+ </fieldset>
+
+ <div id="path-bids" data-path="bids" hidden>
+  <div class="finder-step"><h2>Your business</h2><div class="form-grid">
+   <div class="field"><label for="f-category">Main service you could bid</label><select id="f-category" name="categories" data-required><option value="">Select</option>{categories.map(c=><option value={c.slug}>{c.name}</option>)}</select></div>
+   <div class="field"><label for="f-area">Primary service area</label><select id="f-area" name="jurisdictions" data-required><option value="">Select</option>{jurisdictions.map(j=><option value={j.slug}>{j.name}</option>)}</select></div>
+   <div class="field full"><label for="f-services">What do you provide? (optional)</label><textarea id="f-services" name="services" maxlength="600" placeholder="For example: boxed lunches and receptions up to 300 guests"></textarea></div>
+  </div></div>
+  <div class="finder-step"><h2>Capacity and readiness</h2><div class="form-grid">
+   <div class="field"><label for="f-staff">Staff you can assign to a contract</label><select id="f-staff" name="staff" data-required><option value="">Select</option><option value="solo">Just me / undefined</option><option value="1to4">1–4</option><option value="5to9">5–9</option><option value="10plus">10 or more</option></select></div>
+   <div class="field"><label for="f-years">Time in operation</label><select id="f-years" name="years" data-required><option value="">Select</option><option value="under1">Under a year</option><option value="1to2">1–2 years</option><option value="2plus">More than 2 years</option></select></div>
+   <div class="field"><label for="f-entity">Registered legal entity?</label><select id="f-entity" name="entity" data-required><option value="">Select</option><option value="registered">Yes</option><option value="no">Not yet / unsure</option></select></div>
+   <div class="field"><label for="f-licenses">Licenses your service normally needs?</label><select id="f-licenses" name="licenses" data-required><option value="">Select</option><option value="yes">Yes</option><option value="unsure">Unsure / not yet</option></select></div>
+   <div class="field"><label for="f-portals">Registered in government vendor portals?</label><select id="f-portals" name="portals" data-required><option value="">Select</option><option value="yes">Yes, at least one</option><option value="no">Not yet / unsure</option></select></div>
+   <div class="field"><label for="f-gov">Done government work before?</label><select id="f-gov" name="government" data-required><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+   <div class="field"><label for="f-gl">General-liability insurance?</label><select id="f-gl" name="gl" data-required><option value="">Select</option><option value="yes">Yes</option><option value="no">No / unsure</option></select></div>
+   <div class="field"><label for="f-wc">Workers' compensation coverage?</label><select id="f-wc" name="wc" data-required><option value="">Select</option><option value="yes">Yes</option><option value="not-applicable">We believe we are exempt</option><option value="no">No / unsure</option></select></div>
+   <div class="field"><label for="f-bond">Bonding capacity if a bid requires it?</label><select id="f-bond" name="bond" data-required><option value="">Select</option><option value="yes">Yes</option><option value="no">No / unsure</option></select></div>
+  </div></div>
+ </div>
+
+ <div id="path-restaurant" data-path="restaurant" hidden>
+  <div class="finder-step"><h2>Your restaurant</h2><div class="form-grid">
+   <div class="field"><label for="r-location">Where is the business?</label><select id="r-location" name="location" data-required><option value="">Select</option>{restaurantLocations.map(([v,l])=><option value={v}>{l}</option>)}</select></div>
+   <div class="field"><label for="r-type">Type of business</label><select id="r-type" name="businessType" data-required><option value="">Select</option>{businessTypes.map(([v,l])=><option value={v}>{l}</option>)}</select></div>
+   <div class="field full"><label for="r-tenure">Do you own the building or lease it?</label><select id="r-tenure" name="tenure" data-required><option value="">Select</option><option value="own">We own the building</option><option value="lease">We lease</option><option value="unsure">Not sure / not applicable</option></select><p class="fine">Some building and energy programs are open only to property owners.</p></div>
+  </div>
+  <fieldset class="check-grid" data-required-group><legend>What would you like help with? Choose at least one.</legend>{interests.map(([v,l])=><label><input type="checkbox" name="interests" value={v} />{l}</label>)}</fieldset>
+  </div>
+ </div>
+
+ <div id="finder-calc" hidden><button type="button" class="button" id="finder-run">See my results</button><p class="form-feedback" id="finder-validation" role="alert"></p></div>
+
+ <div class="finder-results" id="finder-results" tabindex="-1" hidden aria-live="polite"></div>
+
+ <div class="finder-step" id="finder-contact" hidden>
+  <h2>Send this to Tidewater</h2><p>We'll review your result against current solicitations and programs, and reply with a practical next step. Free, with no obligation.</p>
+  <div class="form-grid">
+   <div class="field"><label for="c-name">Name</label><input id="c-name" name="name" autocomplete="name" maxlength="120" data-required /></div>
+   <div class="field"><label for="c-business">Business</label><input id="c-business" name="business" autocomplete="organization" maxlength="160" data-required /></div>
+   <div class="field"><label for="c-email">Email</label><input id="c-email" type="email" name="email" autocomplete="email" maxlength="254" data-required /></div>
+   <div class="field"><label for="c-phone">Phone (optional)</label><input id="c-phone" type="tel" name="phone" autocomplete="tel" maxlength="40" /></div>
+   <div class="field full"><label for="c-pref">How should we follow up?</label><select id="c-pref" name="contactPreference" data-required><option value="email">Email</option><option value="phone">Phone call</option><option value="either">Either</option></select></div>
+   <div class="field full"><label for="c-notes">Anything else? (optional)</label><textarea id="c-notes" name="notes" maxlength="1500" placeholder="A solicitation link, a deadline, or the project you have in mind"></textarea></div>
+  </div>
+  <div class="form-section"><label class="checkline"><input type="checkbox" name="consent" value="yes" data-required /><span>Tidewater may contact me about this request. I can opt out anytime. <a href="/privacy">Privacy policy</a>.</span></label></div>
+  {newsletterEnabled && <div class="form-section"><label class="checkline"><input type="checkbox" name="newsletterOptIn" value="yes" /><span>Optional and separate: also send me the Tidewater digest. I'll confirm by email.</span></label></div>}
+  {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="auto"></div>}
+  <button type="submit" class="button">Send to Tidewater</button>
+  <p class="form-feedback" id="finder-feedback" role="status" aria-live="polite"></p>
+  <p class="fine dim">If online delivery is unavailable, <a href="mailto:hello@tidewaterbid.com">email Tidewater directly</a>. Your answers stay on this page until delivery is confirmed.</p>
+ </div>
+</form>
+</div></section>
+{turnstileKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+<script type="module" src="/scripts/finder.js"></script>
+</Base>

@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 const demo=process.env.DEMO_SEED!=='0';
-export const routes=['/','/bids','/pricing','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/open-bids','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md',...(demo?['/bids/washington-dc/sample-event-catering']:[])];
+export const routes=['/','/bids','/pricing','/opportunity-finder','/engage','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/open-bids','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md',...(demo?['/bids/washington-dc/sample-event-catering']:[])];
 for(const width of [360,390,768,1440]){
  test(`routes usable at ${width}px without horizontal scrolling`,async({page})=>{
   await page.setViewportSize({width,height:800});

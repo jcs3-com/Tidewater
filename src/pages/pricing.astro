@@ -1,10 +1,58 @@
 ---
 import Base from '../layouts/Base.astro';
 import CTA from '../components/CTA.astro';
+import {bidDeskTiers,formatUsd,BID_DESK_TIER_BOUNDARY} from '../../public/scripts/pricing.js';
+import {pageUrl} from '../lib/config';
+const [tierOne,tierTwo]=bidDeskTiers;
+const faq=[
+  {q:'How do you decide which tier applies?',a:`By the estimated value of the contract in the solicitation, not by our fee. Under ${formatUsd(BID_DESK_TIER_BOUNDARY)} is ${formatUsd(tierOne.price)}. ${formatUsd(BID_DESK_TIER_BOUNDARY)} or more, including exactly ${formatUsd(BID_DESK_TIER_BOUNDARY)}, is ${formatUsd(tierTwo.price)}. If the agency has not published a value, we use your good-faith estimate and confirm the tier in writing before you pay.`},
+  {q:'Is there a smaller or cheaper option?',a:`No. ${formatUsd(tierOne.price)} is the minimum paid Bid Desk engagement. The Opportunity Finder is free and is not a paid deliverable.`},
+  {q:'Do you charge a percentage if we win?',a:'No. Fees are flat and agreed before work starts. They never depend on the award, and we never take a share of contract value.'},
+  {q:'Do you guarantee an award?',a:'No. The agency decides every award. Our fee pays for preparation work, not an outcome.'}
+];
+const schema=[
+  {'@context':'https://schema.org','@type':'Service',name:'Single Bid Architecture',serviceType:'Government bid preparation',provider:{'@type':'Organization',name:'Tidewater Advisory LLC'},areaServed:['Washington, DC','Maryland','Virginia'],url:pageUrl('/pricing'),
+   offers:bidDeskTiers.map(t=>({'@type':'Offer',name:t.name,description:`Flat fee for one solicitation with an estimated contract value ${t.id==='sba-1'?'under $100,000':'of $100,000 or more'}.`,price:String(t.price),priceCurrency:'USD',availability:'https://schema.org/LimitedAvailability'}))},
+  {'@context':'https://schema.org','@type':'FAQPage',mainEntity:faq.map(x=>({'@type':'Question',name:x.q,acceptedAnswer:{'@type':'Answer',text:x.a}}))}
+];
 ---
-<Base title="Flat-Fee Bid Pricing | Tidewater" description="Transparent flat-fee government bid support for hospitality and service operators. No hidden payment model.">
-<section class="section"><div class="container alt-hero"><p class="eyebrow">Pricing</p><h1>Know the fee before we start.</h1><p class="lead">Flat fees, scoped to the job. We review the solicitation before agreeing on the specific amount in each range.</p></div></section>
-<section class="section narrow"><div class="container"><div class="table-wrap"><table><thead><tr><th scope="col">Estimated contract value</th><th scope="col">Bid preparation fee</th><th scope="col">Scope</th></tr></thead><tbody><tr><td>Under $100,000</td><td class="mono"><strong>$250–$500 per bid</strong></td><td>Opportunity review, checklist, and drafted response.</td></tr><tr><td>$100,000–$1 million</td><td class="mono"><strong>$1,500–$3,000 per bid</strong></td><td>Deeper pricing review, document coordination and drafted response.</td></tr><tr><td>Over $1 million</td><td class="mono"><strong>Quoted retainer or six-month engagement</strong></td><td>Multi-stage preparation and coordination, scoped in writing.</td></tr><tr><td>Post-award implementation</td><td class="mono"><strong>Monthly retainer, quoted</strong></td><td>Launch operations, staffing ramp and compliance setup.</td></tr></tbody></table></div>
-<div class="grid-2 inset"><div class="panel"><h3>The template is yours.</h3><p>Your upfront bid fee includes the bid template. You keep the template and can use it for later opportunities.</p></div><div class="panel"><h3>What may change the quote?</h3><p>The number of required attachments, technical complexity, required site visits, time until the deadline and coordination with your team.</p></div></div><p class="fine">Contract value means the estimated size of the agency work, not the amount of our fee. Agency filing charges, if any, are separate and disclosed before engagement.</p></div></section>
-<CTA title="Start with one real opportunity." body="Send us the solicitation or tell us about your business. We will review the fit before quoting the work."/>
+<Base title="Bid Desk Pricing: $1,250 and $2,500 Flat Fees | Tidewater" description="Single Bid Architecture: $1,250 for solicitations under $100,000 and $2,500 for $100,000 and above. Flat fees, agreed in writing. Never contingent on an award, and no award guarantees." schema={schema}>
+<section class="section"><div class="container alt-hero"><p class="eyebrow">The Bid Desk / Pricing</p><h1>One solicitation. One flat fee.</h1><p class="lead">The fee is set by the size of the contract, agreed in writing before work starts, and never depends on whether you win.</p></div></section>
+
+<section class="section narrow"><div class="container">
+ <div class="price-grid">
+  <article class="price-card" data-tier={tierOne.id}><p class="price-range">{tierOne.range}</p><h2>{tierOne.name}</h2><p class="price-amount" data-price={tierOne.price}>{formatUsd(tierOne.price)}</p><p>For one government solicitation with an estimated contract value below $100,000.</p>
+   <ul><li>Opportunity and eligibility review</li><li>Requirements and compliance matrix</li><li>Public bid-tabulation price context, when the agency publishes it</li><li>Bid response outline and draft architecture</li><li>Owner review and handoff</li></ul>
+   <div class="actions"><a class="button" href="/opportunity-finder?path=bids" data-track="paid_inquiry" data-track-tier={tierOne.id}>Check fit first <span aria-hidden="true">&#8599;</span></a></div></article>
+  <article class="price-card featured" data-tier={tierTwo.id}><p class="price-range">{tierTwo.range}</p><h2>{tierTwo.name}</h2><p class="price-amount" data-price={tierTwo.price}>{formatUsd(tierTwo.price)}</p><p>For one government solicitation with an estimated contract value of $100,000 or more.</p>
+   <ul><li>Everything in the first tier</li><li>Deeper requirements analysis</li><li>Response architecture and narrative framework</li><li>Evidence-backed pricing and competitive context, where public records exist</li></ul>
+   <div class="actions"><a class="button" href="/opportunity-finder?path=bids" data-track="paid_inquiry" data-track-tier={tierTwo.id}>Check fit first <span aria-hidden="true">&#8599;</span></a></div></article>
+  <article class="price-card" data-tier="custom"><p class="price-range">Separately scoped</p><h2>Complex or ongoing work</h2><p class="price-amount">Custom quote</p><p>Never below the applicable tier above. Quoted in writing before work starts.</p>
+   <ul><li>Additional narrative drafting</li><li>Agency submission support</li><li>Multi-volume, bond-heavy or unusually technical solicitations</li><li>Post-award staffing and implementation</li></ul>
+   <div class="actions"><a class="button-quiet" href="/contact" data-track="paid_inquiry" data-track-tier="custom">Request a quote</a></div></article>
+ </div>
+ <p class="fine">Contract value means the estimated size of the agency work, not our fee. Under {formatUsd(BID_DESK_TIER_BOUNDARY)} is {formatUsd(tierOne.price)}; {formatUsd(BID_DESK_TIER_BOUNDARY)} or more is {formatUsd(tierTwo.price)}. Agency filing charges, if any, are separate and disclosed before engagement. These fees apply to the Bid Desk only; Restaurant Advisory work is scoped and quoted separately.</p>
+</div></section>
+
+<section class="section" style="background:var(--subtle)"><div class="container">
+ <div class="section-head"><p class="eyebrow">Which tier applies?</p><h2>Check a contract value.</h2><p>Enter the estimated contract value from the solicitation, or your good-faith estimate if none is published.</p></div>
+ <form class="tier-check" id="tier-check" novalidate><div class="field"><label for="tier-value">Estimated contract value (USD)</label><input id="tier-value" name="value" inputmode="decimal" autocomplete="off" placeholder="e.g. 85,000" aria-describedby="tier-result" /></div><button class="button" type="submit">Show the fee</button></form>
+ <p class="tier-result" id="tier-result" role="status" aria-live="polite"></p>
+</div></section>
+
+<section class="section"><div class="container">
+ <div class="section-head"><p class="eyebrow">Scope in plain language</p><h2>What the fee covers, and what it doesn't.</h2></div>
+ <div class="scope-grid">
+  <div><h3>Included</h3><ul><li>Review of one solicitation and its addenda against your business.</li><li>A line-by-line list of required forms, registrations, insurance and signatures.</li><li>Public price history from bid tabulations, when available. History informs the decision; it does not predict the award.</li><li>The structure of your response, organized to match the agency's instructions.</li><li>One handoff review with you. You keep the materials.</li></ul></div>
+  <div><h3>Not included unless quoted</h3><ul><li>Third-party, registration, certification or agency fees.</li><li>Legal, insurance or tax advice.</li><li>Final submission to the agency, or representing you to it.</li><li>Additional narrative drafting beyond the agreed scope.</li><li>Post-award staffing and implementation.</li></ul></div>
+  <div><h3>Revisions</h3><p>One consolidated round of revisions to the delivered materials is included. Further rounds, or changes caused by new agency addenda after delivery, are quoted before we do them.</p></div>
+  <div><h3>Your part</h3><ul><li>Accurate insurance, licensing and registration details.</li><li>References and examples of work you actually performed.</li><li>Your costs, staffing capacity and margin inputs. You approve every price and claim.</li><li>Portal logins and the final submission, unless submission support is quoted.</li></ul></div>
+  <div><h3>Turnaround</h3><p>The delivery date is set in the written scope, working back from the agency's deadline. Send the solicitation as early as you can. If too little time remains to do the work properly, we will tell you before you pay.</p></div>
+  <div><h3>What we won't do</h3><p>We do not guarantee awards, take contingent fees, invent experience or certify compliance on your behalf. We write for one firm per solicitation, confirmed in writing.</p></div>
+ </div>
+</div></section>
+
+<section class="section"><div class="container faq"><p class="eyebrow">Pricing questions</p><h2>Before you start</h2>{faq.map(x=><details><summary>{x.q}</summary><p>{x.a}</p></details>)}</div></section>
+<CTA title="Start with the free Opportunity Finder." body="A preliminary readiness read and the source-verified opportunities we track. If a bid fits, we'll scope it at the flat fee for its tier." href="/opportunity-finder?path=bids" label="Find opportunities"/>
+<script type="module" src="/scripts/tier-check.js"></script>
 </Base>

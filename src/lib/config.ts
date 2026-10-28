@@ -42,3 +42,7 @@ export const pageUrl = (path:string) => new URL(path, siteUrl).toString();
 const flag = (name:string) => (import.meta.env[name] ?? (typeof process !== 'undefined' ? process.env[name] : undefined)) === '1';
 export const indexable = flag('SITE_INDEXABLE');
 export const newsletterEnabled = flag('NEWSLETTER_ENABLED');
+// CHECKOUT_ENABLED=1 would render the gated Single Bid Architecture payment step. It stays OFF until
+// engagement terms, refund policy, payment credentials and fulfilment capacity are verified.
+// Even when on, payment is offered only after a written qualification and tier confirmation.
+export const checkoutEnabled = flag('CHECKOUT_ENABLED');

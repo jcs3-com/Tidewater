@@ -47,6 +47,9 @@ Build static output: `npm run build` (creates `dist/`). A deliberate Airtable bu
 - `src/pages/og/bids/...png.ts` — generated PNG social cards for every bid page
 - `src/pages/sitemap.xml.ts` — full static and dynamic XML sitemap; excludes SAMPLE bids
 - `public/scripts/score.js` — shared readiness scoring logic, reused by the Worker
+- `public/scripts/pricing.js` — the only source of Bid Desk prices ($1,250 / $2,500, $100,000 boundary), shared by pages, finder, Worker checkout and tests
+- `public/scripts/finder-logic.js` + `src/pages/opportunity-finder.astro` — free two-path Opportunity Finder
+- `public/assets/brand/` + `scripts/brand/` — approved oyster mark, lockup rasters, icons and the reproducible trace/render scripts
 - `worker/src/index.js` — Airtable records, match suggestions, CORS and confirmed newsletter
 - `functions/` — same-origin Pages Functions routes invoking the Worker logic (recommended production path)
 - `seed/rfps.sample.json` — **three explicitly fictional** example records
@@ -172,9 +175,9 @@ The Worker requires all sending fields before creating a newsletter signup and b
 
 **Standalone Worker alternative:** `npm run worker:deploy` is retained for operators who later want a separate API origin. In that mode, set `PUBLIC_API_URL`, `ALLOWED_ORIGIN`, `WORKER_URL` and other Worker settings explicitly. The same-origin Pages Functions above are the default.
 
-## A/B positioning
+## Positioning
 
-The v2 homepage uses the fixed headline `Government contracts. Within reach.` The earlier randomized headline experiment is no longer active. Optional form analytics do not establish an active A/B test or measured conversion improvement.
+The v3.2 homepage headline is the approved tagline `Read the current. Find the opportunity.` No randomized headline experiment is active. Optional form analytics do not establish an active A/B test or measured conversion improvement.
 
 ## SEO and build behavior
 
@@ -201,3 +204,10 @@ Baseline responsive width is 360px, gutters 16px, no fixed wide child on mobile,
 ## Remaining launch tasks
 
 See [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md). Cloudflare publication and historical visual QA are recorded in the release log. Actual Airtable writes, newsletter sending, legal approvals and launch gates require separate verification; do not infer their completion from a successful deployment. For the complete browser suite, target a Pages runtime with `BASE_URL`; Astro dev alone does not serve the middleware or API routes.
+
+## Optional variables added in v3.2
+
+| Variable | Where | Purpose |
+| --- | --- | --- |
+| `CHECKOUT_ENABLED` | Build **and** runtime | Leave unset. `1` renders the `/engage` payment step and enables `/api/checkout`, which still requires `STRIPE_SECRET_KEY`, `HMAC_SECRET` and a signed qualified quote. Do not enable before engagement terms, refund policy, payment credentials and fulfilment capacity are approved. |
+| `STRIPE_SECRET_KEY` | Runtime secret | Stripe Checkout for qualified Single Bid Architecture quotes only. Not configured. |

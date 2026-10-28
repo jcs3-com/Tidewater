@@ -1,5 +1,19 @@
 # Tidewater — launch checklist
 
+## v3.2 brand, pricing and Opportunity Finder — 2026-10-28
+
+- [x] Approved master brand board installed: engraved oyster lockup (header/footer, light and dark), tagline, palette tokens, Cormorant roman + italic, DM Sans, favicon, apple-touch icon, default and per-bid social images, contour texture. See `docs/TIDEWATER_SITE_DESIGN_SYSTEM.md`.
+- [x] Bid Desk pricing is $1,250 (under $100,000) / $2,500 ($100,000 and above) everywhere, from `public/scripts/pricing.js`; retired prices removed and guarded by unit and browser tests ($99,999 / $100,000 boundary tested).
+- [x] Free Opportunity Finder at `/opportunity-finder` (Bid Desk and Restaurant Advisory paths) on the existing Pages Functions → Airtable path.
+- [x] Production `/api/lead` writes to Airtable `Prospects` (verified 2026-10-28 with one labelled QA record, `recDScntVbM5OlTxI`). Runtime Airtable secret is therefore configured.
+- [x] `tidewaterbid.com` and `www.tidewaterbid.com` serve production over HTTPS; canonical tags point to the apex.
+- [ ] **[[TODO: Add a Cloudflare zone Redirect Rule `www.tidewaterbid.com/*` → `https://tidewaterbid.com/$1` (301). Pages `_redirects` cannot match hostnames; needs dashboard or zone-scoped API access.]]**
+- [ ] **[[TODO: Add `X-Robots-Tag: noindex` or a redirect for `tidewater-6ik.pages.dev` only after the Drive release workflow stops polling it.]]**
+- [ ] **[[TODO: Confirm founder default of one consolidated revision round on the pricing page and proposal template.]]**
+- [ ] **[[TODO: Approve refund policy and attorney-reviewed engagement agreement; only then configure `STRIPE_SECRET_KEY` and set `CHECKOUT_ENABLED=1` (build and runtime).]]**
+- [ ] **[[TODO: Enable Turnstile. Production received an unsolicited SEO-spam contact on 2026-10-28 despite noindex.]]**
+- [ ] **[[TODO: Configure `PUBLIC_ANALYTICS_DOMAIN` (Plausible) and goals `lead`, `finder_start`, `finder_result`, `paid_inquiry`, `tier_check`, `checkout_start`.]]**
+
 ## v2 visual candidate — 2026-10-26
 
 The redesign can be released visually with Airtable credentials pending. This
@@ -36,7 +50,7 @@ source SHA, remote main, actual production evidence and manually archived files.
 ## Identity, offers and copy
 
 - [x] Domain `tidewaterbid.com` registered at Cloudflare Registrar (2026-10-26). Code defaults now use it.
-- [ ] **[[TODO: Attach `tidewaterbid.com` (and optionally `www.tidewaterbid.com`) as Custom domains on the Pages project `tidewater`.]]**
+- [x] `tidewaterbid.com` and `www.tidewaterbid.com` attached to Pages project `tidewater`; both return HTTPS 200 with the production release marker (verified 2026-10-28).
 - [ ] **[[TODO: After the domain serves HTTPS, set the Pages variable `SITE_URL=https://tidewaterbid.com` and redeploy; verify canonical, OG and sitemap URLs.]]**
 - [x] Cloudflare Email Routing enabled for `tidewaterbid.com` (MX and SPF live); public contact is `hello@tidewaterbid.com` on every page. No personal address is published. **[[TODO: Add a DMARC record; send a test message to confirm forwarding.]]**
 - [ ] **[[TODO: Optional: register `tidewaterbids.com` and redirect it to `tidewaterbid.com`.]]**
@@ -44,7 +58,8 @@ source SHA, remote main, actual production evidence and manually archived files.
 - [ ] **[[TODO: Supply actual company postal mailing address]]** for site footer and CAN-SPAM email footer.
 - [x] Founder bio drafted from known operator history. **[[TODO: Founder final copy review before public launch.]]**
 - [ ] **[[TODO: Confirm final trademark/trade-name use and logo/brand approval.]]**
-- [ ] **[[TODO: Approve pricing scope and written engagement terms, including one-firm-per-solicitation exclusivity.]]**
+- [x] Pricing approved by the founder 2026-10-28 (policy v1.1).
+- [ ] **[[TODO: Approve written engagement terms, including one-firm-per-solicitation exclusivity and refunds.]]**
 - [ ] **[[TODO: Verify actual availability and fee terms for ORP shell pickups; only then advertise free pickups if documented.]]**
 - [ ] **[[TODO: Recheck Maryland shell-credit law before any active tax-credit claim.]]** Existing site correctly says the prior up-to-$1,500 credit expired.
 - [ ] **[[TODO: Approve attorney-reviewed privacy, terms, jurisdiction, retention, deletion process, legal email and effective dates.]]**

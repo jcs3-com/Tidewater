@@ -1,5 +1,7 @@
 # Tidewater verified asset and license register
 
+> **v3.2 (2026-10-28):** approved brand assets added under `public/assets/brand/`; favicon, contour texture and default social image replaced. Checksums for the files changed in v3.2 are in the v3.2 table at the end of this document.
+
 > **v3.0 (2026-10-27):** two photographs (`tidal-oysters*`, `salt-marsh-channels*`) were supplied by the site owner, who confirmed on 2026-10-27 that the rights are their own. The overlay's temporary hotlinked Pexels image (photo 17154853) was not shipped.
 
 Verified 2026-10-26. All shipped visual assets and fonts are hosted locally. No hotlinked imagery, stock previews, purchased-but-unlicensed files, invented licenses or video are used. Source metadata/revision evidence is retained in `docs/asset-evidence/`. A public colophon at `/credits` carries author/source/license/change attribution and a no-endorsement statement.
@@ -10,13 +12,17 @@ Photographs are displayed in muted blue-gray monochrome using CSS grayscale and 
 | --- | --- | --- | --- |
 | `chesapeake-marsh-960.webp`, `chesapeake-marsh-1847.webp`, `chesapeake-marsh.jpg` | Leo Miranda / USFWS Northeast Region; aerial forest, river and marsh habitat near Aberdeen Proving Ground, Maryland | [Commons source](https://commons.wikimedia.org/wiki/File:Aerial_view_of_forest,_river_and_marsh_(7507904032).jpg), [official USFWS Flickr](https://www.flickr.com/photos/usfwsnortheast/7507904032/). Revision **1034685086**, 2025-05-23, contains **CC BY 2.0**, Flickr review and **PD-USGov-FWS** templates. Attribution supplied regardless of public-domain designation. | Original 1847×1114. Metadata removed, locally resized/compressed; responsive CSS crops. Optional slow CSS transform of still image. |
 | `swan-island-640.webp`, `swan-island-1200.webp`, `swan-island.jpg` | Miles Simmons / US Army Corps of Engineers; Swan Island, Chesapeake Bay, Maryland, 2017-12-01 | [USACE original](https://www.nad.usace.army.mil/Media/Images/igphoto/2001880743/), [Commons source](https://commons.wikimedia.org/wiki/File:An_aerial_view_of_Swan_Island_in_the_Chesapeake_Bay_in_Maryland,_2017-12-01_-_171201-A-ZZ999-001.jpeg). Revision **911847693**, 2024-08-18, contains **PD-USGov-ACE**: US federal employee official-duty work, public domain in the US. | Local WebP/JPEG derivatives, metadata removed, responsive crop. Lazy-loaded below the fold. |
-| `estuary-contours.svg` | Original Tidewater decorative study from the user-supplied v2 package, adapted for a transparent engraving | User-provided project artwork; no third-party geographic dataset or proprietary map used. Original supplied file retained in the reference package in Drive. | Removed opaque background, grid labels and coordinates; refined opacity for decorative banners. Not an accurate or navigational chart. |
+| `estuary-contours.svg` | Estuary contour texture supplied with the approved brand package (Drive `tidewater-estuary-contours.svg`, 2026-10-28); replaces the v2 study | User-provided project artwork; no third-party geographic dataset or proprietary map used. Original supplied file retained in the reference package in Drive. | Removed opaque background, grid labels and coordinates; refined opacity for decorative banners. Not an accurate or navigational chart. |
 | `fonts/cormorant-garamond-latin.woff2` | Cormorant Garamond project | Fontsource variable package locked in `package-lock.json`; **SIL Open Font License 1.1**, full notice in `docs/licenses/Cormorant-Garamond-OFL.txt`. | Unmodified Latin variable font, locally hosted. |
 | `fonts/dm-sans-latin.woff2` | DM Sans project | Fontsource variable package locked in `package-lock.json`; **SIL Open Font License 1.1**, full notice in `docs/licenses/DM-Sans-OFL.txt`. | Unmodified Latin variable font, locally hosted. |
-| `favicon.svg` | Original Tidewater typographic T mark created in this implementation | Project-created vector paths; no external logo asset. | Marine/oyster colors. |
+| `favicon.svg` | Simplified oyster favicon supplied with the approved brand package (Drive `tidewater-favicon.svg`, 2026-10-28) | Tidewater Advisory brand artwork, owner-supplied. Replaces the earlier typographic T. | Unmodified. |
+| `brand/oyster-engraving-252.webp`, `brand/oyster-engraving-503.webp` | Engraved oyster from the approved master brand board (Drive `tidewater-oyster-mark-transparent.png`) | Tidewater Advisory brand artwork, owner-supplied 2026-10-28. | Stray specks outside the shell removed; WebP at native 503 px and 252 px. |
+| `brand/oyster-mark-ink.svg`, `brand/oyster-mark-shell.svg` | One-colour vector trace of the same engraving | Derived from owner-supplied artwork with `scripts/brand/trace-mark.py` (potrace, threshold 150). Replaces the blockier supplied trace for smoother curves; the supplied trace is retained in Drive. | Ink `#243943` and shell `#F7F5EF` fills. |
+| `brand/oyster-mark-{ink,shell}-header.webp`, `brand/apple-touch-icon.png`, `brand/favicon-32.png`, `og-default.png` | Rasters rendered from the assets above with `scripts/brand/render-brand-assets.mjs` | Derived project assets. | `og-default.png` replaced the pre-existing card with the approved lockup and tagline. |
+| `fonts/cormorant-garamond-latin-italic.woff2` | Cormorant Garamond project | Same Fontsource package and **SIL OFL 1.1** notice as the roman. | Unmodified Latin italic variable font. |
 | `tidal-oysters-640.webp`, `tidal-oysters.jpg` | Site owner (Tidewater Advisory). Long-exposure photograph of tidal water flowing around a cluster of oysters. Supplied with the v3.0 overlay request to replace the temporary hotlinked Pexels streambed image. | **Owner's own work**; rights held by the site owner, confirmed by the owner 2026-10-27. Not third-party licensed. | Local WebP/JPEG at the supplied 640×480 (no upscaling), metadata absent in supplied file. Used on the homepage Restaurant Advisory panel and `/restaurant-advisory` hero. |
 | `salt-marsh-channels-960.webp`, `salt-marsh-channels-1600.webp`, `salt-marsh-channels.jpg` | Site owner (Tidewater Advisory). Aerial photograph of tidal creeks winding through salt marsh. Supplied with the v3.0 overlay request. Location not recorded. | **Owner's own work**; rights held by the site owner, confirmed by the owner 2026-10-27. Not third-party licensed. | Resized from supplied 1800×1350 to 1600 and 960 widths. Used on the homepage Bid Desk panel. |
-| `og-default.png` | Pre-existing repository asset from baseline main | Retained project asset, not a newly licensed photograph. External provenance not asserted. | Unchanged. Dynamic bid OG images continue to be generated by existing project code. |
+| Bid OG cards | Generated per bid by `src/pages/og/bids/...png.ts` | Project code. | Recoloured to the approved palette in v3.2. |
 
 The suggested `Chesapeake_bay_wetlands.jpg` and `Aerial_view_of_marsh_wetland.jpg` links from the upgrade package were **not shipped or assumed licensed**. A NASA/USPS result with a separate named photographer was rejected despite generic public-domain metadata. Only the source records above were selected and downloaded.
 
@@ -39,3 +45,20 @@ For photo source bytes, original SHA-256 is recorded in the evidence JSON. Shipp
 | `public/assets/salt-marsh-channels-1600.webp` | 433236 | `512377ea50f88ef03a1f1118b26d950ce34214c30c640002d4a67973b90ef506` |
 | `public/assets/salt-marsh-channels-960.webp` | 163598 | `ebddb9b77a8088437061b8bcc62707ccbcf6ba477dc6aa0f9cc0facef0004688` |
 | `public/assets/salt-marsh-channels.jpg` | 488818 | `ffa69d6654c9ab46b9636557eaf87b853b15ab1fa68121209133094ba02d8023` |
+
+### v3.2 derivative checksums (2026-10-28)
+
+| Local path | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `public/assets/brand/apple-touch-icon.png` | 15077 | `ddab3f9f768c36b5ff7dcbeedf09203eccdd2c1002ceff3bde8a436d0bb219a4` |
+| `public/assets/brand/favicon-32.png` | 1546 | `3b5b9893fb8758302d797aed4f4cae22495b542d069588fd6285d1ea85223f50` |
+| `public/assets/brand/oyster-engraving-252.webp` | 28556 | `cbce19104d2443acae14a4026f180485f59a81c4b34bc33c553add333a349217` |
+| `public/assets/brand/oyster-engraving-503.webp` | 73646 | `d0b2c888cd67f97cdf8dd0990990095218b03d1ab234a878732c98f8b468fca6` |
+| `public/assets/brand/oyster-mark-ink-header.webp` | 4014 | `b275e74b4585d96fb5b9bd388f4b7650f2116bddaa4a387824b8fafbd0e50baa` |
+| `public/assets/brand/oyster-mark-ink.svg` | 160926 | `00338b9013260af6d47e95a578dca388adf790098f5a1c4a40c15ab5e4a6e891` |
+| `public/assets/brand/oyster-mark-shell-header.webp` | 3814 | `53959ce7eb40367d5e144534d3f7e868b4c75925651da9af6b63a855ae2fcf67` |
+| `public/assets/brand/oyster-mark-shell.svg` | 160926 | `271cee42ee6a89f559297936b5d002eb907a58706288b0f8df4b014841d2217a` |
+| `public/assets/favicon.svg` | 630 | `8566d1469258643763e35441424263207e09819fd50bfa66064bc45ebd139624` |
+| `public/assets/estuary-contours.svg` | 1613 | `b35991ec4bc3d2cf29ac0e575815c01ca33ed4a1fd349e9119bb38d1c803373b` |
+| `public/assets/og-default.png` | 231561 | `328b9f638d7b883fe3c3b3ccc38ddfa6c4df02ff95e9538290774ef53120cd09` |
+| `public/assets/fonts/cormorant-garamond-latin-italic.woff2` | 39260 | `6f2f5c3b1abc3d0bb035a927f66a90ca873f94fc31c4966c8d024142c2036e55` |
