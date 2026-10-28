@@ -60,7 +60,7 @@ test('failed form delivery preserves entries and offers direct email',async({pag
 test('launch gates and deployed-source marker stay explicit',async({page,request})=>{
  await page.goto('/');await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','noindex, nofollow');
  const marker=await (await request.get('/release.json')).json();
- expect(marker.version).toBe('3.1.0');expect(marker.commit).toMatch(/^[a-f0-9]{40}$/);
+ expect(marker.version).toBe('3.2.0');expect(marker.commit).toMatch(/^[a-f0-9]{40}$/);
  await expect(page.locator('meta[name=tidewater-commit]')).toHaveAttribute('content',marker.commit);
  const robots=await (await request.get('/robots.txt')).text();expect(robots).toContain('Disallow: /');
  // Canonical origin follows the SITE_URL the build used (Cloudflare env in production).
