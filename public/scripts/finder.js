@@ -77,7 +77,7 @@ function renderBids(values) {
   const {score, gaps} = scoreReadiness(values);
   form.elements.namedItem('readinessScore').value = String(score);
   form.elements.namedItem('gapList').value = gaps.join('\n');
-  const {exact, sameCategory} = matchBids(data.bids || [], {category: values.categories, jurisdiction: values.jurisdictions}, todayISO());
+  const {exact, sameCategory} = matchBids(data.bids || [], {category: values.categories, jurisdiction: values.jurisdictions}, todayISO(), Object.fromEntries((data.jurisdictions || []).map(j => [j.slug, j.region])));
   const area = nameOf(data.jurisdictions, values.jurisdictions), cat = nameOf(data.categories, values.categories);
   const band = score >= 75 ? 'Ready to compete on a well-matched solicitation.' : score >= 50 ? 'Close. A few gaps to close before or during your first bid.' : 'Early. Closing the gaps below comes before bidding.';
   results.replaceChildren(
@@ -90,7 +90,7 @@ function renderBids(values) {
     el('h3', {}, `Open ${cat.toLowerCase()} bids in ${area}`),
     exact.length ? el('ul', {class: 'finder-match-list'}, exact.map(bidItem))
       : el('p', {class: 'finder-empty'}, `We are not tracking a verified open ${cat.toLowerCase()} solicitation in ${area} right now. That changes as agencies post new work; send us your profile and we'll match you as verified bids are added.`),
-    sameCategory.length ? [el('h3', {}, `Open ${cat.toLowerCase()} bids in other areas`), el('ul', {class: 'finder-match-list'}, sameCategory.map(bidItem))] : null,
+    sameCategory.length ? [el('h3', {}, `Open ${cat.toLowerCase()} bids elsewhere in the region`), el('ul', {class: 'finder-match-list'}, sameCategory.map(bidItem))] : null,
     nextStep('Want Tidewater to build the bid?', `Single Bid Architecture is ${formatUsd(bidDeskTiers[0].price)} flat for a solicitation under $100,000, or ${formatUsd(bidDeskTiers[1].price)} at $100,000 and above. We confirm fit and tier in writing before any fee.`,
       [el('a', {class: 'button', href: '#finder-contact', 'data-track': 'paid_inquiry', 'data-track-source': 'finder-bids'}, 'Ask Tidewater to review'), el('a', {class: 'button-quiet', href: '/pricing'}, 'See what the fee covers')])
   );

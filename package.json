@@ -2,7 +2,7 @@
   "name": "tidewater-bid-desk",
   "private": true,
   "type": "module",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "scripts": {
     "dev": "astro dev --host 0.0.0.0",
     "build": "astro build",

@@ -6,15 +6,15 @@ export const categories = [
   {slug:'event-services', name:'Event services', short:'Setup, staffing, rental support and event operations.'}
 ] as const;
 export const jurisdictions = [
-  {slug:'washington-dc', name:'Washington, DC', short:'District of Columbia'},
-  {slug:'montgomery-county-md', name:'Montgomery County, MD', short:'Montgomery County'},
-  {slug:'prince-georges-county-md', name:"Prince George’s County, MD", short:"Prince George’s County"},
-  {slug:'fairfax-county-va', name:'Fairfax County, VA', short:'Fairfax County'},
-  {slug:'arlington-county-va', name:'Arlington County, VA', short:'Arlington County'},
-  {slug:'alexandria-va', name:'Alexandria, VA', short:'City of Alexandria'},
-  {slug:'loudoun-county-va', name:'Loudoun County, VA', short:'Loudoun County'},
-  {slug:'annapolis-md', name:'Annapolis, MD', short:'Annapolis'},
-  {slug:'charleston-sc', name:'Charleston, SC area', short:'Charleston, Berkeley and Dorchester counties'}
+  {slug:'washington-dc', name:'Washington, DC', short:'District of Columbia', region:'dmv'},
+  {slug:'montgomery-county-md', name:'Montgomery County, MD', short:'Montgomery County', region:'dmv'},
+  {slug:'prince-georges-county-md', name:"Prince George’s County, MD", short:"Prince George’s County", region:'dmv'},
+  {slug:'fairfax-county-va', name:'Fairfax County, VA', short:'Fairfax County', region:'dmv'},
+  {slug:'arlington-county-va', name:'Arlington County, VA', short:'Arlington County', region:'dmv'},
+  {slug:'alexandria-va', name:'Alexandria, VA', short:'City of Alexandria', region:'dmv'},
+  {slug:'loudoun-county-va', name:'Loudoun County, VA', short:'Loudoun County', region:'dmv'},
+  {slug:'annapolis-md', name:'Annapolis, MD', short:'Annapolis', region:'dmv'},
+  {slug:'charleston-sc', name:'Charleston, SC area', short:'Charleston, Berkeley and Dorchester counties', region:'charleston'}
 ] as const;
 export const categoryName = (s:string) => categories.find(x=>x.slug===s)?.name || s.replaceAll('-', ' ');
 export const jurisdictionName = (s:string) => jurisdictions.find(x=>x.slug===s)?.name || s.replaceAll('-', ' ');

@@ -53,12 +53,16 @@ export function matchPrograms(programs, {location, interests = [], tenure} = {},
   rows.sort((a, b) => rank(a) - rank(b) || a.program.localeCompare(b.program));
   return {current: rows.filter(r => r.status === 'Open' || r.status === 'Upcoming'), watch: rows.filter(r => r.status !== 'Open' && r.status !== 'Upcoming')};
 }
-export function matchBids(bids, {category, jurisdiction} = {}, today = todayISO()) {
+// `regions` maps jurisdiction slug -> market region (e.g. 'dmv', 'charleston'). The "other areas" fallback
+// stays inside the visitor's own region so a DMV operator is never shown out-of-market work by default.
+export function matchBids(bids, {category, jurisdiction} = {}, today = todayISO(), regions = {}) {
   const live = bids.filter(b => b.dueDate && b.dueDate >= today && b.source);
+  const home = regions[jurisdiction];
+  const sameRegion = b => !home || !regions[b.jurisdiction] || regions[b.jurisdiction] === home;
   const withTier = b => ({...b, tier: tierForContractValue(b.estimatedValue)});
   const byDue = (a, b) => a.dueDate.localeCompare(b.dueDate);
   return {
     exact: live.filter(b => b.category === category && b.jurisdiction === jurisdiction).sort(byDue).map(withTier),
-    sameCategory: live.filter(b => b.category === category && b.jurisdiction !== jurisdiction).sort(byDue).slice(0, 4).map(withTier)
+    sameCategory: live.filter(b => b.category === category && b.jurisdiction !== jurisdiction && sameRegion(b)).sort(byDue).slice(0, 4).map(withTier)
   };
 }
