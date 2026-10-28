@@ -1,6 +1,10 @@
 # Tidewater — bid desk + restaurant advisory
 
-## Tidewater v2 status
+## Tidewater status
+
+**v3.2.0 (2026-10-28)** is live: approved brand identity, $1,250 / $2,500 Bid Desk pricing and the free Opportunity Finder ([PR #11](https://github.com/jcs3-com/Tidewater/pull/11)). Indexing, newsletter and checkout gates remain off. Details in the release log.
+
+### v2 history
 
 The v2 institutional/coastal redesign was published through [PR #1](https://github.com/jcs3-com/Tidewater/pull/1) from
 `main` baseline `c8dbde3138d2722ecf1e4fd2f1f01dcb914018e4` and deploys through the

@@ -2,7 +2,14 @@
 
 ## v3.2.0 Approved brand, Bid Desk pricing and free Opportunity Finder — 2026-10-28
 
-**Status: PENDING_PRODUCTION_VERIFICATION.** This entry is updated only after the live `/release.json` reports the merged commit.
+**Live in production, verified 2026-10-28 ~10:25 ET.** [PR #11](https://github.com/jcs3-com/Tidewater/pull/11) squash-merged as `b52cf30129c83ad3af1bf178cee9515307261877`. The Cloudflare Pages production build deployed it; `/release.json` on `tidewaterbid.com`, `www.tidewaterbid.com` and `tidewater-6ik.pages.dev` all reported `3.2.0` / `b52cf30…`, matching the homepage `tidewater-commit` meta tag. This documentation follow-up lands in a separate commit; the live marker then reports that commit.
+
+Production checks after deployment:
+- Playwright against `https://tidewaterbid.com`: **31/31 passed** (2.6 min), including axe WCAG 2.1 A/AA light and dark on 17 routes, no horizontal overflow at 360/390/768/1440px, the $99,999 / $100,000 tier boundary, no retired prices on any rendered route, finder flows and checkout gate.
+- Live data in the finder at deploy: 6 Open, officially sourced bids; 14 approved funding records, 8 open.
+- Live intake: labelled QA records written by production `/api/lead` — contact `recDScntVbM5OlTxI`, finder Bid Desk path `recoU7q4LuGGKEaRq` (readiness 88), finder restaurant path `recFA9I9uAtPPHhek` plus `Restaurant Projects` Lead `recYrWXztrZU37YyM`. The runtime Airtable secret is therefore configured.
+- `/api/checkout` returns 503 (disabled); `/robots.txt` disallows all; every page carries `noindex, nofollow`; sitemap lists `/opportunity-finder` on the apex.
+- The PR preview environment builds without `DEMO_SEED=0` (it renders the three SAMPLE bids). Production is unaffected; align the Pages preview variables if previews are used for QA.
 
 Source of truth: the founder's "Approved Brand + P0–P2 Deployment" package (2026-10-28), the Drive master brand board and `BID_DESK_PRICING_POLICY.md` v1.1, and the Airtable Offer Catalog.
 
