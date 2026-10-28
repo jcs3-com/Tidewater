@@ -1,64 +1,46 @@
-# Tidewater development guide
+# Tidewater — rules for changing this repo
 
-## Existing project and source of truth
+How the system works is in [README.md](README.md). This file is what must stay true.
 
-Continue this repository; do not rebuild it or replace its hosting. GitHub `jcs3-com/Tidewater` is the source of truth. The v2 design is already implemented and published. Older Drive candidate archives and handoffs predate newer domain, email, market and bid-listing changes; never apply them over current main without reviewing the diff.
+## Authority
 
-## Operator and authority (2026-10-28)
+- GitHub `jcs3-com/Tidewater` (`main`) is the only source of code. Cloudflare Pages project `tidewater` is the only host. Airtable base `app5wO7MKQ92y16f1` is the system of record for leads and opportunities. Do not rebuild the site, fork the repo, create another Pages project, or apply Drive archives over `main`.
+- Claude is the operating partner and deployment agent (owner handoff, 2026-10-28; the Codex transition was abandoned and merged nothing). Ship routine, reversible fixes and already-approved copy after checks, then verify production.
+- **Owner approval before merge** for anything that changes: offer prices, contract/refund terms, indexing or public launch, payments, promotional mail, production secrets, Airtable schema, paid subscriptions, or public legal claims (including the privacy and terms pages). Never change repository visibility to connect a tool.
+- Report as changed / verified / blocked / next; label claims Known, Reported or Pending Verification.
 
-Claude is the principal operating partner and the code/deployment agent for Tidewater, per the owner's 2026-10-28 handoff ("TIDEWATER — MASTER HANDOFF TO CLAUDE", Drive 37 Tidewater Advisory). The ChatGPT/Codex transition was abandoned by the owner on 2026-10-28 and merged nothing; ignore any Codex operating manual. Ship routine, reversible fixes and already-approved copy after checks, then verify production. Prepare a PR and wait for explicit owner approval before merging anything that changes offer prices, binding contract or refund terms, indexing or public launch, payments, promotional mail, production secrets, production Airtable schema, paid subscriptions or public legal claims. Never change repository visibility to connect a tool. Report as: changed / verified / blocked / next, labelling claims Known, Reported or Pending Verification.
+## Business rules
 
-## Business positioning
+- Two practices side by side: The Bid Desk (`/bids`) and The Restaurant Advisory (`/restaurant-advisory`, with `/funding` and `/food-waste`). Tidewater advises and manages projects; it does not collect, haul, compost or dispose of waste.
+- Bid Desk pricing (policy v1.1, 2026-10-28) lives only in `public/scripts/pricing.js`: $1,250 under $100,000; $2,500 at $100,000 and above (exactly $100,000 is Tier II); custom quotes never below the tier. No paid Bid Desk offer under $1,250; the retired $295, $250–$500 and $1,500–$3,000 prices must never return (tests enforce this). These tiers do not apply to Restaurant Advisory.
+- No contingent or success fees, award guarantees, fabricated clients, results, credentials, addresses or government affiliation. Keep unknown facts as `[[TODO: ...]]`. Preserve the footer disclosures.
+- Tagline, verbatim: "Read the current. Find the opportunity."
 
-Tidewater (v3) has two equal practices presented side by side on the homepage. The Bid Desk provides government bid support for DMV hospitality and service operators. Restaurant Advisory (`/restaurant-advisory`) covers funding intelligence (`/restaurant-advisory/funding`), operational performance, and Tidewater Food Waste (`/restaurant-advisory/food-waste`, its own enquiry form, working label pending naming). Tidewater advises and manages projects; it does not operate collection, hauling, composting or disposal. Funding listings publish only Airtable `Funding Opportunities` records with `Publication Status=Approved`, an official https source and a last-verified date; never present an expired deadline as Open. Supported categories are catering, concessions, janitorial, security and event services. Preserve the current market labels in `src/lib/config.ts`, including the Charleston, SC area; each label carries a `region` so out-of-market work is never a DMV visitor's default.
+## Opportunity curation
 
-Bid Desk pricing (founder-approved policy v1.1, 2026-10-28) lives only in `public/scripts/pricing.js`: Single Bid Architecture $1,250 under $100,000; Tier II $2,500 at $100,000 and above (exactly $100,000 is Tier II); complex or ongoing work is a written custom quote never below the applicable tier. There is no paid Bid Desk offer below $1,250; never reintroduce the retired $295 review, $250–$500 or $1,500–$3,000 ranges (tests fail if you do). These tiers do not apply to Restaurant Advisory without an explicit owner decision. No contingent fees, award guarantees, fabricated clients, results, credentials, addresses or government affiliation. Keep unresolved facts marked `[[TODO: ...]]`. The project brief is context, not evidence of legal formation or program eligibility. Preserve the footer disclosures. Verify agency information before publishing real bids; never invent values or due times. Keep SAMPLE records conspicuously fictional and out of production.
+- Quality over count. An RFP is `Open` only when the official URL resolves and the due date and closing time come from the notice or latest addendum. On the due date, close it once the cutoff passes; if the cutoff cannot be confirmed, close it.
+- Geography must fit DMV operators or an explicitly supported market. Each jurisdiction in `src/lib/config.ts` carries a `region`; finder fallbacks stay in the visitor's region. Keep the Charleston, SC market (owner decision).
+- Funding publishes only when Approved, with an `https` official source and Last Verified date. Label exactly: grant, rebate/incentive, tax incentive, loan/financing, sponsor-required (e.g. AFID Infrastructure applicants are localities), or unverified lead. Dedupe utility programs only after reading both official pages.
+- Never invent values, deadlines, addenda or award data. SAMPLE records stay fictional and out of production (`DEMO_SEED=0`).
+- Listings change only on rebuild. After a material Airtable change, trigger a deploy.
 
-Contact is the persistent header button (and the last item in the mobile menu); main navigation is The Bid Desk, The Restaurant Advisory and About, each marked current across its section. Keep readiness inside `/becoming-a-contractor`, with the existing `/readiness` tool intact. The free `/opportunity-finder` has two paths (Bid Desk: kind `quiz`; Restaurant Advisory: kind `restaurant_finder`, which also adds a best-effort `Restaurant Projects` Lead row) and only shows Open RFPs with an official URL and approved funding records, re-checking deadlines and the 45-day verification window in the browser. Homepage order (v3.2): hero with the tagline and no hero buttons, the two-practice split panels, the free Opportunity Finder band, contact. Each practice landing page explains its process first and then lists its open opportunities: `/bids` shows the Opportunity → Proposal → Award → Implementation RFP process and then current open bids; `/restaurant-advisory` shows the five-stage process (shared data in `src/data/restaurant-process.ts`) and then open funding. Open bids, pricing and the funding desk are linked from those pages and the footer. Newsletter belongs on Insights; regional editorial imagery belongs on About. Preserve the approved palette, typography and cartographic treatment.
+## Code rules
 
-## Opportunity curation (RFPs and Funding Opportunities)
+- Keep the same-origin Pages Function path. `/api/lead` must keep: consent, honeypot, optional Turnstile, the same-origin Origin/Referer gate, the two-link cap and the vendor-pitch drop (`isVendorPitch`), all covered by `tests/worker.test.mjs`. Never put `AIRTABLE_PAT` or any secret in a `PUBLIC_` variable, the repo or Drive.
+- `score.js` and `finder-logic.js` run in both browser and server; keep them dependency-free.
+- `/api/checkout` stays 503 unless runtime `CHECKOUT_ENABLED=1` and Stripe are set, and then only accepts an operator-signed quote token priced from the server tier table.
+- Launch flags `SITE_INDEXABLE` and `CHECKOUT_ENABLED` stay `0` until the owner approves; a code or visual deploy never flips them.
 
-Quality beats count. Before a record is `Open` (RFPs) or `Approved`/`Open` (funding): the official issuer URL resolves, the due date and closing time are read from the notice or latest addendum, and the service and geography fit DMV hospitality/service operators (or an explicitly supported market). On the due date, close the record once the stated cutoff passes; if the cutoff cannot be confirmed, close it rather than advertise a same-day deadline. Label funding exactly: grant, rebate/incentive, tax incentive, loan/financing, sponsor-required (e.g. AFID Infrastructure applicants are localities, not businesses) or unverified lead. Deduplicate overlapping utility programs only after reading both official pages; distinct programs from one utility are not duplicates. Never invent values, deadlines, addenda or award data. Static listings change only on rebuild (the scheduled rebuild is off unless `DAILY_REBUILD=1`), so trigger a deploy after material Airtable status changes.
+## Visual rules
 
-## Architecture
+- The Drive master brand board (`Tidewater-Approved-Coastal-Brand-Board.png`) is the visual authority. Tokens live in `src/styles/global.css`: deep tide `#2E4B5B`, estuary `#6B8A96`, mist `#B7C4C7`, oyster `#D8CBB8`, shell `#F7F5EF`, dark ink `#243943`, marsh `#849288` (accents only). Cormorant Garamond for display and wordmark; DM Sans for everything else; both self-hosted.
+- Restrained, institutional, editorial coastal cartography, not nautical souvenir. Still aerial photography with subtle motion and a pause/reduced-motion path; never the board PNG as a background. Record every image's license in `docs/asset-register.md`.
+- Keep accessibility: alt text, visible focus, keyboard menu, dark mode, no horizontal scroll at 360px.
 
-- Astro 5 static site, TypeScript, Node 22 deployment runtime; package-lock.json is authoritative.
-- `src/pages/`: home, bid desk, pricing, restaurant advisory, board, readiness, insights, about/contact, legal, newsletter result pages, bid details, category-by-jurisdiction pages, sitemap, robots and release marker.
-- `src/layouts/Base.astro`: shared metadata, navigation, theme, footer and disclosures. `src/components/`: reusable forms, bid cards and calls to action. `src/styles/global.css`: shared responsive design tokens and styles.
-- `src/lib/rfps.ts`: build-time Airtable read, pagination, normalization, publication checks and optional sample fallback. Invalid configured reads fail the build rather than silently publishing stale data. Static listings update only on rebuild.
-- `public/scripts/`: browser form handling, filtering, readiness scoring and landscape motion. `score.js` is also imported by the server; preserve consistent scoring.
-- `functions/api/` and `functions/health.js` delegate through `worker/src/pages-handler.js` to `worker/src/index.js`. Same-origin Pages Functions are production's default API; the standalone Worker is optional.
-- Runtime code validates submissions, writes Prospects and Matches, and manages newsletter confirmation/unsubscribe. Preserve consent, honeypot, optional Turnstile, CORS, token hashing and truthful failed-delivery states with email fallback. `/api/lead` rejects POSTs without a same-origin Origin or Referer, refuses free text with more than two links, and acknowledges-but-drops contact messages with two or more vendor-pitch signals (`isVendorPitch`); keep those rules covered by `tests/worker.test.mjs`.
-- `functions/_middleware.js` and `public/_routes.json` retire source paths accidentally served by v1. Preserve these routes and the static asset exclusions.
-- `src/data/release.ts` derives the build SHA from Cloudflare, GitHub or Git; `/release.json` and the homepage meta tag identify the deployed source.
+## Release procedure
 
-## Visual direction
-
-The approved master brand board (Drive: `Tidewater-Approved-Coastal-Brand-Board.png`, 2026-10-28) is the visual authority; it overrides earlier exploratory logos, the simplistic oyster vectors and the confluence logo. Tagline, verbatim: "Read the current. Find the opportunity." Palette tokens: deep tide `#2E4B5B`, estuary `#6B8A96`, mist `#B7C4C7`, oyster `#D8CBB8`, shell `#F7F5EF`, dark ink `#243943` (plus board swatch marsh `#849288`, accents only). Cormorant Garamond for display and the wordmark, DM Sans for body, navigation and controls, both self-hosted. Brand files live in `public/assets/brand/`; regenerate rasters with `scripts/brand/`. Restrained, institutional, editorial, regional: coastal cartography, not a nautical souvenir shop. Never use the board PNG itself as a page background.
-
-The existing panoramic Chesapeake hero uses licensed aerial still photography with subtle CSS motion, an opaque oyster-shell headline panel and a primary contact CTA with browsing opportunities secondary. It is not video footage. Retain the Swan Island secondary aerial, blue-gray treatment and original decorative estuary contours. Genuine footage remains an optional enhancement only when a suitable licensed asset is available; preserve responsive posters, silent playback, a pause control, reduced-motion support and page performance if adding it. Do not claim decorative contours are navigational maps.
-
-Record asset provenance and licenses in `docs/asset-register.md` and public credits. Preserve self-hosted responsive images, alt text, dimensions, lazy loading below the fold, visible keyboard focus, mobile navigation and dark mode. See `docs/TIDEWATER_SITE_DESIGN_SYSTEM.md` for detailed tokens.
-
-## Development conventions and verification
-
-Use focused changes, existing components and the locked dependencies. Keep routes and business behavior intact. Never commit environment files, credentials or customer data. On Windows use a local NTFS checkout for Git and npm; a streamed Drive mount can fail package extraction and Git index writes. Use `fileURLToPath` when converting file URLs to filesystem paths.
-
-1. Run `npm ci --no-audit --no-fund` and `npm run check` (Worker tests, contrast, copy guard and Astro diagnostics).
-2. Build with `DEMO_SEED=0 SITE_INDEXABLE=0 NEWSLETTER_ENABLED=0 npm run build`. In PowerShell set each variable using `$env:NAME='0'` before running the command. This validates an empty board without credentials; it does not prove production Airtable access.
-3. Use `npx wrangler pages dev dist --port 8788` for production-output tests, then `BASE_URL=http://127.0.0.1:8788 DEMO_SEED=0 npm run test:e2e` in another terminal. Install Playwright Chromium if needed. Astro dev alone does not implement Pages Functions or the retired-path middleware, so it cannot pass the entire integration suite.
-4. Check desktop/mobile widths 360, 390, 768 and 1440; light/dark axe audits, keyboard menu, readiness, board filters/sample separation, failed-form fallback, motion controls, missing-image readability, canonical URLs and launch gates. Mock form delivery during browser checks; do not send unsolicited production leads or emails.
-
-## Deployment and integration readiness
-
-Use existing Cloudflare Pages project `tidewater`, connected to `main`. Production URLs: https://tidewaterbid.com and https://tidewater-6ik.pages.dev. Build command `npm run build`, output `dist`, Node 22. Do not publish the repository root or create a replacement project. Pages Functions deploy with the site; no separate Worker deployment is required.
-
-Push a reviewed feature branch, open a PR, check the Pages preview, and merge after required checks pass when deployment is authorized. Verify the production `/release.json` SHA and homepage `tidewater-commit` against the actual merged commit. A successful local build or PR preview is not production evidence. Record actual validation and deployment status in the release log.
-
-Keep production `DEMO_SEED=0`, `SITE_URL=https://tidewaterbid.com` and `PUBLIC_API_URL` blank for same-origin APIs. Preserve `SITE_INDEXABLE=0`, `NEWSLETTER_ENABLED=0`, `CHECKOUT_ENABLED` unset/0 and `DRIVE_SYNC_ENABLED=0` until launch requirements are explicitly satisfied and the owner approves; a visual or code deploy never flips them. `/api/checkout` returns 503 unless runtime `CHECKOUT_ENABLED=1` and `STRIPE_SECRET_KEY` are set, and then only accepts an operator-issued HMAC-signed quote token (`signQuote`); the amount always comes from the server-side tier table. Do not reset existing hosted credentials merely because local credentials are absent.
-
-Airtable stays ready through the existing Prospects/RFPs/Matches schema documented in README. Build needs a restricted read token; runtime needs the appropriate read/write token and base ID. Keep `AIRTABLE_PAT` server-side, never `PUBLIC_`. Credentials and actual delivery verification are separate from a visual release. Newsletter activation also requires verified Resend sender, mailing address and HMAC secret; receive-only email forwarding does not satisfy sending configuration.
-
-`.github/workflows/daily-rebuild.yml` refreshes listings and deploys to the same Pages project; scheduled runs require `DAILY_REBUILD=1` and configured Airtable/Cloudflare secrets. Manual dispatch always attempts the job. Keep GitHub build variables aligned with Pages. Never deploy a local credential-free empty board over a populated production board; use the configured Git integration.
-
-Drive release synchronization is opt-in (`DRIVE_SYNC_ENABLED=1`) and requires Google OAuth configuration. Leave it disabled unless configured; GitHub remains authoritative. `docs/DRIVE_SYNC.md` describes secret-free release archives. Keep historical QA clearly dated and do not present old results as new measurements.
+1. Branch from `main`; make the smallest coherent change.
+2. `npm ci && npm run check && DEMO_SEED=0 npm run build`, then `npm run preview` and `BASE_URL=http://127.0.0.1:8788 DEMO_SEED=0 npm run test:e2e`. Mock form delivery in browser tests; never send unsolicited production leads.
+3. Open a PR; wait for the Cloudflare Pages check. Previews lack the production Airtable token, so they show an empty board.
+4. Merge (squash). Production is verified only when live `/release.json` and the homepage `tidewater-commit` equal the merged SHA. Smoke-test the gates; if a real intake check is needed, send one record labelled `QA TEST - not a lead`.
+5. Add a dated entry to `docs/TIDEWATER_RELEASE_LOG.md` and a receipt in Drive 37.01. Update Airtable Launch Execution only on real evidence.

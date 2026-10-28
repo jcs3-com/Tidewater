@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-const routes=['/','/bids','/open-bids','/pricing','/opportunity-finder','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/readiness','/becoming-a-contractor','/about','/insights','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md','/credits'];
+const routes=['/','/bids','/pricing','/opportunity-finder','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/readiness','/becoming-a-contractor','/about','/insights','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md','/credits'];
 
 for(const theme of ['light','dark']){
  test(`WCAG A/AA automated audit across primary routes, ${theme}`,async({page})=>{
@@ -60,17 +60,17 @@ test('failed form delivery preserves entries and offers direct email',async({pag
 test('launch gates and deployed-source marker stay explicit',async({page,request})=>{
  await page.goto('/');await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','noindex, nofollow');
  const marker=await (await request.get('/release.json')).json();
- expect(marker.version).toBe('3.2.1');expect(marker.commit).toMatch(/^[a-f0-9]{40}$/);
+ expect(marker.version).toBe('3.3.0');expect(marker.commit).toMatch(/^[a-f0-9]{40}$/);
  await expect(page.locator('meta[name=tidewater-commit]')).toHaveAttribute('content',marker.commit);
  const robots=await (await request.get('/robots.txt')).text();expect(robots).toContain('Disallow: /');
  // Canonical origin follows the SITE_URL the build used (Cloudflare env in production).
  await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',new URL('/',process.env.SITE_URL||'https://tidewaterbid.com').href);
- await page.goto('/insights');await expect(page.getByText('Signups open soon.')).toBeVisible();
+ await page.goto('/insights');await expect(page.getByText('Have a solicitation in mind?')).toBeVisible();await expect(page.locator('input[name=newsletterOptIn], form[data-kind=newsletter]')).toHaveCount(0);
 });
 for(const width of [360,390,768,1440]){
  test(`release screenshots at ${width}px`,async({page},testInfo)=>{
   await page.setViewportSize({width,height:900});await page.emulateMedia({reducedMotion:'reduce'});
-  for(const route of ['/','/pricing','/open-bids','/readiness']){
+  for(const route of ['/','/pricing','/bids','/readiness']){
    await page.goto(route);await page.evaluate(()=>document.fonts.ready);
    await testInfo.attach(`${route==='/'?'home':route.slice(1)}-${width}`,{body:await page.screenshot({fullPage:true}),contentType:'image/png'});
   }

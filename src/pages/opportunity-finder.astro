@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import {apiUrl,categories,jurisdictions,newsletterEnabled} from '../lib/config';
+import {apiUrl,categories,jurisdictions} from '../lib/config';
 import {getOpenRfps,bidUrl} from '../lib/rfps';
 import {getFundingOpportunities} from '../lib/funding';
 const turnstileKey=import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
@@ -73,7 +73,6 @@ const interests=[['funding','Funding, grants or incentives'],['efficiency','Ener
    <div class="field full"><label for="c-notes">Anything else? (optional)</label><textarea id="c-notes" name="notes" maxlength="1500" placeholder="A solicitation link, a deadline, or the project you have in mind"></textarea></div>
   </div>
   <div class="form-section"><label class="checkline"><input type="checkbox" name="consent" value="yes" data-required /><span>Tidewater may contact me about this request. I can opt out anytime. <a href="/privacy">Privacy policy</a>.</span></label></div>
-  {newsletterEnabled && <div class="form-section"><label class="checkline"><input type="checkbox" name="newsletterOptIn" value="yes" /><span>Optional and separate: also send me the Tidewater digest. I'll confirm by email.</span></label></div>}
   {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="auto"></div>}
   <button type="submit" class="button">Send to Tidewater</button>
   <p class="form-feedback" id="finder-feedback" role="status" aria-live="polite"></p>
