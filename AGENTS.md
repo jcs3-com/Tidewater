@@ -28,7 +28,7 @@ Quality beats count. Before a record is `Open` (RFPs) or `Approved`/`Open` (fund
 - `src/lib/rfps.ts`: build-time Airtable read, pagination, normalization, publication checks and optional sample fallback. Invalid configured reads fail the build rather than silently publishing stale data. Static listings update only on rebuild.
 - `public/scripts/`: browser form handling, filtering, readiness scoring and landscape motion. `score.js` is also imported by the server; preserve consistent scoring.
 - `functions/api/` and `functions/health.js` delegate through `worker/src/pages-handler.js` to `worker/src/index.js`. Same-origin Pages Functions are production's default API; the standalone Worker is optional.
-- Runtime code validates submissions, writes Prospects and Matches, and manages newsletter confirmation/unsubscribe. Preserve consent, honeypot, optional Turnstile, CORS, token hashing and truthful failed-delivery states with email fallback.
+- Runtime code validates submissions, writes Prospects and Matches, and manages newsletter confirmation/unsubscribe. Preserve consent, honeypot, optional Turnstile, CORS, token hashing and truthful failed-delivery states with email fallback. `/api/lead` rejects POSTs without a same-origin Origin or Referer, refuses free text with more than two links, and acknowledges-but-drops contact messages with two or more vendor-pitch signals (`isVendorPitch`); keep those rules covered by `tests/worker.test.mjs`.
 - `functions/_middleware.js` and `public/_routes.json` retire source paths accidentally served by v1. Preserve these routes and the static asset exclusions.
 - `src/data/release.ts` derives the build SHA from Cloudflare, GitHub or Git; `/release.json` and the homepage meta tag identify the deployed source.
 
