@@ -1,5 +1,18 @@
 # Tidewater — launch checklist
 
+## Owner-gated decisions — open as of 2026-10-28
+
+Engineering does not block on these; none may be marked done from a visual or QA pass.
+
+- [ ] **[[TODO: Repository visibility. `jcs3-com/Tidewater` is PUBLIC on GitHub (verified 2026-10-28) although the handoff describes it as private. No secrets were found in history, but business docs and the Airtable base ID are public. Owner decides; changing visibility can break the Cloudflare Git integration and must be re-verified.]]**
+- [ ] **[[TODO: Entity formation, DBA and trademark clearance for "Tidewater Advisory LLC" / "Tidewater"; business mailing address for footer and newsletter.]]**
+- [ ] **[[TODO: XcelHR employment agreement review (non-compete, non-solicit, IP, outside activity) before taking revenue.]]**
+- [ ] **[[TODO: Written Single Bid Architecture engagement terms: scope, turnaround, revision round, exclusivity, refund/cancellation, acceptance; counsel review.]]**
+- [ ] **[[TODO: Restaurant Advisory packaging and pricing (not derived from Bid Desk tiers).]]**
+- [ ] **[[TODO: Analytics account (Plausible or equivalent) and domain; then set `PUBLIC_ANALYTICS_DOMAIN`.]]**
+- [ ] **[[TODO: Turnstile widget for tidewaterbid.com; set `PUBLIC_TURNSTILE_SITE_KEY` (build) and `TURNSTILE_SECRET` (runtime) together.]]**
+- [ ] **[[TODO: DMARC record for tidewaterbid.com (start `p=none` with reporting) without disturbing working inbound mail.]]**
+
 ## v3.2 brand, pricing and Opportunity Finder — 2026-10-28
 
 - [x] Approved master brand board installed: engraved oyster lockup (header/footer, light and dark), tagline, palette tokens, Cormorant roman + italic, DM Sans, favicon, apple-touch icon, default and per-bid social images, contour texture. See `docs/TIDEWATER_SITE_DESIGN_SYSTEM.md`.
