@@ -47,3 +47,17 @@ test('finder labels grants, rebates, sponsor-required programs and owner-only pr
   assert.ok(md.current[0].ownerCaution);
   assert.equal(matchPrograms(progs,{location:'charlottesville',interests:['funding']},today).current.length,0);
 });
+test('finder fallback stays in the visitor region (no Charleston janitorial for DMV leads)',()=>{
+ const today='2026-10-28';
+ const regions={'montgomery-county-md':'dmv','fairfax-county-va':'dmv','charleston-sc':'charleston'};
+ const bids=[
+  {category:'janitorial',jurisdiction:'charleston-sc',dueDate:'2026-12-08',source:'https://x.test',estimatedValue:null},
+  {category:'janitorial',jurisdiction:'fairfax-county-va',dueDate:'2026-12-01',source:'https://y.test',estimatedValue:null}
+ ];
+ const dmv=matchBids(bids,{category:'janitorial',jurisdiction:'montgomery-county-md'},today,regions);
+ assert.deepEqual(dmv.sameCategory.map(b=>b.jurisdiction),['fairfax-county-va']);
+ const sc=matchBids(bids,{category:'janitorial',jurisdiction:'charleston-sc'},today,regions);
+ assert.equal(sc.exact.length,1);assert.equal(sc.sameCategory.length,0);
+ const legacy=matchBids(bids,{category:'janitorial',jurisdiction:'montgomery-county-md'},today);
+ assert.equal(legacy.sameCategory.length,2);
+});

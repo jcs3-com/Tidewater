@@ -73,3 +73,31 @@ test('checkout is disabled by default and only accepts a signed, unexpired, serv
  assert.match(stripeBody,/unit_amount%5D=250000/);
  globalThis.fetch=oldFetch;
 });
+test('scripted POST without Origin or same-origin Referer is rejected; same-origin Referer is accepted',async()=>{
+ mock();
+ const noOrigin=new Request('https://api.example.test/api/lead',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(contact)});
+ assert.equal((await handler.fetch(noOrigin,env)).status,403);
+ const foreignRef=new Request('https://api.example.test/api/lead',{method:'POST',headers:{'content-type':'application/json',referer:'https://evil.test/x'},body:JSON.stringify(contact)});
+ assert.equal((await handler.fetch(foreignRef,env)).status,403);
+ assert.equal(requests.length,0);
+ const sameRef=new Request('https://api.example.test/api/lead',{method:'POST',headers:{'content-type':'application/json',referer:'https://example.test/contact'},body:JSON.stringify(contact)});
+ assert.equal((await handler.fetch(sameRef,env)).status,201);
+ globalThis.fetch=oldFetch;
+});
+test('vendor pitches are acknowledged but never stored; genuine enquiries still save',async()=>{
+ mock();
+ const pitch={...contact,name:'Daniel Edwards',business:'Digital Marketing Agency',notes:'We checked your website and noticed that its visibility on Google and Bing appears to be lower than it should be. Some SEO (Search Engine Optimization) steps may be incomplete. Just reply with your phone number and a time to call.'};
+ const r=await handler.fetch(req(pitch),env);
+ assert.equal(r.status,200);
+ assert.equal(requests.filter(x=>x.url.includes('/Prospects')).length,0);
+ const genuine={...contact,notes:'We cater 200-person events in Silver Spring and want help with Montgomery County open solicitation 1163448.'};
+ assert.equal((await handler.fetch(req(genuine),env)).status,201);
+ globalThis.fetch=oldFetch;
+});
+test('messages with more than two links are refused before storage',async()=>{
+ mock();
+ const spam={...contact,notes:'https://a.example https://b.example https://c.example'};
+ assert.equal((await handler.fetch(req(spam),env)).status,422);
+ assert.equal(requests.length,0);
+ globalThis.fetch=oldFetch;
+});

@@ -11,6 +11,36 @@ async function verifyTurnstile(fields,env) {
   return res.ok && (await res.json()).success===true;
 }
 
+// Inbound solicitation filter. Real Tidewater enquiries are about bids, funding and operations; vendor
+// pitches (SEO/AEO, web design, lead lists) are accepted with a neutral 200 and not stored, like the honeypot.
+// Two or more distinct signals are required so a single passing mention never drops a genuine lead.
+const PITCH_SIGNALS = [
+  /\bSEO\b|search engine optimi[sz]ation/i,
+  /\b(AEO|GEO)\b|answer engine optimi[sz]ation|generative engine optimi[sz]ation/i,
+  /\brank(ing)?\b[^.]{0,40}\b(google|bing|search)\b|first page of google/i,
+  /visibility on (google|bing)|discoverable on ai platforms/i,
+  /\b(backlinks?|guest post|link building|domain authority)\b/i,
+  /(web|website) (design|redesign|development) (services|agency|expertise)|squarespace|shopify|wix|wordpress|godaddy/i,
+  /(reply|respond) with your (phone|number|contact)|provide your name, contact information/i,
+  /\b(lead generation|email list|b2b leads|appointment setting) (services|agency)\b/i,
+  /i (was going through|checked|came across|noticed) your website/i
+];
+export function isVendorPitch(text) {
+  const t = String(text || '');
+  return PITCH_SIGNALS.filter(rx => rx.test(t)).length >= 2;
+}
+const urlCount = t => (String(t || '').match(/https?:\/\/|www\.[a-z0-9-]+\./gi) || []).length;
+const MAX_LINKS = 2;
+// Browsers always send Origin on fetch/form POSTs. A POST with neither Origin nor a same-origin Referer is a
+// scripted submission; reject it so server-to-server bots cannot bypass the CORS origin check.
+function sameOriginRequest(req, env) {
+  const allowed = env.ALLOWED_ORIGIN || 'http://localhost:4321';
+  const origin = req.headers.get('Origin');
+  if (origin) return origin === allowed;
+  const ref = req.headers.get('Referer');
+  try { return Boolean(ref) && new URL(ref).origin === allowed; } catch { return false; }
+}
+
 const allowedKinds = new Set(['contact','newsletter','bid_packet','quiz','restaurant_finder']);
 // Opportunity Finder (restaurant path) answers are validated against fixed choices; free text is length-capped.
 const RESTAURANT = {
@@ -88,6 +118,9 @@ async function createLead(req,env,headers) {
   if(!isEmail(email))return bad('Please enter a valid email address.',422,headers);
   if(fields.consent!=='yes')return bad('Email follow-up consent is required.',422,headers);
   if(!(await verifyTurnstile(fields,env)))return bad('Please complete the verification and try again.',422,headers);
+  const freeText=[fields.notes,fields.services,fields.business,fields.name].map(v=>clean(v,2000)).join('\n');
+  if(urlCount(freeText)>MAX_LINKS)return bad('Please remove extra links from your message; two are enough for us to find the solicitation.',422,headers);
+  if(kind==='contact'&&isVendorPitch(freeText))return json({message:'Request received.'},200,headers); // vendor pitch, not stored
   const name=clean(fields.name,120),business=clean(fields.business,160);
   if(kind!=='newsletter'&&(!name||!business))return bad('Name and business are required.',422,headers);
   const pref=clean(fields.contactPreference,20);
@@ -193,7 +226,7 @@ export default {
   if(path!=='/api/lead')return bad('Not found.',404);
   if(req.method==='OPTIONS')return c?new Response(null,{status:204,headers:c}):bad('Origin not allowed.',403);
   if(req.method!=='POST')return bad('Method not allowed.',405);
-  if(req.headers.has('origin')&&!c)return bad('Origin not allowed.',403);
+  if(!sameOriginRequest(req,env))return bad('Origin not allowed.',403);
   try{return await createLead(req,env,c||{});}catch(e){console.error(String(e));return bad('Unable to save your request. Please try again later.',503,c||{});}
  }
 };
