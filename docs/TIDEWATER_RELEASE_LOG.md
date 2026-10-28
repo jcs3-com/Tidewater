@@ -1,5 +1,19 @@
 # Tidewater release log
 
+## v3.3.0 Simplification — 2026-10-28
+
+**Live in production, verified 2026-10-28 ~13:35 ET by Claude.** [PR #16](https://github.com/jcs3-com/Tidewater/pull/16) squash-merged as `75885ad3737cb2bc5252b82a41d083ed2a385f96`; live `/release.json` reported `3.3.0` / `75885ad…`.
+
+Owner decisions applied: newsletter deleted, checkout scaffold kept dormant, county landing pages kept, `/open-bids` folded into `/bids`.
+
+- **Site:** `/bids` carries the full filterable board (5 verified open at deploy, plus closed/awarded history); `/open-bids` → `/bids` 301. Newsletter forms, result pages, `/api/confirm`, `/api/unsubscribe` and Resend code removed; old newsletter URLs 301 to `/`. 66 pages (was 70).
+- **Infra removed:** standalone Worker config, never-run daily-rebuild and Drive-sync workflows and scripts, manual `site:deploy`.
+- **Docs:** README is the single operating doc; AGENTS.md holds rules only. Removed LAUNCH_CHECKLIST, V3_HANDOFF, QA_REPORT, DRIVE_SYNC and the v2 design-system doc. Net −746 lines across 39 files.
+
+Production checks: Playwright against `https://tidewaterbid.com` 31/31; `/open-bids` 301; `/api/confirm` 404; `kind=newsletter` 400; scripted lead POST 403; checkout 503; robots disallow all.
+
+Rollback: `git revert 75885ad` on `main` and merge; confirm `/release.json`.
+
 ## v3.2.1 Lead-intake spam gates and region-scoped finder fallback — 2026-10-28
 
 **Live in production, verified 2026-10-28 ~13:06 ET by Claude.** [PR #14](https://github.com/jcs3-com/Tidewater/pull/14) squash-merged as `a3f62a7fa9163188941db16a7bd505a0795c7136`; `/release.json` on `tidewaterbid.com` reported `3.2.1` / `a3f62a7…`, matching the homepage `tidewater-commit` meta tag. Preceded by docs-only [PR #13](https://github.com/jcs3-com/Tidewater/pull/13) (`f851c8d`, verified live), which makes Claude the operator of record.
