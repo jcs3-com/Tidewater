@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 const demo=process.env.DEMO_SEED!=='0';
-export const routes=['/','/bids','/pricing','/opportunity-finder','/engage','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/open-bids','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md',...(demo?['/bids/washington-dc/sample-event-catering']:[])];
+export const routes=['/','/bids','/pricing','/opportunity-finder','/engage','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md',...(demo?['/bids/washington-dc/sample-event-catering']:[])];
 for(const width of [360,390,768,1440]){
  test(`routes usable at ${width}px without horizontal scrolling`,async({page})=>{
   await page.setViewportSize({width,height:800});
@@ -94,8 +94,8 @@ test('bid desk landing explains the RFP process then lists open bids',async({pag
  await expect(process.locator('.panel')).toHaveCount(4);
  await expect(page.locator('#open-opportunities')).toBeVisible();
  expect(await page.locator('.bid-process').evaluate(el=>!!(el.compareDocumentPosition(document.querySelector('#open-opportunities'))&Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
- await page.locator('#open-opportunities').getByRole('link',{name:'Browse all opportunities'}).click();
- await expect(page).toHaveURL(/\/open-bids$/);
+ await expect(page.locator('#open-opportunities #filters, #open-opportunities .panel').first()).toBeVisible();
+ const old=await page.request.get('/open-bids',{maxRedirects:0});expect(old.status()).toBe(301);expect(old.headers()['location']).toMatch(/\/bids$/);
 });
 test('readiness calculates score and reveals lead capture',async({page})=>{
  await page.goto('/readiness');
@@ -106,7 +106,7 @@ test('readiness calculates score and reveals lead capture',async({page})=>{
  await expect(page.getByRole('button',{name:'Send my result and find matches'})).toBeVisible();
 });
 test('sample listings never appear as verified bids',async({page})=>{
- await page.goto('/open-bids');
+ await page.goto('/bids');
  const sample=page.locator('[data-bid-row][data-status=SAMPLE]');await expect(sample).toHaveCount(demo?3:0);
  if(demo){
   await expect(page.getByText(/SAMPLE cards are fictional/)).toBeVisible();
@@ -117,7 +117,7 @@ test('sample listings never appear as verified bids',async({page})=>{
 });
 
 test('canonical URLs are clean, served directly and marked in navigation',async({page,request})=>{
- for(const path of ['/','/pricing','/open-bids','/contracts/catering/montgomery-county-md','/insights/winner-teardown-reading-bid-tabs']){
+ for(const path of ['/','/pricing','/bids','/contracts/catering/montgomery-county-md','/insights/winner-teardown-reading-bid-tabs']){
   await page.goto(path);
   const href=await page.locator('link[rel=canonical]').getAttribute('href');
   expect(new URL(href).pathname,`canonical on ${path}`).toBe(path);

@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-const routes=['/','/bids','/pricing','/opportunity-finder','/engage','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/open-bids','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md'];
+const routes=['/','/bids','/pricing','/opportunity-finder','/engage','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md'];
 const retired=[/\$295/,/\$250\s*[–-]\s*\$500/,/\$1,500\s*[–-]\s*\$3,000/,/Bid Viability Review/i,/\$500 per bid/i];
 
 test('approved brand lockup, tagline, favicon and social image are installed',async({page,request})=>{

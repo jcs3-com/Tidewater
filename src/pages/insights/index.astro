@@ -1,11 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
-import LeadForm from '../../components/LeadForm.astro';
-import {newsletterEnabled} from '../../lib/config';
 import {articles} from '../../data/insights';
 ---
 <Base title="Insights: Bids, Awards & Readiness | Tidewater" description="Operator-level guides to government bids, public award pricing and bid readiness.">
 <section class="section"><div class="container"><div class="section-head"><p class="eyebrow">Insights</p><h1>Useful notes from the bid desk.</h1><p class="lead">Three continuing series. No invented contracts, anonymous success stories or numbers without documents.</p></div><div class="grid-3">{articles.map(a=><article class="panel"><p class="eyebrow">{a.series}</p><h3><a href={`/insights/${a.slug}`}>{a.title}</a></h3><p>{a.description}</p><a class="link-arrow" href={`/insights/${a.slug}`}>Read article</a></article>)}</div></div></section>
 <section class="section reverse"><div class="container"><h2>Know a solicitation we should cover?</h2><p class="lead">Send the public link. We'll review whether it fits the operators we serve.</p><a class="button" href="/contact">Send a link</a></div></section>
-<section class="section"><div class="container grid-2"><div><p class="eyebrow">Getting started</p><h2>New to government work?</h2><p>Learn what to gather before your first bid and use the optional readiness check to identify gaps.</p><a class="link-arrow" href="/becoming-a-contractor">Becoming a government contractor</a></div><div class="panel"><p class="eyebrow">The bid digest</p><h2>Notes from the bid desk.</h2><p>Contract openings, public award pricing and requirements worth knowing.</p>{newsletterEnabled ? <LeadForm kind="newsletter" heading="Subscribe to the bid digest" source="insights-newsletter"/> : <p class="fine">Signups open soon. In the meantime, <a href="/contact">send us a note</a>.</p>}</div></div></section>
+<section class="section"><div class="container grid-2"><div><p class="eyebrow">Getting started</p><h2>New to government work?</h2><p>Learn what to gather before your first bid and use the optional readiness check to identify gaps.</p><a class="link-arrow" href="/becoming-a-contractor">Becoming a government contractor</a></div><div class="panel"><p class="eyebrow">Ask the bid desk</p><h2>Have a solicitation in mind?</h2><p>Send the link and your service area. We will tell you whether it fits and what it would take.</p><a class="button" href="/contact">Contact Tidewater</a></div></div></section>
 </Base>

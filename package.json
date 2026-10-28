@@ -2,20 +2,16 @@
   "name": "tidewater-bid-desk",
   "private": true,
   "type": "module",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "scripts": {
     "dev": "astro dev --host 0.0.0.0",
     "build": "astro build",
-    "preview": "astro preview --host 0.0.0.0",
-    "worker:dev": "wrangler dev --config worker/wrangler.toml --port 8787",
-    "worker:deploy": "wrangler deploy --config worker/wrangler.toml",
-    "site:deploy": "wrangler pages deploy dist --project-name tidewater",
+    "preview": "wrangler pages dev dist --port 8788",
     "test": "node --test tests/*.test.mjs",
     "check:contrast": "node scripts/contrast.mjs",
     "check:copy": "node scripts/copy-guard.mjs",
     "check": "npm run test && npm run check:contrast && npm run check:copy && astro check",
-    "test:e2e": "playwright test",
-    "release:archive": "node scripts/archive-release.mjs"
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource-variable/cormorant-garamond": "^5.3.0",

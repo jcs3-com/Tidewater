@@ -19,8 +19,8 @@ export const jurisdictions = [
 export const categoryName = (s:string) => categories.find(x=>x.slug===s)?.name || s.replaceAll('-', ' ');
 export const jurisdictionName = (s:string) => jurisdictions.find(x=>x.slug===s)?.name || s.replaceAll('-', ' ');
 export const siteUrl = import.meta.env.SITE || 'https://tidewaterbid.com';
-// Production defaults to same-origin Cloudflare Pages Functions.
-export const apiUrl = import.meta.env.PUBLIC_API_URL || (import.meta.env.PROD ? '' : 'http://127.0.0.1:8787');
+// Same-origin Cloudflare Pages Functions in production and under `wrangler pages dev`.
+export const apiUrl = import.meta.env.PUBLIC_API_URL || '';
 export const todayUTC = () => new Date().toISOString().slice(0,10);
 export const displayDate = (iso:string) => !iso ? 'Not published' : new Intl.DateTimeFormat('en-US', {month:'short', day:'numeric', year:'numeric', timeZone:'UTC'}).format(new Date(iso.slice(0,10)+'T12:00:00Z'));
 export const hasValue = (amount:number|null|undefined) => amount !== null && amount !== undefined && Number.isFinite(amount);
@@ -38,10 +38,8 @@ export const displayValue = (amount:number|null|undefined) => amount === null ||
 export const pageUrl = (path:string) => new URL(path, siteUrl).toString();
 // Launch gates. Both default OFF; set to "1" in the Cloudflare Pages build environment only when ready.
 // SITE_INDEXABLE=1: remove the site-wide noindex and open robots.txt (only after copy/legal TODOs are cleared).
-// NEWSLETTER_ENABLED=1: render signup forms (only after Resend sender, MAILING_ADDRESS and HMAC_SECRET are set).
 const flag = (name:string) => (import.meta.env[name] ?? (typeof process !== 'undefined' ? process.env[name] : undefined)) === '1';
 export const indexable = flag('SITE_INDEXABLE');
-export const newsletterEnabled = flag('NEWSLETTER_ENABLED');
 // CHECKOUT_ENABLED=1 would render the gated Single Bid Architecture payment step. It stays OFF until
 // engagement terms, refund policy, payment credentials and fulfilment capacity are verified.
 // Even when on, payment is offered only after a written qualification and tier confirmation.

@@ -41,7 +41,7 @@ function sameOriginRequest(req, env) {
   try { return Boolean(ref) && new URL(ref).origin === allowed; } catch { return false; }
 }
 
-const allowedKinds = new Set(['contact','newsletter','bid_packet','quiz','restaurant_finder']);
+const allowedKinds = new Set(['contact','bid_packet','quiz','restaurant_finder']);
 // Opportunity Finder (restaurant path) answers are validated against fixed choices; free text is length-capped.
 const RESTAURANT = {
   location:new Set(['washington-dc','maryland','northern-virginia','charlottesville','virginia-other','other']),
@@ -68,20 +68,8 @@ async function airtable(env,table,{method='GET',body,query='',id=''}={}) {
   return res.json();
 }
 const hex = bytes => Array.from(new Uint8Array(bytes)).map(n=>n.toString(16).padStart(2,'0')).join('');
-async function sha256(s){return hex(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)));}
 async function signature(env,record){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(env.HMAC_SECRET),{name:'HMAC',hash:'SHA-256'},false,['sign']);return hex(await crypto.subtle.sign('HMAC',k,new TextEncoder().encode(record)));}
 const safeCompare=(a,b)=>a.length===b.length&&Array.from(a).reduce((acc,ch,i)=>acc|(ch.charCodeAt(0)^b.charCodeAt(i)),0)===0;
-function html(s){return clean(s,2000).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');}
-async function emailConfirm(env,email,record,token) {
-  if(!env.RESEND_API_KEY||!env.FROM_EMAIL||!env.MAILING_ADDRESS||!env.HMAC_SECRET||!env.WORKER_URL||!env.SITE_URL) throw Error('Email configuration incomplete');
-  const confirm=`${env.WORKER_URL}/api/confirm?token=${encodeURIComponent(token)}`;
-  const unsubscribe=`${env.WORKER_URL}/api/unsubscribe?record=${encodeURIComponent(record)}&sig=${await signature(env,record)}`;
-  const sender=clean(env.MAILING_ADDRESS,250);
-  if(sender.includes('TODO')||sender.length<10)throw Error('Physical mailing address not configured');
-  const content=`Confirm your Tidewater bid digest subscription:\n${confirm}\n\nNo marketing emails will be sent until you confirm. If this wasn't you, ignore this message.\n\nTidewater Advisory LLC\n${sender}\nUnsubscribe: ${unsubscribe}`;
-  const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${env.RESEND_API_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({from:env.FROM_EMAIL,to:[email],subject:'Confirm your Tidewater bid digest subscription',text:content,html:`<p>Confirm your Tidewater bid digest subscription:</p><p><a href="${html(confirm)}">Confirm subscription</a></p><p>No marketing emails will be sent until you confirm. If this wasn't you, ignore this message.</p><hr><p>Tidewater Advisory LLC<br>${html(sender).replaceAll('\n','<br>')}<br><a href="${html(unsubscribe)}">Unsubscribe</a></p>`,headers:{'List-Unsubscribe':`<${unsubscribe}>`}})});
-  if(!r.ok){console.error('Email delivery failure',r.status);throw Error('Confirmation email could not be sent');}
-}
 async function parseBody(req){
   if(Number(req.headers.get('content-length')||0)>MAX_BODY)throw Error('Form too large');
   const ct=req.headers.get('content-type')||'';
@@ -122,7 +110,7 @@ async function createLead(req,env,headers) {
   if(urlCount(freeText)>MAX_LINKS)return bad('Please remove extra links from your message; two are enough for us to find the solicitation.',422,headers);
   if(kind==='contact'&&isVendorPitch(freeText))return json({message:'Request received.'},200,headers); // vendor pitch, not stored
   const name=clean(fields.name,120),business=clean(fields.business,160);
-  if(kind!=='newsletter'&&(!name||!business))return bad('Name and business are required.',422,headers);
+  if(!name||!business)return bad('Name and business are required.',422,headers);
   const pref=clean(fields.contactPreference,20);
   const noteLines=[];
   if(pref){if(!CONTACT_PREFS.has(pref))return bad('Choose a follow-up preference.',422,headers);noteLines.push(`Contact preference: ${pref}`);}
@@ -136,14 +124,14 @@ async function createLead(req,env,headers) {
   }
   if(clean(fields.notes,2000))noteLines.push(clean(fields.notes,2000));
   const payload={
-    'Name':name||email,'Business':business,'Email':email,'Phone':clean(fields.phone,40),
+    'Name':name,'Business':business,'Email':email,'Phone':clean(fields.phone,40),
     'Categories':kind==='restaurant_finder'?`restaurant:${restaurant.businessType}`:clean(fields.categories,100),'Jurisdictions':kind==='restaurant_finder'?restaurant.location:clean(fields.jurisdictions,100),
     'Insurance Status':kind==='quiz'?`GL: ${clean(fields.gl,30)}; WC: ${clean(fields.wc,30)}`:'',
     'Registrations':kind==='quiz'?`Entity: ${clean(fields.entity,30)}; Licenses: ${clean(fields.licenses,30)}; Portals: ${clean(fields.portals,30)}; Bond: ${clean(fields.bond,30)}`:'',
     'Staff Size':kind==='quiz'?clean(fields.staff,40):'',
     'Source':clean(fields.source,250)||kind,'Consent Timestamp':now(),
     'Lead Type':kind,'Bid ID':clean(fields.bidId,80),'Notes':noteLines.join('\n').slice(0,4000),
-    'Gap List':'','Newsletter Status':kind==='newsletter'?'Pending':''
+    'Gap List':''
   };
   let score=0;
   if(kind==='quiz'){
@@ -152,40 +140,10 @@ async function createLead(req,env,headers) {
     const result=scoreReadiness(answers);score=result.score;
     payload['Readiness Score']=score;payload['Gap List']=result.gaps.join('\n');
   }
-  let token='';
-  if(kind==='newsletter'){
-    if(!env.RESEND_API_KEY||!env.FROM_EMAIL||!env.MAILING_ADDRESS||!env.HMAC_SECRET||!env.WORKER_URL||!env.SITE_URL||env.MAILING_ADDRESS.includes('TODO'))return bad('Newsletter confirmation is not configured yet.',503,headers);
-    const raw=crypto.getRandomValues(new Uint8Array(24));token=hex(raw);
-    payload['Opt-in Token Hash']=await sha256(token);
-    payload['Opt-in Expires At']=new Date(Date.now()+48*3600*1000).toISOString();
-  }
   const record=await airtable(env,'Prospects',{method:'POST',body:{fields:payload,typecast:false}});
-  if(kind==='newsletter'){
-    try{await emailConfirm(env,email,record.id,token);}catch(e){console.error(String(e));return bad('We saved your request but could not deliver the confirmation email. Please contact Tidewater.',502,headers);}
-    return json({message:'Check your email. Your subscription is not active until you confirm.'},201,headers);
-  }
   if(kind==='quiz')await makeMatches(env,record.id,fields,score);
   if(kind==='restaurant_finder')await makeRestaurantLead(env,business,restaurant,record.id);
   return json({message:kind==='bid_packet'?'Request received. We will follow up about the bid packet.':'Request received. We will follow up by email.'},201,headers);
-}
-async function confirm(env,url){
-  const token=clean(url.searchParams.get('token'),100);
-  if(!/^[a-f0-9]{48}$/.test(token))return Response.redirect(env.SITE_URL+'/newsletter-invalid',302);
-  const hash=await sha256(token);
-  const q=new URLSearchParams({filterByFormula:`AND({Opt-in Token Hash}='${hash}',{Newsletter Status}='Pending')`,maxRecords:'1'});
-  const result=await airtable(env,'Prospects',{query:q.toString()});const record=result.records[0];
-  if(!record||Date.parse(record.fields['Opt-in Expires At']||'')<Date.now())return Response.redirect(env.SITE_URL+'/newsletter-invalid',302);
-  await airtable(env,'Prospects',{method:'PATCH',id:record.id,body:{fields:{'Newsletter Status':'Confirmed','Opt-in Token Hash':'','Opt-in Expires At':null}}});
-  return Response.redirect(env.SITE_URL+'/newsletter-confirmed',302);
-}
-async function unsubscribe(env,url){
-  const record=clean(url.searchParams.get('record'),100),sig=clean(url.searchParams.get('sig'),128);
-  if(!/^rec[a-zA-Z0-9]+$/.test(record)||!/^[a-f0-9]{64}$/.test(sig))return bad('Invalid unsubscribe link.');
-  if(!env.HMAC_SECRET)return bad('Not configured.',503);
-  const expected=await signature(env,record);
-  if(!safeCompare(expected,sig))return bad('Invalid unsubscribe link.',403);
-  await airtable(env,'Prospects',{method:'PATCH',id:record,body:{fields:{'Newsletter Status':'Unsubscribed'}}});
-  return Response.redirect(env.SITE_URL+'/newsletter-unsubscribed',302);
 }
 // P2 gated checkout for Single Bid Architecture. OFF unless CHECKOUT_ENABLED=1 and Stripe is configured.
 // A payment link is only valid for a written, qualified quote: the operator issues an HMAC-signed token
@@ -212,11 +170,6 @@ export default {
  async fetch(req,env) {
   const url=new URL(req.url);const path=url.pathname.replace(/\/$/,'')||'/';const c=cors(req,env);
   if(path==='/health')return json({status:'ok'});
-  if(path==='/api/confirm'&&req.method==='GET')try{return await confirm(env,url)}catch(e){console.error(String(e));return bad('Confirmation failed.',500);}
-  if(path==='/api/unsubscribe'&&['GET','POST'].includes(req.method))try{
-    if(req.method==='POST'){const f=await req.formData();const u=new URL(req.url);u.searchParams.set('record',clean(f.get('record')));u.searchParams.set('sig',clean(f.get('sig')));return await unsubscribe(env,u);}
-    return await unsubscribe(env,url);
-  }catch(e){console.error(String(e));return bad('Unsubscribe request failed.',500);}
   if(path==='/api/checkout'){
     if(req.method==='OPTIONS')return c?new Response(null,{status:204,headers:c}):bad('Origin not allowed.',403);
     if(req.method!=='POST')return bad('Method not allowed.',405);

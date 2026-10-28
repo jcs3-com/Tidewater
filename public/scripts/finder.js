@@ -140,16 +140,13 @@ form.addEventListener('submit', async e => {
   button.disabled = true; feedback.dataset.state = ''; feedback.textContent = 'Sending…';
   const v = values();
   const payload = {...v, interests: v.interests.join(','), kind: kindInput.value};
-  delete payload.path; delete payload.newsletterOptIn;
+  delete payload.path;
   try {
     const response = await fetch(form.action, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)});
     const body = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(body.error || 'We could not send your request. Your answers are still here; please try again or email hello@tidewaterbid.com.');
     feedback.textContent = body.message || 'Received. We will follow up.'; feedback.dataset.state = 'success';
     track('lead', {kind: payload.kind, source: 'opportunity-finder'});
-    if (v.newsletterOptIn === 'yes') {
-      fetch(form.action, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({kind: 'newsletter', email: v.email, consent: 'yes', source: 'opportunity-finder', 'cf-turnstile-response': v['cf-turnstile-response']})}).catch(() => {});
-    }
   } catch (error) {
     feedback.textContent = error.message || 'Network error. Your answers are still here; please try again.'; feedback.dataset.state = 'error';
     button.disabled = false;
