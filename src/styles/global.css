@@ -74,8 +74,6 @@ li{margin:.4rem 0}
 .hero-topline{display:flex;align-items:center;justify-content:space-between;gap:1rem;color:#FFF;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase}
 .hero-topline>p{margin:0;background:#243943;padding:.65rem .85rem}
 .hero-topline p span{padding:0 .65rem;color:#C6D5D9}
-.motion-toggle{background:#243943;color:#FFF;border:1px solid #C6D5D9;min-height:44px;padding:.55rem .8rem;font:.67rem var(--body)}
-.motion-toggle:focus-visible{outline-color:#FFF}
 .hero-shell{margin-top:clamp(15rem,25vw,25rem);padding:3.25rem 3.5rem 1.3rem;background:#F7F5EF;color:#243943;display:grid;grid-template-columns:1.35fr 1fr;gap:1rem 3.5rem;position:relative}
 .hero-shell .eyebrow{color:#4B626D;font-size:.64rem;letter-spacing:.13em}
 .hero-shell h1{font-size:clamp(3.5rem,5.2vw,5.5rem);max-width:none;font-weight:500;letter-spacing:-.04em;margin-bottom:1.5rem}
@@ -91,9 +89,6 @@ li{margin:.4rem 0}
 .oyster-band>.container{display:flex;justify-content:space-between;gap:1rem;font-size:.7rem}
 .oyster-band>.container>span:first-child:not(.landscape-credit){font:500 1.15rem var(--display);color:var(--text)}
 .landscape-credit{font-size:.62rem}
-@keyframes tidal-drift{from{transform:scale(1.01) translateY(0)}to{transform:scale(1.07) translateY(-1%)}}
-.hero-cinematic[data-motion=enabled] .hero-image{animation:tidal-drift 24s ease-in-out infinite alternate}
-.hero-cinematic[data-paused=true] .hero-image{animation-play-state:paused}
 .editorial-heading{display:grid;grid-template-columns:.6fr 1.5fr 1fr;gap:2rem;align-items:start;margin-bottom:3.5rem}
 .editorial-heading>.eyebrow{padding-top:.5rem}
 .editorial-heading>.lead{padding-top:.5rem}
@@ -287,7 +282,6 @@ th:first-child,td:first-child{padding-left:0}
  .hero-topline{align-items:flex-start}
  .hero-topline>p{max-width:180px;font-size:.54rem;line-height:1.7;letter-spacing:.05em}
  .hero-topline p span{padding:0 .2rem}
- .motion-toggle{font-size:.6rem;max-width:105px;line-height:1.4;min-height:44px;padding:.5rem}
  .hero-shell{margin-top:12rem;padding:1.9rem 1.35rem 1.1rem}
  .hero-shell .eyebrow{font-size:.58rem;letter-spacing:.11em;margin-bottom:1.3rem}
  .hero-shell h1{font-size:clamp(2.75rem,11.2vw,4rem);line-height:1.03;letter-spacing:-.045em}
@@ -318,7 +312,7 @@ th:first-child,td:first-child{padding-left:0}
 :root[data-theme=dark] .days-left.is-urgent{color:#FFBDC0}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .days-left.is-urgent{color:#FFBDC0}}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .form-feedback[data-state=error]{color:#FFBDC0}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.motion-toggle{display:none!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
 @media(forced-colors:active){.button,.button-quiet{border:1px solid ButtonText}.hero-shell{border:1px solid CanvasText}}
 /* Tidewater Food Waste page */
 .fw-subhead{font:500 clamp(1.05rem,1.6vw,1.22rem)/1.5 var(--body);margin:-.4rem 0 1.4rem;max-width:52ch}

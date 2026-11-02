@@ -3,7 +3,7 @@ import {categories,jurisdictions,siteUrl} from '../lib/config';
 import {getVisibleRfps,effectiveStatus,bidUrl} from '../lib/rfps';
 import {articles} from '../data/insights';
 export const GET:APIRoute=async()=>{
-  const fixed=['/','/bids','/pricing','/restaurant-advisory','/restaurant-advisory/funding','/restaurant-advisory/food-waste','/opportunity-finder','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms'];
+  const fixed=['/funding-directory','/funding-services','/projects','/resources','/tools','/academy','/fundamentals','/fellowship','/careers','/ethics','/','/bids','/pricing','/restaurant-advisory','/restaurant-advisory/food-waste','/opportunity-finder','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms'];
   const contractPaths=categories.flatMap(c=>jurisdictions.map(j=>`/contracts/${c.slug}/${j.slug}`));
   const articlePaths=articles.map(a=>`/insights/${a.slug}`);
   const bidPaths=(await getVisibleRfps()).filter(r=>effectiveStatus(r)!=='SAMPLE').map(bidUrl);

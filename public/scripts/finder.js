@@ -114,7 +114,7 @@ function renderRestaurant(values) {
       : el('p', {class: 'finder-empty'}, 'No program in our verified list is accepting applications for this location and project type right now. We update the list as official notices change; send us your project and we will tell you if a round opens.'),
     watch.length ? [el('h3', {}, 'Watched, but not open'), el('p', {class: 'fine'}, 'Past or expected rounds. Do not plan around these until an official notice confirms a new window.'), el('ul', {class: 'finder-match-list'}, watch.map(programItem))] : null,
     nextStep('Want help turning this into a project?', 'Tidewater scopes the improvement, qualifies the funding and manages the work through implementation. Restaurant Advisory engagements are scoped and quoted in writing.',
-      [el('a', {class: 'button', href: '#finder-contact', 'data-track': 'paid_inquiry', 'data-track-source': 'finder-restaurant'}, 'Talk through the project'), el('a', {class: 'button-quiet', href: '/restaurant-advisory/funding'}, 'Browse the funding desk')])
+      [el('a', {class: 'button', href: '#finder-contact', 'data-track': 'paid_inquiry', 'data-track-source': 'finder-restaurant'}, 'Talk through the project'), el('a', {class: 'button-quiet', href: '/funding-directory'}, 'Browse the funding directory')])
   );
   track('finder_result', {path: 'restaurant', matches: String(current.length)});
 }

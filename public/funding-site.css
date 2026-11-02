@@ -1,0 +1,49 @@
+/* Funding-first experience: additive styles; existing Oyster / Estuary tokens remain authoritative. */
+.tw-hero .hero-shell { grid-template-columns: 1.2fr 1fr; }
+.tw-hero .hero-intro .lead { font-size: clamp(1.3rem, 2vw, 1.7rem); }
+.tw-intro, .tw-page-hero { background: var(--page); }
+.tw-page-hero { padding-top: clamp(5rem, 9vw, 8rem); padding-bottom: clamp(4rem, 7vw, 6rem); }
+.tw-page-hero h1 { max-width: 16ch; }
+.tw-page-hero .lead { max-width: 61ch; }
+.tw-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 7rem); align-items: start; }
+.tw-split > * { min-width:0; }
+.tw-section-head { max-width: 780px; margin: 0 0 2.5rem; }
+.tw-four { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1.2rem; }
+.tw-four .panel { min-width:0; }
+.tw-four h3 { font-size: clamp(1.6rem,2.2vw,2.3rem); }
+.tw-project-grid { display:grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap:1.1rem; }
+.tw-project-card { grid-column:span 2; padding:clamp(1.5rem,2.5vw,2.3rem); background:var(--surface); border:1px solid var(--line); min-width:0; }
+.tw-project-card:nth-child(4), .tw-project-card:nth-child(5) { grid-column:span 3; }
+.tw-project-card h3,.tw-project-card h2 { font-size:clamp(1.8rem,2.8vw,2.7rem); max-width:22ch; margin-top:.4rem; }
+.tw-project-card h2 { font-size: clamp(2rem,3vw,3rem); }
+.tw-project-card p { max-width:52ch; }
+.tw-audience { font-weight:600; color:var(--muted); margin:1.2rem 0 .2rem; letter-spacing:.02em; }
+.tw-resource-band { background:var(--subtle); }
+.tw-link-stack { display:flex; flex-direction:column; border-top:1px solid var(--line); }
+.tw-link-stack a { display:flex; flex-direction:column; gap:.3rem; text-decoration:none; padding:1.4rem .2rem; border-bottom:1px solid var(--line); }
+.tw-link-stack strong { font-family:var(--display); font-weight:500; font-size:clamp(1.7rem,2.6vw,2.3rem); line-height:1.1; }
+.tw-link-stack span { font-size:.84rem; color:var(--muted); }
+.tw-link-stack a:hover strong { text-decoration:underline; }
+.tw-bid-feature { border-top:1px solid var(--line); }
+.tw-resource-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.2rem; }
+.tw-resource-grid .panel { display:flex; align-items:flex-start; flex-direction:column; }
+.tw-resource-grid .panel .button,.tw-resource-grid .panel .button-quiet { margin-top:auto; }
+.tw-tool-list { border-top:1px solid var(--line); }
+.tw-tool-card { display:flex; justify-content:space-between; align-items:flex-start; gap:2rem; padding:2rem 0; border-bottom:1px solid var(--line); }
+.tw-tool-card h2 { font-size:clamp(2.1rem,3.5vw,3.3rem); margin: .45rem 0 1rem; }
+.tw-tool-card p { max-width:65ch; }
+.tw-status { font:600 .7rem/1.5 var(--body); letter-spacing:.11em; text-transform:uppercase; border:1px solid var(--line); padding:.65rem .85rem; white-space:nowrap; }
+.tw-checklist { padding-left:1.25rem; }
+.tw-checklist li { margin:.75rem 0; }
+.tw-divider { border-top:1px solid var(--line); margin:1.5rem 0; }
+@media (max-width: 900px) { .tw-four { grid-template-columns:repeat(2,minmax(0,1fr)); } .tw-project-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .tw-project-card,.tw-project-card:nth-child(4),.tw-project-card:nth-child(5) { grid-column:span 1; } }
+@media (max-width: 700px) { .tw-split {grid-template-columns:1fr;gap:1.5rem;} .tw-four,.tw-resource-grid,.tw-project-grid {grid-template-columns:1fr;} .tw-project-card,.tw-project-card:nth-child(4),.tw-project-card:nth-child(5) {grid-column:span 1;} .tw-tool-card {flex-direction:column;gap:.5rem;} .tw-hero .hero-shell {grid-template-columns:1fr;} }
+
+@media (min-width: 971px) and (max-width: 1160px) { .site-header .nav-list{gap:.65rem;font-size:.69rem;} .site-header .header-inner{gap:.65rem;} .site-header .logo-word{font-size:1.75rem;} .site-header .logo-mark,.site-header .logo-mark img{width:48px;} .site-header .header-cta{gap:.35rem;font-size:.67rem;padding:.55rem .65rem;} .site-header .header-actions{gap:.2rem;} }
+
+/* Legal pages: deliberately quiet */
+.legal{max-width:68ch;font-size:.92rem}
+.article.legal h1{font-size:clamp(1.8rem,3vw,2.3rem)}
+.article.legal h2{font:600 1rem/1.4 var(--body);letter-spacing:0;margin:1.6rem 0 .4rem}
+.article.legal p{font-size:.92rem}
+.reverse .tw-project-card{background:transparent;border-color:#6B8A96;color:#F7F5EF}

@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import FundingCard from '../components/FundingCard.astro';
+import {getFundingOpportunities} from '../lib/funding';
+const {items,source,warning}=await getFundingOpportunities();
+const geographies=['All regions','DC','Maryland','Virginia','Charlottesville / Central VA'];
+const types=['All types','Grant','Rebate / Incentive','Tax Credit','Loan / Financing','Technical Assistance'];
+---
+<Base title="DMV Funding Directory | Grants, Rebates & Incentives | Tidewater" description="Explore curated grant, incentive, rebate and financing opportunities for hospitality-adjacent businesses, food systems, schools and organizations in DC, Maryland and Virginia.">
+  <section class="section tw-page-hero"><div class="container"><p class="eyebrow">Tidewater / Funding Finder</p><h1>Funding directory</h1><p class="lead">Search grants, rebates, incentives and financing programs relevant to hospitality and food-system projects in DC, Maryland and Virginia.</p><div class="actions"><a class="button" href="/opportunity-finder?path=restaurant">Check preliminary project fit ↗</a><a class="button-quiet" href="/contact">Discuss an opportunity</a></div><p class="fine">Listings are informational, not an eligibility determination. Not every program accepts businesses, schools or nonprofits directly. Confirm details with the issuing organization.</p></div></section>
+  <section class="section funding-directory-section"><div class="container">
+    <div class="funding-directory-heading"><div><p class="eyebrow">Source-linked / DMV</p><h2>Available programs</h2><p>Filter by geography, program type and status. Official notices and verification dates are included.</p></div><div class="funding-count" id="funding-count">{items.length} tracked</div></div>
+    {source==='editorial-snapshot'&&<p class="funding-notice" role="status">{warning} Fallback snapshot last reviewed October 27, 2026. Live Airtable publication is not available in this build.</p>}
+    <div class="funding-filters" role="search" aria-label="Filter funding opportunities">
+      <label>Search <input id="funding-search" type="search" placeholder="Try kitchen, refrigeration, training..." /></label>
+      <label>Location <select id="funding-region">{geographies.map(x=><option value={x==='All regions'?'':x}>{x}</option>)}</select></label>
+      <label>Program type <select id="funding-type">{types.map(x=><option value={x==='All types'?'':x}>{x}</option>)}</select></label>
+      <label>Status <select id="funding-status"><option value="">All statuses</option>{['Open','Upcoming','Monitoring','Closed','Unverified'].map(s=><option value={s}>{s}</option>)}</select></label>
+    </div>
+    <div id="funding-list" class="funding-list">{items.map(o=><FundingCard o={o}/>)}</div>
+    <div id="funding-empty" class="panel" hidden><p>No tracked opportunities match your filters. Widen the selection or <a href="/contact">tell us about your project</a>.</p></div>
+    {items.length===0&&<div class="panel"><h3>No approved funding listings available yet.</h3><p>We only publish source-checked opportunities. Tell us what your organization is trying to fund.</p></div>}
+    <p class="fine funding-fine">Applications and availability may change after verification. Confirm current rules with the issuing organization.</p>
+  </div></section>
+  <section class="section"><div class="container tw-split"><div><p class="eyebrow">Program requirements</p><h2>Check eligibility before applying</h2></div><div><p>Applicant type, geography, eligible expenses, project timeline, reimbursement requirements and matching cash all matter. Tidewater can help evaluate the whole project, not merely flag a program.</p><a class="button-quiet" href="/funding-services">Explore funding services ↗</a></div></div></section>
+  <script is:inline>
+    (() => {
+      const list=document.querySelector('#funding-list'); if(!list)return;
+      const cards=[...list.querySelectorAll('.funding-card')];
+      const search=document.querySelector('#funding-search'), region=document.querySelector('#funding-region'), type=document.querySelector('#funding-type'), status=document.querySelector('#funding-status');
+      const count=document.querySelector('#funding-count'), empty=document.querySelector('#funding-empty');
+      const now=new Date(); const day=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
+      cards.forEach(card=>{if(card.dataset.status==='Open'&&card.dataset.deadline&&card.dataset.deadline<day){card.dataset.status='Closed';const label=card.querySelector('[data-status-label]');if(label){label.textContent='Closed';label.className='funding-status status-closed';}}});
+      const covers=(geos,g)=>geos.includes(g)||geos.includes('National')||(['DC','Maryland','Virginia'].includes(g)&&geos.includes('DMV'))||(g==='Charlottesville / Central VA'&&geos.includes('Virginia'));
+      function update(){const q=search.value.trim().toLowerCase(),g=region.value,t=type.value,s=status.value;let n=0;
+        cards.forEach(card=>{const found=(!q||(card.dataset.search||'').includes(q))&&(!g||covers((card.dataset.geography||'').split('|'),g))&&(!t||card.dataset.type===t)&&(!s||card.dataset.status===s);card.hidden=!found;if(found)n++;});
+        count.textContent=n+' shown'; empty.hidden=n>0||cards.length===0;
+      }
+      [search,region,type,status].forEach(el=>el.addEventListener('input',update)); update();
+    })();
+  </script>
+</Base>

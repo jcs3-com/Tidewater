@@ -1,6 +1,6 @@
 # Tidewater
 
-Website for **Tidewater**, a trade name of Tidewater Advisory LLC: The Bid Desk (government bid support) and The Restaurant Advisory (funding, operations, food waste). Production: https://tidewaterbid.com. Rules for anyone changing this repo: [AGENTS.md](AGENTS.md).
+Website for **Tidewater**, a trade name of Tidewater Advisory LLC. Tagline: *Funding opportunity at the source.* The site leads with funding (directory, research, applications and grant management for hospitality-adjacent organizations in DC, Maryland and Virginia); the Bid Desk is a secondary service for firms pursuing government contracts. Production: https://tidewaterbid.com. Rules for anyone changing this repo: [AGENTS.md](AGENTS.md).
 
 ## Architecture
 
@@ -18,14 +18,16 @@ Browser forms  --POST /api/lead-->  Pages Function  --> Airtable (Prospects, Mat
 
 | Path | What it does |
 | --- | --- |
-| `src/pages/` | Routes: home, `/bids` (process + filterable bid board), `/pricing`, `/opportunity-finder`, `/restaurant-advisory/*`, `/readiness`, county landing pages under `/contracts`, legal pages |
+| `src/pages/` | Funding: home, `/funding-directory`, `/funding-services`, `/projects`, `/resources`, `/tools`, `/academy`, `/fundamentals`, `/fellowship`, `/opportunity-finder`, `/restaurant-advisory` + `/food-waste`. Company: `/about`, `/ethics`, `/careers`, `/contact`. Bid Desk: `/bids` (process + bid board), `/pricing`, `/readiness`, `/becoming-a-contractor`, `/insights`, `/contracts/*`. Footer small print: `/privacy`, `/terms`, `/credits` |
+| `src/data/funding-projects.ts` | The five illustrative project scenarios (not clients) |
+| `public/funding-site.css` | v4.1 page styles layered on `src/styles/global.css` |
 | `src/lib/config.ts` | Categories, jurisdictions (with market `region`), launch flags |
 | `src/lib/rfps.ts`, `src/lib/funding.ts` | Airtable build reads, publication and expiry rules |
 | `public/scripts/pricing.js` | The only source of Bid Desk prices: $1,250 under $100,000; $2,500 at $100,000 and above |
 | `public/scripts/finder-logic.js`, `score.js` | Opportunity Finder matching and readiness scoring (shared by browser, server and tests) |
 | `worker/src/index.js` | Lead intake, spam gates, matching, gated checkout |
 | `functions/_middleware.js` | 410 for source paths leaked by the first v1 deploy (safe to delete after 2026-11-03) |
-| `public/_redirects` | Retired routes (`/open-bids`, newsletter pages) |
+| `public/_redirects` | Retired routes (`/open-bids`, newsletter pages, `/restaurant-advisory/funding` → `/funding-directory`) |
 | `tests/` | Node unit tests and Playwright/axe browser tests |
 | `docs/` | Release log, photo asset register and licenses, brand collateral |
 
@@ -71,13 +73,12 @@ To publish a bid: verify the official notice and latest addendum, fill the recor
 ## Open launch items
 
 Owner decisions (none can be marked done from a visual or QA pass):
-- Entity formation, DBA and trademark clearance; business mailing address.
+- Entity formation, DBA and trademark clearance.
 - XcelHR employment-agreement review before taking revenue.
 - Written engagement terms (scope, turnaround, revisions, exclusivity, refunds); counsel review. Only then checkout.
-- Restaurant Advisory packages and pricing (not derived from Bid Desk tiers).
+- Funding Services and Restaurant Advisory packages and pricing (quoted per project until decided; not derived from Bid Desk tiers).
 - Public launch: `SITE_INDEXABLE=1`, Search Console.
 - Repository visibility: `jcs3-com/Tidewater` is public on GitHub.
-- Privacy policy still mentions a newsletter that no longer exists; update with the legal copy.
 
 Infrastructure (needs Cloudflare dashboard or zone access):
 - Turnstile widget keys; analytics domain.
