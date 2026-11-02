@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+const tools = [
+  {name:'Funding Fit Finder',detail:'A guided way to compare organization type, geography and project scope to potentially relevant programs.'},
+  {name:'Grant Readiness Checklist',detail:'A practical pre-application review of registrations, budgets, matching funds and required supporting documents.'},
+  {name:'Project Budget & Match Calculator',detail:'A structured model for eligible expenses, available cash, required match and unfunded project costs.'},
+  {name:'Grant Application Tracker',detail:'A downloadable tracker for funders, dates, documents, submissions and post-award reporting.'},
+  {name:'Food Waste Calculator',detail:'A framework for estimating purchased food lost to spoilage, prep, overproduction and plate waste.'}
+];
+---
+<Base title="Free Tools | Tidewater Resources" description="Five planned funding and food-waste tools from Tidewater. The resources are under development; the existing funding directory is available now.">
+  <section class="section tw-page-hero"><div class="container"><p class="eyebrow">Resources / Free Tools</p><h1>Free tools and templates</h1><p class="lead">The following tools are planned. They are not yet available for use or download.</p><a class="button" href="/funding-directory">Browse the existing funding directory ↗</a></div></section>
+  <section class="section reverse"><div class="container"><div class="tw-tool-list">
+    {tools.map((t,i)=><article class="tw-tool-card"><div><span class="step-number">0{i+1} / Planned resource</span><h2>{t.name}</h2><p>{t.detail}</p></div><span class="tw-status">Coming soon</span></article>)}
+  </div></div></section>
+  <section class="section"><div class="container tw-split"><h2>Suggest a tool</h2><div><p>Email us a specific tool or template request.</p><a class="button-quiet" href="/contact">Suggest a tool ↗</a></div></div></section>
+</Base>

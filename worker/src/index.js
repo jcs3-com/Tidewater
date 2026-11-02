@@ -45,7 +45,7 @@ const allowedKinds = new Set(['contact','bid_packet','quiz','restaurant_finder']
 // Opportunity Finder (restaurant path) answers are validated against fixed choices; free text is length-capped.
 const RESTAURANT = {
   location:new Set(['washington-dc','maryland','northern-virginia','charlottesville','virginia-other','other']),
-  businessType:new Set(['independent-restaurant','restaurant-group','bar','cafe-bakery','caterer','food-producer','hotel-venue','other']),
+  businessType:new Set(['independent-restaurant','restaurant-group','bar','cafe-bakery','caterer','food-producer','hotel-venue','school','nonprofit','farmer','market-distributor','other']),
   tenure:new Set(['own','lease','unsure']),
   interests:new Set(['funding','efficiency','equipment','operations','food-waste'])
 };
@@ -119,7 +119,7 @@ async function createLead(req,env,headers) {
   if(kind==='restaurant_finder'){
     const interests=clean(fields.interests,200).split(',').map(x=>x.trim()).filter(Boolean);
     restaurant={location:clean(fields.location,40),businessType:clean(fields.businessType,40),tenure:clean(fields.tenure,20),interests};
-    if(!RESTAURANT.location.has(restaurant.location)||!RESTAURANT.businessType.has(restaurant.businessType)||!RESTAURANT.tenure.has(restaurant.tenure)||!interests.length||interests.some(i=>!RESTAURANT.interests.has(i)))return bad('Complete the restaurant questions.',422,headers);
+    if(!RESTAURANT.location.has(restaurant.location)||!RESTAURANT.businessType.has(restaurant.businessType)||!RESTAURANT.tenure.has(restaurant.tenure)||!interests.length||interests.some(i=>!RESTAURANT.interests.has(i)))return bad('Complete the project questions.',422,headers);
     noteLines.push(`Restaurant: ${restaurant.businessType}; location ${restaurant.location}; tenure ${restaurant.tenure}; interests ${interests.join(', ')}`);
   }
   if(clean(fields.notes,2000))noteLines.push(clean(fields.notes,2000));

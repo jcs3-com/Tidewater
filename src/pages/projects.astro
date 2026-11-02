@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import CTA from '../components/CTA.astro';
+import {fundingProjects} from '../data/funding-projects';
+---
+<Base title="What Funding Could Support | Tidewater" description="Five illustrative hospitality-adjacent project scenarios, from restaurant expansion to school kitchens, workforce training and cold storage.">
+  <section class="section tw-page-hero"><div class="container"><p class="eyebrow">Project possibilities / not client case studies</p><h1>Projects that may qualify for funding</h1><p class="lead">Examples include restaurant expansion, refrigerated distribution, school kitchens, employee training and food-waste reduction.</p><p class="fine">Illustrative only. No client awards are claimed, and a matching grant may not be open.</p></div></section>
+  <section class="section reverse"><div class="container tw-project-grid">
+    {fundingProjects.map(p=><article class="tw-project-card"><span class="step-number">{p.number} / {p.category}</span><p class="tw-audience">{p.audience}</p><h2>{p.title}</h2><p>{p.description}</p><div class="tw-divider"></div><p class="fine"><strong>Eligibility reality:</strong> {p.caveat}</p></article>)}
+  </div></section>
+  <section class="section"><div class="container tw-split"><div><h2>Find a current funding program</h2></div><div><p>Directory records include source links, status, applicants, eligible expenses and verification dates.</p><a class="button" href="/funding-directory">Browse funding opportunities ↗</a></div></div></section>
+  <CTA title="Request a project review" body="Describe your organization, planned expense and location." href="/contact" label="Discuss your project"/>
+</Base>

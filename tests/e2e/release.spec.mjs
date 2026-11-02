@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-const routes=['/','/bids','/pricing','/opportunity-finder','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/readiness','/becoming-a-contractor','/about','/insights','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md','/credits'];
+const routes=['/','/funding-directory','/funding-services','/projects','/resources','/tools','/academy','/fundamentals','/fellowship','/careers','/ethics','/bids','/pricing','/opportunity-finder','/restaurant-advisory','/restaurant-advisory/food-waste','/readiness','/becoming-a-contractor','/about','/insights','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md','/credits'];
 
 for(const theme of ['light','dark']){
  test(`WCAG A/AA automated audit across primary routes, ${theme}`,async({page})=>{
@@ -14,30 +14,20 @@ for(const theme of ['light','dark']){
   }
  });
 }
-test('poster assets are local and loaded; pause and reduced motion work',async({page})=>{
- await page.emulateMedia({reducedMotion:'no-preference'});await page.goto('/');
- const hero=page.locator('.hero-cinematic');await expect(hero).toHaveAttribute('data-motion','enabled');
- const pause=page.locator('#motion-toggle');await pause.click();
- await expect(hero).toHaveAttribute('data-paused','true');
- expect(await page.locator('.hero-image').evaluate(el=>getComputedStyle(el).animationPlayState)).toBe('paused');
- await pause.click();await expect(hero).toHaveAttribute('data-paused','false');
+test('photographs are local, still and loaded',async({page})=>{
+ await page.goto('/');
  for(const img of await page.locator('main img').all()){
   await img.evaluate(el=>el.scrollIntoView({block:'center'}));await expect(img).toBeVisible();
   await expect.poll(()=>img.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);
   expect(await img.evaluate(el=>new URL(el.currentSrc).origin===location.origin)).toBe(true);
+  expect(await img.evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
  }
- await page.emulateMedia({reducedMotion:'reduce'});
- await expect(hero).toHaveAttribute('data-motion','disabled');await expect(pause).toBeHidden();
- expect(await page.locator('.hero-image').evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
- await page.goto('/about');await page.locator('.landscape-story').scrollIntoViewIfNeeded();
- const secondary=page.locator('.landscape-story img');await expect(secondary).toBeVisible();
- await expect.poll(()=>secondary.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);
+ await expect(page.locator('#motion-toggle')).toHaveCount(0);
 });
 test('headline and action remain readable when photographs fail',async({page})=>{
  await page.route(/\/assets\/.*\.(webp|jpg)$/,route=>route.abort());await page.goto('/');
- await expect(page.getByRole('heading',{level:1})).toContainText('Find the opportunity.');
+ await expect(page.getByRole('heading',{level:1})).toContainText('Funding opportunity at the source.');
  await expect(page.locator('.header-cta')).toBeVisible();
- await expect(page.locator('#motion-toggle')).toBeHidden();
 });
 test('keyboard skip link and disclosure navigation',async({page})=>{
  await page.setViewportSize({width:390,height:844});await page.goto('/');await page.keyboard.press('Tab');
@@ -60,7 +50,7 @@ test('failed form delivery preserves entries and offers direct email',async({pag
 test('launch gates and deployed-source marker stay explicit',async({page,request})=>{
  await page.goto('/');await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','noindex, nofollow');
  const marker=await (await request.get('/release.json')).json();
- expect(marker.version).toBe('3.3.0');expect(marker.commit).toMatch(/^[a-f0-9]{40}$/);
+ expect(marker.version).toBe('4.1.0');expect(marker.commit).toMatch(/^[a-f0-9]{40}$/);
  await expect(page.locator('meta[name=tidewater-commit]')).toHaveAttribute('content',marker.commit);
  const robots=await (await request.get('/robots.txt')).text();expect(robots).toContain('Disallow: /');
  // Canonical origin follows the SITE_URL the build used (Cloudflare env in production).

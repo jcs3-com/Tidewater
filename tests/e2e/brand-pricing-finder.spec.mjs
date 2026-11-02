@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-const routes=['/','/bids','/pricing','/opportunity-finder','/engage','/restaurant-advisory','/restaurant-advisory/food-waste','/restaurant-advisory/funding','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md'];
+const routes=['/','/funding-directory','/funding-services','/projects','/resources','/tools','/academy','/fellowship','/careers','/ethics','/bids','/pricing','/opportunity-finder','/engage','/restaurant-advisory','/restaurant-advisory/food-waste','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md'];
 const retired=[/\$295/,/\$250\s*[–-]\s*\$500/,/\$1,500\s*[–-]\s*\$3,000/,/Bid Viability Review/i,/\$500 per bid/i];
 
 test('approved brand lockup, tagline, favicon and social image are installed',async({page,request})=>{
@@ -8,8 +8,8 @@ test('approved brand lockup, tagline, favicon and social image are installed',as
  await expect(logo.locator('.logo-word')).toHaveText('Tidewater');
  await expect(logo.locator('.logo-subtitle')).toHaveText('Advisory');
  await expect(logo.locator('img.mark-ink')).toHaveAttribute('src','/assets/brand/oyster-mark-ink-header.webp');
- await expect(page.getByRole('heading',{level:1})).toHaveText(/Read the current\.\s*Find the opportunity\./);
- await expect(page.locator('.footer-tagline')).toHaveText('Read the current. Find the opportunity.');
+ await expect(page.getByRole('heading',{level:1})).toHaveText(/Funding opportunity at the source\./);
+ await expect(page.locator('.footer-tagline')).toHaveText('Funding opportunity at the source.');
  expect(await page.locator('h1').evaluate(el=>getComputedStyle(el).fontFamily)).toMatch(/Cormorant Garamond/);
  expect(await page.locator('body').evaluate(el=>getComputedStyle(el).fontFamily)).toMatch(/DM Sans/);
  expect(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(247, 245, 239)');
@@ -77,8 +77,8 @@ test('Opportunity Finder (bids): readiness result, honest empty state, safe fail
 test('Opportunity Finder (restaurant): labelled, sourced programs and separate submission kind',async({page})=>{
  await page.route('**/api/lead',route=>{const body=JSON.parse(route.request().postData()||'{}');expect(body.kind).toBe('restaurant_finder');expect(body.interests).toBe('funding,food-waste');expect(body.categories).toBeUndefined();return route.fulfill({status:201,contentType:'application/json',body:'{"message":"Request received. We will follow up by email."}'});});
  await page.goto('/opportunity-finder');
- await page.getByText('Restaurant funding and improvements').click();
- await page.locator('#r-location').selectOption('charlottesville');await page.locator('#r-type').selectOption('independent-restaurant');await page.locator('#r-tenure').selectOption('lease');
+ await page.getByText('Funding for a project').click();
+ await page.locator('#r-location').selectOption('charlottesville');await page.locator('#r-type').selectOption('school');await page.locator('#r-tenure').selectOption('lease');
  await page.getByLabel('Funding, grants or incentives').check();await page.getByLabel('Food waste, donation or recovery').check();
  await page.getByRole('button',{name:'See my results'}).click();
  const results=page.locator('#finder-results');await expect(results).toBeVisible();

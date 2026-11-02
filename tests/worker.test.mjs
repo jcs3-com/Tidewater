@@ -28,6 +28,9 @@ test('restaurant finder writes a prospect with validated answers and a private p
  requests=[];
  assert.equal((await handler.fetch(req({...base,interests:'free-money'}),env)).status,422);
  assert.equal((await handler.fetch(req({...base,location:'mars'}),env)).status,422);
+ for(const businessType of ['school','nonprofit','farmer','market-distributor','other'])assert.equal((await handler.fetch(req({...base,businessType}),env)).status,201,businessType);
+ requests=[];
+ assert.equal((await handler.fetch(req({...base,businessType:'casino'}),env)).status,422);
  assert.equal(requests.length,0);
  globalThis.fetch=oldFetch;
 });
@@ -40,7 +43,7 @@ test('checkout is disabled by default and only accepts a signed, unexpired, serv
  const good=`recAAAAAAAAAAAAAA.sba-2.${exp}.${await signQuote(on,'recAAAAAAAAAAAAAA','sba-2',exp)}`;
  let stripeBody='';globalThis.fetch=async(input,init={})=>{if(String(input).includes('api.stripe.com')){stripeBody=String(init.body);return new Response(JSON.stringify({url:'https://checkout.stripe.test/s'}));}return new Response('{}',{status:404});};
  assert.equal((await handler.fetch(creq({quote:good.replace('sba-2','sba-1')}),on)).status,403);
- assert.equal((await handler.fetch(creq({quote:good.slice(0,-1)+'0'}),on)).status,403);
+ assert.equal((await handler.fetch(creq({quote:good.slice(0,-1)+(good.endsWith('0')?'1':'0')}),on)).status,403);
  const past=String(Math.floor(Date.now()/1000)-10);
  assert.equal((await handler.fetch(creq({quote:`recAAAAAAAAAAAAAA.sba-1.${past}.${await signQuote(on,'recAAAAAAAAAAAAAA','sba-1',past)}`}),on)).status,410);
  const res=await handler.fetch(creq({quote:good}),on);assert.equal(res.status,200);

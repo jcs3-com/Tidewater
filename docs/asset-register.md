@@ -60,5 +60,5 @@ For photo source bytes, original SHA-256 is recorded in the evidence JSON. Shipp
 | `public/assets/brand/oyster-mark-shell.svg` | 160926 | `271cee42ee6a89f559297936b5d002eb907a58706288b0f8df4b014841d2217a` |
 | `public/assets/favicon.svg` | 630 | `8566d1469258643763e35441424263207e09819fd50bfa66064bc45ebd139624` |
 | `public/assets/estuary-contours.svg` | 1613 | `b35991ec4bc3d2cf29ac0e575815c01ca33ed4a1fd349e9119bb38d1c803373b` |
-| `public/assets/og-default.png` | 231561 | `328b9f638d7b883fe3c3b3ccc38ddfa6c4df02ff95e9538290774ef53120cd09` |
+| `public/assets/og-default.png` | 234510 | `8ea0237d0a9b8cdc05a2920e6e7c68ca8ad027031931919461c0483992d485a5` |
 | `public/assets/fonts/cormorant-garamond-latin-italic.woff2` | 39260 | `6f2f5c3b1abc3d0bb035a927f66a90ca873f94fc31c4966c8d024142c2036e55` |

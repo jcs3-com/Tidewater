@@ -1,0 +1,9 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Funding Fundamentals | Tidewater Academy" description="An outline for a future practical course on grant opportunities, eligibility, budgets, applications and reporting.">
+  <section class="section tw-page-hero"><div class="container"><p class="eyebrow"><a href="/academy">Academy</a> / Fundamentals</p><h1>Funding Fundamentals</h1><p class="lead">Planned introductory training on grant research, eligibility, applications and reporting.</p><p>Not yet available. No enrollment is open.</p></div></section>
+  <section class="section reverse"><div class="container tw-four">
+    {['Funding sources and eligibility','Scoping a fundable project','Budgets, narratives and submission','Award conditions and reporting'].map((title,i)=><article class="panel"><span class="step-number">0{i+1} / Module concept</span><h3>{title}</h3></article>)}
+  </div></section>
+</Base>

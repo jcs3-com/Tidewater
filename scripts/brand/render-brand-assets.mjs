@@ -25,7 +25,7 @@ const jobs=[
    <div style="font-size:150px;font-weight:500;letter-spacing:-3px;line-height:1">Tidewater</div>
    <div style="font:400 30px DMSans;letter-spacing:15px;margin:18px 0 0 8px">ADVISORY</div>
    <div style="width:80px;border-top:1.5px solid #243943;margin:30px 0 0 10px"></div>
-   <div style="font-style:italic;font-size:40px;margin:26px 0 0 6px">Read the current. Find the opportunity.</div>
+   <div style="font-style:italic;font-size:40px;margin:26px 0 0 6px">Funding opportunity at the source.</div>
   </div></div>`}
 ];
 const b=await chromium.launch();
