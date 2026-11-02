@@ -1,5 +1,21 @@
 # Tidewater release log
 
+## v4.1 Funding-first — 2026-11-02
+
+**Live in production, verified 2026-11-02 by Claude.** [PR #20](https://github.com/jcs3-com/Tidewater/pull/20) squash-merged as `e892671bd0706344992e48b901dc9087616d5d48`; live `/release.json` reports `4.1.0` / `e892671…` and the homepage `tidewater-commit` meta tag matches.
+
+Owner decisions applied (2026-11-02): funding-first positioning; tagline "Funding opportunity at the source." everywhere; photo motion retired; Bid Desk keeps its 2026-11-01 wording and $1,250 / $2,500 tiers; privacy and terms rewritten short and moved to footer small print; business address 1708 A St SE, Washington, DC 20003 published.
+
+- **New routes:** `/funding-directory`, `/funding-services`, `/projects`, `/resources`, `/tools`, `/academy`, `/fundamentals`, `/fellowship`, `/ethics`, `/careers`. Nav: Funding Finder · Funding Services · Resources · About · Bid Desk.
+- **Finder/intake:** school, nonprofit, farm, market/distributor and Other organization types, accepted by `/api/lead` (worker test added).
+- **Consolidation:** `/restaurant-advisory/funding` 301 → `/funding-directory`; DMV/National programs stay visible under state filters.
+- **Brand:** regenerated `og-default.png`, collateral and structured data carry the new tagline; copy guard blocks the retired tagline and public `[[TODO]]` placeholders.
+- **Fixes to the Drive package:** `tools.astro` frontmatter (build failure); overlay script overwrote its own Finder edit; light-on-light contrast on `/funding-directory` and `/projects`.
+
+Checks: `npm run check` passed (18/18 unit); `DEMO_SEED=0` build; Playwright 33/33 against local `wrangler pages dev`; Cloudflare Pages PR check passed. Production Playwright run: 32/33 on first pass — one transient 500 on `/funding-services` during edge rollout, then 15/15 direct requests returned 200 and the rerun passed. Production smoke: noindex present, `/api/checkout` 503, 14 Airtable funding records live, retired tagline absent.
+
+Rollback: `git revert e892671` on `main` and merge; confirm `/release.json` reports version `3.3.0` and the revert commit.
+
 ## Bid Desk audience broadened — 2026-11-01
 
 **Live in production, verified 2026-11-01 by Claude.** [PR #18](https://github.com/jcs3-com/Tidewater/pull/18) squash-merged as `f3a88353a6c296e958c824f89e38096684b1a39b`; live `/release.json` and the homepage `tidewater-commit` meta tag both report `f3a8835…`.
