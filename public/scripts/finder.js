@@ -5,6 +5,7 @@ import {matchBids, matchPrograms, todayISO} from './finder-logic.js';
 const form = document.getElementById('finder-form');
 const data = JSON.parse(document.getElementById('finder-data')?.textContent || '{}');
 const results = document.getElementById('finder-results');
+const render = (...kids) => results.replaceChildren(...kids.flat(Infinity).filter(k => k !== null && k !== undefined && k !== false));
 const contact = document.getElementById('finder-contact');
 const calc = document.getElementById('finder-calc');
 const feedback = document.getElementById('finder-feedback');
@@ -80,17 +81,22 @@ function renderBids(values) {
   const {exact, sameCategory} = matchBids(data.bids || [], {category: values.categories, jurisdiction: values.jurisdictions}, todayISO(), Object.fromEntries((data.jurisdictions || []).map(j => [j.slug, j.region])));
   const area = nameOf(data.jurisdictions, values.jurisdictions), cat = nameOf(data.categories, values.categories);
   const band = score >= 75 ? 'Ready to compete on a well-matched solicitation.' : score >= 50 ? 'Close. A few gaps to close before or during your first bid.' : 'Early. Closing the gaps below comes before bidding.';
-  results.replaceChildren(
+  render(
     el('p', {class: 'eyebrow'}, 'Your preliminary result'),
     el('h2', {}, `Readiness: ${score} / 100`),
     el('div', {class: 'readiness-meter', role: 'img', 'aria-label': `Readiness ${score} out of 100`}, el('span', {style: `width:${score}%`})),
     el('p', {class: 'lead'}, band),
     el('h3', {}, gaps.length ? 'Gaps to close' : 'No immediate flags'),
     el('ul', {}, (gaps.length ? gaps : ['Verify every requirement against the actual solicitation.']).map(g => el('li', {}, g))),
-    el('h3', {}, `Open ${cat.toLowerCase()} bids in ${area}`),
-    exact.length ? el('ul', {class: 'finder-match-list'}, exact.map(bidItem))
-      : el('p', {class: 'finder-empty'}, `We are not tracking a verified open ${cat.toLowerCase()} solicitation in ${area} right now. That changes as agencies post new work; send us your profile and we'll match you as verified bids are added.`),
-    sameCategory.length ? [el('h3', {}, `Open ${cat.toLowerCase()} bids elsewhere in the region`), el('ul', {class: 'finder-match-list'}, sameCategory.map(bidItem))] : null,
+    ...(values.categories === 'other' ? [
+      el('h3', {}, `Solicitations for your work in ${area}`),
+      el('p', {class: 'finder-empty'}, `Services outside our listed categories are matched by hand. Send us your profile and a short description of what you provide, and we'll look for public solicitations that fit.`)
+    ] : [
+      el('h3', {}, `Open ${cat.toLowerCase()} bids in ${area}`),
+      exact.length ? el('ul', {class: 'finder-match-list'}, exact.map(bidItem))
+        : el('p', {class: 'finder-empty'}, `We are not tracking a verified open ${cat.toLowerCase()} solicitation in ${area} right now. That changes as agencies post new work; send us your profile and we'll match you as verified bids are added.`),
+      sameCategory.length ? [el('h3', {}, `Open ${cat.toLowerCase()} bids elsewhere in the region`), el('ul', {class: 'finder-match-list'}, sameCategory.map(bidItem))] : null
+    ]),
     nextStep('Want Tidewater to build the bid?', `Single Bid Architecture is ${formatUsd(bidDeskTiers[0].price)} flat for a solicitation under $100,000, or ${formatUsd(bidDeskTiers[1].price)} at $100,000 and above. We confirm fit and tier in writing before any fee.`,
       [el('a', {class: 'button', href: '#finder-contact', 'data-track': 'paid_inquiry', 'data-track-source': 'finder-bids'}, 'Ask Tidewater to review'), el('a', {class: 'button-quiet', href: '/pricing'}, 'See what the fee covers')])
   );
@@ -100,7 +106,7 @@ function renderBids(values) {
 function renderRestaurant(values) {
   const {current, watch} = matchPrograms(data.programs || [], values, todayISO());
   const locationLabel = form.querySelector(`#r-location option[value="${CSS.escape(values.location)}"]`)?.textContent || values.location;
-  results.replaceChildren(
+  render(
     el('p', {class: 'eyebrow'}, 'Your preliminary result'),
     el('h2', {}, current.length ? `${current.length} program${current.length === 1 ? '' : 's'} worth a look` : 'Nothing verified is open for this profile today'),
     el('p', {}, `Programs we track for ${locationLabel}, matched to what you want help with. Every listing links to its official source. Labels separate grants from rebates, financing, sponsor-required programs and unverified leads. Eligibility is not an award.`),

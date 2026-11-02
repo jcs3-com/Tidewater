@@ -25,15 +25,15 @@ const interests=[['funding','Funding, grants or incentives'],['efficiency','Ener
  <div class="sr-only" aria-hidden="true"><label>Leave blank<input name="website" tabindex="-1" autocomplete="off" /></label></div>
 
  <fieldset class="finder-paths"><legend>What are you looking for?</legend>
-  <label class="path-option"><input type="radio" name="path" value="bids" required /><strong>Government contracts</strong><span>Bid Desk: public solicitations for catering, concessions, janitorial, security and event services.</span></label>
+  <label class="path-option"><input type="radio" name="path" value="bids" required /><strong>Government contracts</strong><span>Bid Desk: readiness for public-sector contracts and the source-verified solicitations we track.</span></label>
   <label class="path-option"><input type="radio" name="path" value="restaurant" /><strong>Restaurant funding and improvements</strong><span>Restaurant Advisory: grants, rebates, incentives, efficiency, equipment, operations and food waste.</span></label>
  </fieldset>
 
  <div id="path-bids" data-path="bids" hidden>
   <div class="finder-step"><h2>Your business</h2><div class="form-grid">
-   <div class="field"><label for="f-category">Main service you could bid</label><select id="f-category" name="categories" data-required><option value="">Select</option>{categories.map(c=><option value={c.slug}>{c.name}</option>)}</select></div>
+   <div class="field"><label for="f-category">Main service you could bid</label><select id="f-category" name="categories" data-required><option value="">Select</option>{categories.map(c=><option value={c.slug}>{c.name}</option>)}<option value="other">Something else (describe below)</option></select></div>
    <div class="field"><label for="f-area">Primary service area</label><select id="f-area" name="jurisdictions" data-required><option value="">Select</option>{jurisdictions.map(j=><option value={j.slug}>{j.name}</option>)}</select></div>
-   <div class="field full"><label for="f-services">What do you provide? (optional)</label><textarea id="f-services" name="services" maxlength="600" placeholder="For example: boxed lunches and receptions up to 300 guests"></textarea></div>
+   <div class="field full"><label for="f-services">What do you provide? (optional)</label><textarea id="f-services" name="services" maxlength="600" placeholder="For example: commercial HVAC maintenance, IT support, office supplies or catering for up to 300 guests"></textarea></div>
   </div></div>
   <div class="finder-step"><h2>Capacity and readiness</h2><div class="form-grid">
    <div class="field"><label for="f-staff">Staff you can assign to a contract</label><select id="f-staff" name="staff" data-required><option value="">Select</option><option value="solo">Just me / undefined</option><option value="1to4">1–4</option><option value="5to9">5–9</option><option value="10plus">10 or more</option></select></div>
