@@ -1,5 +1,19 @@
 # Tidewater release log
 
+## Bid Desk audience broadened — 2026-11-01
+
+**Live in production, verified 2026-11-01 by Claude.** [PR #18](https://github.com/jcs3-com/Tidewater/pull/18) squash-merged as `f3a88353a6c296e958c824f89e38096684b1a39b`; live `/release.json` and the homepage `tidewater-commit` meta tag both report `f3a8835…`.
+
+Owner decision: the Bid Desk serves any firm pursuing government (B2G) contracts, not only hospitality, janitorial and event-service operators.
+
+- **Copy:** default and home meta, home hero and Bid Desk card, `/bids` "Who it's for" (now "Firms ready to sell to government." with first-time bidders, growing contractors and solicitation-in-hand panels), finder path blurb, readiness and becoming-a-contractor meta.
+- **Finder/readiness:** "Something else" service option; unlisted services get a hand-matching message instead of category bid matches. `categories` in `config.ts` unchanged, so county landing pages and Airtable categories are untouched.
+- **Fix:** finder results no longer render a stray "null" or stringified elements (`replaceChildren` now receives a flattened, filtered list).
+
+Checks: `npm run check` passed; `DEMO_SEED=0` build; Playwright 31/31 against local `wrangler pages dev`; Cloudflare Pages PR check passed; production `/bids` and `/opportunity-finder` serve the new copy.
+
+Rollback: `git revert f3a8835` on `main` and merge; confirm `/release.json`.
+
 ## v3.3.0 Simplification — 2026-10-28
 
 **Live in production, verified 2026-10-28 ~13:35 ET by Claude.** [PR #16](https://github.com/jcs3-com/Tidewater/pull/16) squash-merged as `75885ad3737cb2bc5252b82a41d083ed2a385f96`; live `/release.json` reported `3.3.0` / `75885ad…`.
