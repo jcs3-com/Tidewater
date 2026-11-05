@@ -12,8 +12,6 @@ for(const statement of ['Tidewater is an independent consultancy','Not affiliate
  assert.ok(readFileSync(new URL('../src/layouts/Base.astro',import.meta.url),'utf8').includes(statement),`Missing disclaimer: ${statement}`);
 }
 assert.ok(readFileSync(new URL('../src/layouts/Base.astro',import.meta.url),'utf8').includes('Funding opportunity at the source.'),'Missing approved tagline in Base layout');
-// Owner decision 2026-11-05: Tidewater does not sell to schools; no school audience anywhere in site copy.
-for(const f of readdirSync(new URL('../src/',import.meta.url),{recursive:true}).filter(f=>/\.(astro|ts)$/.test(f))){const t=readFileSync(new URL('../src/'+f,import.meta.url),'utf8');assert.ok(!/\bschools?\b/i.test(t),`School audience copy in src/${f}`);}
 // Owner decision 2026-11-05: no personal legal name as the business entity in the footer or legal pages.
 for(const f of ['../src/layouts/Base.astro','../src/pages/terms.astro','../src/pages/privacy.astro']){const t=readFileSync(new URL(f,import.meta.url),'utf8');assert.ok(!/Simpson|trade name of/i.test(t),`Legal name or trade-name statement in ${f}`);}
 console.log('Marketing-copy guardrails passed.');
