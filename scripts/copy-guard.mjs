@@ -8,7 +8,7 @@ const source=walk(root).filter(p=>p.endsWith('.astro')).map(p=>readFileSync(p,'u
 for(const forbidden of [/success[ -]?fee/i,/commission\b/i,/percent(?:age)?\s+of\s+(?:the\s+)?contract\s+value/i,/Read the current/i,/\[\[TODO/]) {
  assert.ok(!forbidden.test(source),`Marketing copy has forbidden or misleading language: ${forbidden}`);
 }
-for(const statement of ['Tidewater is a trade name of Tidewater Advisory LLC','Not affiliated with any government agency','We do not guarantee contract awards']) {
+for(const statement of ['Tidewater is a trade name of James C. Simpson III','Not affiliated with any government agency','We do not guarantee contract awards']) {
  assert.ok(readFileSync(new URL('../src/layouts/Base.astro',import.meta.url),'utf8').includes(statement),`Missing disclaimer: ${statement}`);
 }
 assert.ok(readFileSync(new URL('../src/layouts/Base.astro',import.meta.url),'utf8').includes('Funding opportunity at the source.'),'Missing approved tagline in Base layout');

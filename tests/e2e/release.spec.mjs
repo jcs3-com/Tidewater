@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-const routes=['/','/funding-directory','/funding-services','/projects','/resources','/tools','/academy','/fundamentals','/fellowship','/careers','/ethics','/bids','/pricing','/opportunity-finder','/restaurant-advisory','/restaurant-advisory/food-waste','/readiness','/becoming-a-contractor','/about','/insights','/contact','/privacy','/terms','/contracts/catering/montgomery-county-md','/credits'];
+const routes=['/','/funding-directory','/funding-services','/projects','/resources','/tools','/academy','/fundamentals','/fellowship','/careers','/ethics','/bids','/pricing','/opportunity-finder','/restaurant-advisory','/restaurant-advisory/food-waste','/readiness','/becoming-a-contractor','/about','/insights','/contact','/privacy','/terms','/support','/contracts/catering/montgomery-county-md','/credits'];
 
 for(const theme of ['light','dark']){
  test(`WCAG A/AA automated audit across primary routes, ${theme}`,async({page})=>{

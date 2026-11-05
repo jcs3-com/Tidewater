@@ -11,7 +11,7 @@ const faq=[
   {q:'Do you guarantee an award?',a:'No. The agency decides every award. Our fee pays for preparation work, not an outcome.'}
 ];
 const schema=[
-  {'@context':'https://schema.org','@type':'Service',name:'Single Bid Architecture',serviceType:'Government bid preparation',provider:{'@type':'Organization',name:'Tidewater Advisory LLC'},areaServed:['Washington, DC','Maryland','Virginia'],url:pageUrl('/pricing'),
+  {'@context':'https://schema.org','@type':'Service',name:'Single Bid Architecture',serviceType:'Government bid preparation',provider:{'@type':'Organization',name:'Tidewater'},areaServed:['Washington, DC','Maryland','Virginia'],url:pageUrl('/pricing'),
    offers:bidDeskTiers.map(t=>({'@type':'Offer',name:t.name,description:`Flat fee for one solicitation with an estimated contract value ${t.id==='sba-1'?'under $100,000':'of $100,000 or more'}.`,price:String(t.price),priceCurrency:'USD',availability:'https://schema.org/LimitedAvailability'}))},
   {'@context':'https://schema.org','@type':'FAQPage',mainEntity:faq.map(x=>({'@type':'Question',name:x.q,acceptedAnswer:{'@type':'Answer',text:x.a}}))}
 ];
