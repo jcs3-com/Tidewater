@@ -38,7 +38,8 @@ export const displayValue = (amount:number|null|undefined) => amount === null ||
 export const pageUrl = (path:string) => new URL(path, siteUrl).toString();
 // Launch gates. Both default OFF; set to "1" in the Cloudflare Pages build environment only when ready.
 // SITE_INDEXABLE=1: remove the site-wide noindex and open robots.txt (only after copy/legal TODOs are cleared).
-const flag = (name:string) => (import.meta.env[name] ?? (typeof process !== 'undefined' ? process.env[name] : undefined)) === '1';
+// Astro coerces numeric-looking env values, so SITE_INDEXABLE=1 arrives as the number 1; compare as text.
+const flag = (name:string) => String(import.meta.env[name] ?? (typeof process !== 'undefined' ? process.env[name] : undefined) ?? '') === '1';
 export const indexable = flag('SITE_INDEXABLE');
 // CHECKOUT_ENABLED=1 would render the gated Single Bid Architecture payment step. It stays OFF until
 // engagement terms, refund policy, payment credentials and fulfilment capacity are verified.
