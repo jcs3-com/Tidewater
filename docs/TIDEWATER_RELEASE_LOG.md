@@ -1,5 +1,21 @@
 # Tidewater release log
 
+## Terms of Service, Support page, Stripe products — 2026-11-05
+
+**Live in production, verified 2026-11-05 by Claude.** [PR #25](https://github.com/jcs3-com/Tidewater/pull/25) (`38f20b4`) and [PR #26](https://github.com/jcs3-com/Tidewater/pull/26) (`1ae05fc`) squash-merged; live `/release.json` and the homepage `tidewater-commit` both report `1ae05fc…`.
+
+Owner decisions (2026-11-05): Tidewater operates as a sole-proprietor DBA; the owner's legal name is not shown as the business entity anywhere on the site.
+
+- **/terms** is now Terms of Service: bid purchases, advisory, payments, refunds (`/terms#refunds`), confidentiality, liability, DC law. **/support** added and linked in the footer and sitemap.
+- Footer reads "Tidewater is an independent consultancy based in Washington, DC." Tidewater Advisory LLC and `legalName` removed; copy guard blocks the legal name in the footer and legal pages. Privacy lists Stripe.
+- Checkout bills to Stripe products from runtime `STRIPE_PRODUCT_TIER1` / `STRIPE_PRODUCT_TIER2`; webhook handles `checkout.session.async_payment_succeeded` for ACH.
+
+Checks: `npm run check` 20/20 on merged `main`; Playwright 33/33 locally for #25; Cloudflare Pages checks passed. Production smoke: `/support`, `/terms`, `/privacy` 200 with no legal name; refund anchor present; noindex present; `/api/checkout` 503.
+
+Still off: `CHECKOUT_ENABLED=0`.
+
+Rollback: `git revert 1ae05fc 38f20b4` on `main` and merge.
+
 ## Listing checkout and badges — 2026-11-05
 
 **Live in production, verified 2026-11-05 by Claude.** [PR #23](https://github.com/jcs3-com/Tidewater/pull/23) squash-merged as `da3d6f64d78d8fb9dffd49f9d266ca3678ebbc0e`; live `/release.json` and the homepage `tidewater-commit` meta tag both report `da3d6f6…`.
