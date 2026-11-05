@@ -45,7 +45,7 @@ const allowedKinds = new Set(['contact','bid_packet','quiz','restaurant_finder']
 // Opportunity Finder (restaurant path) answers are validated against fixed choices; free text is length-capped.
 const RESTAURANT = {
   location:new Set(['washington-dc','maryland','northern-virginia','charlottesville','virginia-other','other']),
-  businessType:new Set(['independent-restaurant','restaurant-group','bar','cafe-bakery','caterer','food-producer','hotel-venue','school','nonprofit','farmer','market-distributor','other']),
+  businessType:new Set(['independent-restaurant','restaurant-group','bar','cafe-bakery','caterer','food-producer','hotel-venue','nonprofit','farmer','market-distributor','other']),
   tenure:new Set(['own','lease','unsure']),
   interests:new Set(['funding','efficiency','equipment','operations','food-waste'])
 };

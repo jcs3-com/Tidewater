@@ -11,7 +11,7 @@ const {items:funding}=await getFundingOpportunities();
 const programs=funding.map(o=>({program:o.program,funder:o.funder,geography:o.geography,type:o.type,status:o.status,deadline:o.deadline||'',verified:o.verified,url:o.url,fit:o.fit,summary:o.summary,applicants:o.eligibleApplicants,match:o.match,amount:o.amountNotes,nextRound:o.nextRound||''}));
 const data=JSON.stringify({bids,programs,jurisdictions:jurisdictions.map(j=>({slug:j.slug,name:j.name,region:j.region})),categories:categories.map(c=>({slug:c.slug,name:c.name})),builtAt:new Date().toISOString().slice(0,10)}).replace(/</g,'\\u003c');
 const restaurantLocations=[['washington-dc','Washington, DC'],['maryland','Maryland'],['northern-virginia','Northern Virginia'],['charlottesville','Charlottesville / Central Virginia'],['virginia-other','Elsewhere in Virginia'],['other','Somewhere else']];
-const businessTypes=[['independent-restaurant','Independent restaurant'],['restaurant-group','Multi-unit restaurant group'],['bar','Bar or tavern'],['cafe-bakery','Café or bakery'],['caterer','Caterer'],['food-producer','Food producer or maker'],['hotel-venue','Hotel, venue or hospitality group'],['school','School or education provider'],['nonprofit','Nonprofit or food bank'],['farmer','Farm or grower'],['market-distributor','Market or food distributor'],['other','Other']];
+const businessTypes=[['independent-restaurant','Independent restaurant'],['restaurant-group','Multi-unit restaurant group'],['bar','Bar or tavern'],['cafe-bakery','Café or bakery'],['caterer','Caterer'],['food-producer','Food producer or maker'],['hotel-venue','Hotel, venue or hospitality group'],['nonprofit','Nonprofit or food bank'],['farmer','Farm or grower'],['market-distributor','Market or food distributor'],['other','Other']];
 const interests=[['funding','Funding, grants or incentives'],['efficiency','Energy or water efficiency'],['equipment','Kitchen or refrigeration equipment'],['operations','Purchasing, labor or operating margin'],['food-waste','Food waste, donation or recovery']];
 ---
 <Base title="Free Opportunity Finder | Funding Programs & Government Bids | Tidewater" description="Answer a few questions to see source-verified funding programs or government bids Tidewater tracks for organizations in DC, Maryland and Virginia.">
@@ -26,7 +26,7 @@ const interests=[['funding','Funding, grants or incentives'],['efficiency','Ener
 
  <fieldset class="finder-paths"><legend>What are you looking for?</legend>
   <label class="path-option"><input type="radio" name="path" value="bids" required /><strong>Government contracts</strong><span>Bid Desk: readiness for public-sector contracts and the source-verified solicitations we track.</span></label>
-  <label class="path-option"><input type="radio" name="path" value="restaurant" /><strong>Funding for a project</strong><span>Grants, rebates and incentives for restaurants, food businesses, schools, nonprofits, farms and distributors.</span></label>
+  <label class="path-option"><input type="radio" name="path" value="restaurant" /><strong>Funding for a project</strong><span>Grants, rebates and incentives for restaurants, food businesses, nonprofits, farms and distributors.</span></label>
  </fieldset>
 
  <div id="path-bids" data-path="bids" hidden>

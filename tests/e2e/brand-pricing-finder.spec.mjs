@@ -78,7 +78,7 @@ test('Opportunity Finder (restaurant): labelled, sourced programs and separate s
  await page.route('**/api/lead',route=>{const body=JSON.parse(route.request().postData()||'{}');expect(body.kind).toBe('restaurant_finder');expect(body.interests).toBe('funding,food-waste');expect(body.categories).toBeUndefined();return route.fulfill({status:201,contentType:'application/json',body:'{"message":"Request received. We will follow up by email."}'});});
  await page.goto('/opportunity-finder');
  await page.getByText('Funding for a project').click();
- await page.locator('#r-location').selectOption('charlottesville');await page.locator('#r-type').selectOption('school');await page.locator('#r-tenure').selectOption('lease');
+ await page.locator('#r-location').selectOption('charlottesville');await page.locator('#r-type').selectOption('nonprofit');await page.locator('#r-tenure').selectOption('lease');
  await page.getByLabel('Funding, grants or incentives').check();await page.getByLabel('Food waste, donation or recovery').check();
  await page.getByRole('button',{name:'See my results'}).click();
  const results=page.locator('#finder-results');await expect(results).toBeVisible();
