@@ -1,5 +1,16 @@
 # Tidewater release log
 
+## Public indexing on; checkout live — 2026-11-05
+
+**Live in production, verified 2026-11-05 by Claude.** Owner set `CHECKOUT_ENABLED=1` (live Stripe keys) and `SITE_INDEXABLE=1` in Cloudflare Pages.
+
+- [PR #29](https://github.com/jcs3-com/Tidewater/pull/29) removed schools from site copy and the Opportunity Finder (owner decision); #31 dropped the related copy guard.
+- [PR #32](https://github.com/jcs3-com/Tidewater/pull/32) (`2550b6b`) fixed `flag()`: Astro coerces `1` to a number, so build launch flags could never turn on.
+- Production smoke: robots.txt `Allow: /` with sitemap; no `noindex` on public pages (`/engage` keeps its own); sitemap 83 URLs; `/api/checkout` returns a live-mode Stripe session.
+- No completed purchase recorded yet (no Secured listing, no `bid_purchase` Prospect).
+
+Rollback: set `SITE_INDEXABLE=0` / `CHECKOUT_ENABLED=0` in Pages and redeploy.
+
 ## Terms of Service, Support page, Stripe products — 2026-11-05
 
 **Live in production, verified 2026-11-05 by Claude.** [PR #25](https://github.com/jcs3-com/Tidewater/pull/25) (`38f20b4`) and [PR #26](https://github.com/jcs3-com/Tidewater/pull/26) (`1ae05fc`) squash-merged; live `/release.json` and the homepage `tidewater-commit` both report `1ae05fc…`.
