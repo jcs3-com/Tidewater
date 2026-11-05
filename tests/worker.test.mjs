@@ -101,6 +101,11 @@ test('listing checkout: server-priced from Airtable, no availability check, Excl
  assert.match(stripeBody,/unit_amount%5D=125000/);assert.match(stripeBody,/metadata%5Brfp%5D=recAAAAAAAAAAAAAA/);
  record={...open,'Est. Value':100000};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,200);
  assert.match(stripeBody,/unit_amount%5D=250000/);
+ const withProducts={...on,STRIPE_PRODUCT_TIER1:'prod_TierOne123',STRIPE_PRODUCT_TIER2:'prod_TierTwo456'};
+ assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),withProducts)).status,200);
+ assert.match(stripeBody,/%5Bproduct%5D=prod_TierTwo456/);assert.doesNotMatch(stripeBody,/product_data/);assert.match(stripeBody,/unit_amount%5D=250000/);
+ record={...open};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),withProducts)).status,200);
+ assert.match(stripeBody,/%5Bproduct%5D=prod_TierOne123/);assert.match(stripeBody,/unit_amount%5D=125000/);
  record={...open,'Est. Value':5000,'Listing Badge':'Secured'};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,200,'Secured listings are not blocked');
  for(const b of ['Featured','Top Pick']){record={...open,'Listing Badge':b};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,200,b);}
  record={...open,'Listing Badge':'Excluded'};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,410);
@@ -127,6 +132,8 @@ test('Stripe webhook verifies the signature, marks the listing Secured and recor
  const buyer=calls.find(c=>c.method==='POST'&&c.url.includes('/Prospects'));assert.match(buyer.body,/"Lead Type":"bid_purchase"/);assert.match(buyer.body,/ada@example.com/);assert.match(buyer.body,/Ada Catering/);
  assert.ok(calls.some(c=>c.url==='https://api.cloudflare.test/hook'));
  calls.length=0;const unpaid=JSON.stringify({...event,data:{object:{...event.data.object,payment_status:'unpaid'}}});
- assert.equal((await handler.fetch(await wreq(unpaid),on)).status,200);assert.equal(calls.length,0);
+ assert.equal((await handler.fetch(await wreq(unpaid),on)).status,200);assert.equal(calls.length,0,'pending ACH does not secure the listing');
+ const cleared=JSON.stringify({...event,type:'checkout.session.async_payment_succeeded'});
+ assert.equal((await handler.fetch(await wreq(cleared),on)).status,200);assert.ok(calls.some(c=>c.method==='PATCH'),'cleared ACH secures the listing');
  globalThis.fetch=oldFetch;
 });
