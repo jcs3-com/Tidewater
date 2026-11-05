@@ -1,5 +1,22 @@
 # Tidewater release log
 
+## Listing checkout and badges — 2026-11-05
+
+**Live in production, verified 2026-11-05 by Claude.** [PR #23](https://github.com/jcs3-com/Tidewater/pull/23) squash-merged as `da3d6f64d78d8fb9dffd49f9d266ca3678ebbc0e`; live `/release.json` and the homepage `tidewater-commit` meta tag both report `da3d6f6…`.
+
+Owner decisions applied (2026-11-05): sell one bid straight from a listing at the existing tiers ($1,250 under $100,000; $2,500 at $100,000+); no availability check before checkout, duplicates resolved by hand; checkout page shows only the opportunity, "We prepare and submit your proposal.", the price and a Terms link; delivery-contingent fee stated in Terms.
+
+- **Checkout:** `/api/checkout` accepts a listing id, reads the RFP from Airtable and prices it server-side (blank Est. Value = $1,250). Excluded, closed and past-due listings refused. Operator-signed quote path unchanged.
+- **Webhook:** `/api/stripe-webhook` verifies `STRIPE_WEBHOOK_SECRET`, sets `Listing Badge` = Secured, records the buyer in Prospects (`Lead Type` bid_purchase), calls `PAGES_DEPLOY_HOOK`.
+- **Badges:** Airtable `Listing Badge` field added (Secured, Featured, Top Pick, Excluded). Featured pins first; Top pick and Featured stay for sale; Secured and Excluded ("Not offered") hide the buy button.
+- **Terms:** "Bid purchases" section added; effective date November 5, 2026.
+
+Checks: `npm run check` passed (20/20 unit); `DEMO_SEED=0` build; Playwright 33/33 against local `wrangler pages dev`; Cloudflare Pages PR check passed. Production smoke: noindex present, `/api/checkout` 503 (checkout off), `/api/stripe-webhook` 503 (not configured), Terms section live, 5 open listings show "Bid on this with Tidewater — $1,250" and a checkout block.
+
+Still off: `CHECKOUT_ENABLED=0`. Before enabling: Stripe account in the LLC's name; `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `PAGES_DEPLOY_HOOK` in Pages; entity formation and engagement terms.
+
+Rollback: `git revert da3d6f6` on `main` and merge; confirm `/release.json` reports the revert commit.
+
 ## v4.1 Funding-first — 2026-11-02
 
 **Live in production, verified 2026-11-02 by Claude.** [PR #20](https://github.com/jcs3-com/Tidewater/pull/20) squash-merged as `e892671bd0706344992e48b901dc9087616d5d48`; live `/release.json` reports `4.1.0` / `e892671…` and the homepage `tidewater-commit` meta tag matches.
