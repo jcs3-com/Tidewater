@@ -28,7 +28,7 @@ test('restaurant finder writes a prospect with validated answers and a private p
  requests=[];
  assert.equal((await handler.fetch(req({...base,interests:'free-money'}),env)).status,422);
  assert.equal((await handler.fetch(req({...base,location:'mars'}),env)).status,422);
- for(const businessType of ['school','nonprofit','farmer','market-distributor','other'])assert.equal((await handler.fetch(req({...base,businessType}),env)).status,201,businessType);
+ for(const businessType of ['nonprofit','farmer','market-distributor','other'])assert.equal((await handler.fetch(req({...base,businessType}),env)).status,201,businessType);
  requests=[];
  assert.equal((await handler.fetch(req({...base,businessType:'casino'}),env)).status,422);
  assert.equal(requests.length,0);

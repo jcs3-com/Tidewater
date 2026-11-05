@@ -17,11 +17,11 @@ export const fundingProjects = [
   },
   {
     number: '03',
-    category: 'Institutional kitchens',
-    audience: 'Schools and nonprofits',
-    title: 'School kitchen equipment',
-    description: 'A school planning kitchen equipment improvements to support an existing or prospective school-meals operation.',
-    caveat: 'School lunch equipment grants may require existing NSLP participation and do not necessarily fund an entire kitchen.'
+    category: 'Energy efficiency',
+    audience: 'Bars and cafés',
+    title: 'Refrigeration and ice-machine upgrades',
+    description: 'A bar or café replacing an aging walk-in cooler and ice machine with efficient models through utility rebates.',
+    caveat: 'Rebates usually require qualifying equipment and approval before purchase; amounts vary by utility and program.'
   },
   {
     number: '04',
