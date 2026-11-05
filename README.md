@@ -56,6 +56,7 @@ Set `DEMO_SEED=1` locally to see three clearly fictional SAMPLE bids. Never run 
 | `PUBLIC_ANALYTICS_DOMAIN` | build | Plausible domain; events are already wired |
 | `CHECKOUT_ENABLED`, `STRIPE_SECRET_KEY`, `HMAC_SECRET` | runtime | P2, off |
 | `STRIPE_WEBHOOK_SECRET`, `PAGES_DEPLOY_HOOK` | runtime | Listing checkout: marks bought listings Secured and rebuilds |
+| `STRIPE_PRODUCT_TIER1`, `STRIPE_PRODUCT_TIER2` | runtime | Stripe product ids for the $1,250 and $2,500 bids (test and live ids differ) |
 
 Preview deployments do not receive the production Airtable token and render an empty board; check data on production.
 

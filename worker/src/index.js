@@ -169,9 +169,13 @@ async function listingCheckout(env,headers,rfpId){
   const jur=clean(f.Jurisdiction,80),slug=clean(f.Slug,160);
   const back=/^[a-z0-9-]+$/.test(jur)&&/^[a-z0-9-]+$/.test(slug)?`${env.SITE_URL}/bids/${jur}/${slug}`:`${env.SITE_URL}/bids`;
   const name=`Bid on this with Tidewater: ${clean(f.Title,200)}`.slice(0,250);
+  // Bill against the fixed Stripe product for the tier when configured (clean reporting); the amount still
+  // comes from the server tier table. Without a product id, fall back to an inline product.
+  const productId=tier.id==='sba-2'?env.STRIPE_PRODUCT_TIER2:env.STRIPE_PRODUCT_TIER1;
+  const product=/^prod_[A-Za-z0-9]{6,40}$/.test(productId||'')?{'line_items[0][price_data][product]':productId}:{'line_items[0][price_data][product_data][name]':name};
   const form=new URLSearchParams({mode:'payment',success_url:`${env.SITE_URL}/engagement-received`,cancel_url:back,
     'line_items[0][quantity]':'1','line_items[0][price_data][currency]':'usd','line_items[0][price_data][unit_amount]':String(tier.price*100),
-    'line_items[0][price_data][product_data][name]':name,'phone_number_collection[enabled]':'true',
+    ...product,'payment_intent_data[description]':name,'metadata[listing]':clean(f.Title,400),'phone_number_collection[enabled]':'true',
     'custom_fields[0][key]':'business','custom_fields[0][label][type]':'custom','custom_fields[0][label][custom]':'Business name','custom_fields[0][type]':'text',
     client_reference_id:rfpId,'metadata[rfp]':rfpId,'metadata[tier]':tier.id,'payment_intent_data[metadata][rfp]':rfpId});
   const url=await stripeSession(env,form);
@@ -199,6 +203,7 @@ export async function stripeSignature(secret,timestamp,payload){
   const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);
   return hex(await crypto.subtle.sign('HMAC',k,new TextEncoder().encode(`${timestamp}.${payload}`)));
 }
+const PAID_EVENTS=new Set(['checkout.session.completed','checkout.session.async_payment_succeeded']);
 async function stripeWebhook(req,env){
   if(!env.STRIPE_WEBHOOK_SECRET)return bad('Not configured.',503);
   const raw=await req.text();if(raw.length>200000)return bad('Too large.',413);
@@ -210,7 +215,8 @@ async function stripeWebhook(req,env){
   if(!sigs.some(s=>safeCompare(s,expected)))return bad('Invalid signature.',400);
   let event;try{event=JSON.parse(raw);}catch{return bad('Invalid payload.',400);}
   const s=event?.data?.object||{};const rfp=s.metadata?.rfp;
-  if(event.type!=='checkout.session.completed'||s.payment_status!=='paid'||!RFP_ID.test(rfp||''))return json({received:true});
+  // Cards are paid at completion; ACH bank payments clear later and arrive as async_payment_succeeded.
+  if(!PAID_EVENTS.has(event.type)||s.payment_status!=='paid'||!RFP_ID.test(rfp||''))return json({received:true});
   const d=s.customer_details||{};
   const business=clean((s.custom_fields||[]).find(c=>c.key==='business')?.text?.value,160);
   await airtable(env,'RFPs',{method:'PATCH',id:rfp,body:{fields:{'Listing Badge':'Secured'},typecast:false}});
