@@ -1,10 +1,16 @@
 import seed from '../../seed/rfps.sample.json';
 import {categories,jurisdictions} from './config';
+// Listing Badge (Airtable RFPs). Featured and Top Pick stay for sale; Secured (bought) and Excluded
+// (Tidewater has a conflict) hide the buy button. Excluded reasons stay internal.
+export type Badge = ''|'Secured'|'Featured'|'Top Pick'|'Excluded';
+const BADGES:Badge[]=['Secured','Featured','Top Pick','Excluded'];
+export const badgeLabel:Record<Exclude<Badge,''>,string>={'Secured':'Secured','Featured':'Featured','Top Pick':'Top pick','Excluded':'Not offered'};
+export const badgeClass=(b:Badge)=>b.toLowerCase().replace(/\s+/g,'-');
 export interface Rfp {
   id:string; title:string; agency:string; jurisdiction:string; category:string; slug:string;
   dueDate:string; estimatedValue:number|null; solicitationUrl:string;
   requirements:string[]; summary:string; status:string; awardAmount:number|null;
-  bidTabUrl:string; publishedAt:string;
+  bidTabUrl:string; publishedAt:string; badge:Badge;
 }
 const asStr = (x:unknown) => typeof x==='string' ? x.trim() : '';
 const numOrNull = (v:unknown) => typeof v==='number' && Number.isFinite(v) ? v : null;
@@ -16,6 +22,7 @@ function parseRequirements(v:unknown):string[] {
   try { const a=JSON.parse(v); if(Array.isArray(a)) return parseRequirements(a); } catch {}
   return v.split(/\r?\n/).map(x=>x.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
 }
+const parseBadge = (v:unknown):Badge => { const b=asStr(v) as Badge; return BADGES.includes(b) ? b : ''; };
 export function normalizeRfp(row:any):Rfp {
   const f=row.fields || row;
   const j=slug(asStr(f.Jurisdiction || f.jurisdiction));
@@ -31,7 +38,8 @@ export function normalizeRfp(row:any):Rfp {
     summary:asStr(f.Summary || f.summary), status:asStr(f.Status || f.status) || 'Draft',
     awardAmount:numOrNull(f['Award Amount'] ?? f.awardAmount),
     bidTabUrl:safeUrl(asStr(f['Bid Tab URL'] || f.bidTabUrl)),
-    publishedAt:asStr(f['Published At'] || f.publishedAt).slice(0,10)
+    publishedAt:asStr(f['Published At'] || f.publishedAt).slice(0,10),
+    badge:parseBadge(f['Listing Badge'] ?? f.badge)
   };
 }
 export function effectiveStatus(r:Rfp, now=new Date()):string {
@@ -41,6 +49,9 @@ export function effectiveStatus(r:Rfp, now=new Date()):string {
   if(s==='closed' || (r.dueDate && r.dueDate < now.toISOString().slice(0,10))) return 'Closed';
   return s==='open' ? 'Open' : 'Draft';
 }
+// A listing can be bought from the feed while it is Open and is not Secured or Excluded.
+export const isPurchasable = (r:Rfp, now=new Date()) => effectiveStatus(r,now)==='Open' && r.badge!=='Secured' && r.badge!=='Excluded';
+const featuredFirst = (a:Rfp,b:Rfp) => Number(b.badge==='Featured' && effectiveStatus(b)==='Open') - Number(a.badge==='Featured' && effectiveStatus(a)==='Open');
 export const bidUrl = (r:Rfp) => `/bids/${r.jurisdiction}/${r.slug}`;
 let cache:Promise<Rfp[]>|null=null;
 export async function getRfps():Promise<Rfp[]> {
@@ -75,9 +86,9 @@ export async function getVisibleRfps() {
   return (await getRfps()).filter(r=> effectiveStatus(r)!=='Draft' && (allowSamples || effectiveStatus(r)!=='SAMPLE'));
 }
 export async function getOpenRfps() {
-  return (await getVisibleRfps()).filter(r=>effectiveStatus(r)==='Open').sort((a,b)=>(b.publishedAt||b.dueDate).localeCompare(a.publishedAt||a.dueDate));
+  return (await getVisibleRfps()).filter(r=>effectiveStatus(r)==='Open').sort((a,b)=>featuredFirst(a,b)||(b.publishedAt||b.dueDate).localeCompare(a.publishedAt||a.dueDate));
 }
 export async function getBidBoardRfps() {
   const all=await getVisibleRfps();
-  return all.filter(r=>effectiveStatus(r)==='Open' || effectiveStatus(r)==='SAMPLE' || effectiveStatus(r)==='Closed' || effectiveStatus(r)==='Awarded').sort((a,b)=>(b.publishedAt||b.dueDate).localeCompare(a.publishedAt||a.dueDate));
+  return all.filter(r=>effectiveStatus(r)==='Open' || effectiveStatus(r)==='SAMPLE' || effectiveStatus(r)==='Closed' || effectiveStatus(r)==='Awarded').sort((a,b)=>featuredFirst(a,b)||(b.publishedAt||b.dueDate).localeCompare(a.publishedAt||a.dueDate));
 }
