@@ -159,12 +159,12 @@ async function stripeSession(env,form){
 // Listing checkout: a visitor buys one bid straight from an Open listing on the feed. The server reads the
 // listing from Airtable and prices it from the tier table; the browser sends only the record id. By owner
 // decision (2026-11-05) there is no availability check: duplicate purchases are resolved by hand after
-// payment. Listings marked Featured are not for sale.
+// payment. Listings marked Excluded (Tidewater has a conflict) are not for sale.
 async function listingCheckout(env,headers,rfpId){
   if(!RFP_ID.test(rfpId))return bad('This listing is not available.',404,headers);
   let rec;try{rec=await airtable(env,'RFPs',{id:rfpId});}catch{return bad('This listing is not available.',404,headers);}
   const f=rec.fields||{};const today=new Date().toISOString().slice(0,10);
-  if(f.Status!=='Open'||!/^\d{4}-\d{2}-\d{2}$/.test(f['Due Date']||'')||f['Due Date']<today||f['Listing Badge']==='Featured')return bad('This listing is not available.',410,headers);
+  if(f.Status!=='Open'||!/^\d{4}-\d{2}-\d{2}$/.test(f['Due Date']||'')||f['Due Date']<today||f['Listing Badge']==='Excluded')return bad('This listing is not available.',410,headers);
   const tier=tierForContractValue(f['Est. Value'])||bidDeskTiers[0];
   const jur=clean(f.Jurisdiction,80),slug=clean(f.Slug,160);
   const back=/^[a-z0-9-]+$/.test(jur)&&/^[a-z0-9-]+$/.test(slug)?`${env.SITE_URL}/bids/${jur}/${slug}`:`${env.SITE_URL}/bids`;

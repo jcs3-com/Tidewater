@@ -1,5 +1,5 @@
 ---
-import {bidUrl,effectiveStatus,isPurchasable,type Rfp} from '../lib/rfps';
+import {bidUrl,effectiveStatus,isPurchasable,badgeLabel,badgeClass,type Rfp} from '../lib/rfps';
 import {tierForContractValue,bidDeskTiers,formatUsd} from '../../public/scripts/pricing.js';
 import {categoryName,jurisdictionName,displayDate,displayValue,hasValue,daysLeftLabel} from '../lib/config';
 const {bid}=Astro.props as {bid:Rfp};
@@ -9,7 +9,7 @@ const buyable=isPurchasable(bid);
 const price=formatUsd((tierForContractValue(bid.estimatedValue)||bidDeskTiers[0]).price);
 ---
 <a class="bid-card" href={bidUrl(bid)} data-bid-row data-category={bid.category} data-jurisdiction={bid.jurisdiction} data-due={bid.dueDate} data-status={status}>
-  <div class="bid-main"><span class={`badge ${status.toLowerCase()}`}>{status}</span>{bid.badge&&status==='Open'&&<span class={`badge ${bid.badge.toLowerCase()}`} style="margin-left:.35rem">{bid.badge}</span>}<span class="badge" style="margin-left:.35rem">{categoryName(bid.category)}</span>
+  <div class="bid-main"><span class={`badge ${status.toLowerCase()}`}>{status}</span>{bid.badge&&status==='Open'&&<span class={`badge ${badgeClass(bid.badge)}`} style="margin-left:.35rem">{badgeLabel[bid.badge]}</span>}<span class="badge" style="margin-left:.35rem">{categoryName(bid.category)}</span>
   <h3>{bid.title}</h3><p class="bid-meta">{jurisdictionName(bid.jurisdiction)} · {bid.agency}</p></div>
   <div class="bid-due"><span class="bid-due-label">Due</span><strong>{displayDate(bid.dueDate)}</strong><span class="days-left" data-days-left data-date={bid.dueDate} data-status={status}>{daysLeftLabel(bid.dueDate,status)}</span></div>
   {showValue&&<p class="bid-value"><span class="bid-value-label">Est. value</span> <strong>{displayValue(bid.estimatedValue)}</strong></p>}

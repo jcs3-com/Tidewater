@@ -86,7 +86,7 @@ test('newsletter kind and its endpoints are retired',async()=>{
  assert.equal(requests.length,0);
  globalThis.fetch=oldFetch;
 });
-test('listing checkout: server-priced from Airtable, no availability check, Featured and closed listings refused',async()=>{
+test('listing checkout: server-priced from Airtable, no availability check, Excluded and closed listings refused',async()=>{
  const creq=(body)=>new Request('https://api.example.test/api/checkout',{method:'POST',headers:{origin:'https://example.test','content-type':'application/json'},body:JSON.stringify(body)});
  assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),env)).status,503);
  const on={...env,CHECKOUT_ENABLED:'1',STRIPE_SECRET_KEY:'sk_test_x'};
@@ -102,7 +102,8 @@ test('listing checkout: server-priced from Airtable, no availability check, Feat
  record={...open,'Est. Value':100000};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,200);
  assert.match(stripeBody,/unit_amount%5D=250000/);
  record={...open,'Est. Value':5000,'Listing Badge':'Secured'};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,200,'Secured listings are not blocked');
- record={...open,'Listing Badge':'Featured'};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,410);
+ for(const b of ['Featured','Top Pick']){record={...open,'Listing Badge':b};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,200,b);}
+ record={...open,'Listing Badge':'Excluded'};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,410);
  record={...open,Status:'Closed'};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,410);
  record={...open,'Due Date':'2020-01-01'};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,410);
  assert.equal((await handler.fetch(creq({rfp:'not-a-record'}),on)).status,404);
