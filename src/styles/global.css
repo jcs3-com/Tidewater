@@ -156,6 +156,11 @@ li{margin:.4rem 0}
 .badge.open{background:#D1E3D8;color:#15432B}
 .badge.closed{background:#E2D8D8;color:#512D2D}
 .badge.awarded{background:#D5DDEC;color:#203F65}
+.badge.secured{background:#2E4B5B;color:#F7F5EF}
+.badge.featured{background:#D8CBB8;color:#243943}
+.bid-buy{grid-column:1/-1;margin:.4rem 0 0;font:600 .85rem/1.5 var(--body);color:var(--text)}
+.checkout-price{font:600 2.2rem/1.1 var(--display);margin:1rem 0}
+.checkout [data-checkout-status]:not(:empty){margin-top:.75rem}
 .bid-meta{font:.76rem/1.7 var(--body);color:var(--muted)}
 .bid-meta strong{font-weight:600}
 .bid-main{min-width:0}

@@ -86,3 +86,46 @@ test('newsletter kind and its endpoints are retired',async()=>{
  assert.equal(requests.length,0);
  globalThis.fetch=oldFetch;
 });
+test('listing checkout: server-priced from Airtable, no availability check, Featured and closed listings refused',async()=>{
+ const creq=(body)=>new Request('https://api.example.test/api/checkout',{method:'POST',headers:{origin:'https://example.test','content-type':'application/json'},body:JSON.stringify(body)});
+ assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),env)).status,503);
+ const on={...env,CHECKOUT_ENABLED:'1',STRIPE_SECRET_KEY:'sk_test_x'};
+ const future=new Date(Date.now()+20*864e5).toISOString().slice(0,10);
+ let record={},stripeBody='';
+ globalThis.fetch=async(input,init={})=>{const u=String(input);
+  if(u.includes('api.stripe.com')){stripeBody=String(init.body);return new Response(JSON.stringify({url:'https://checkout.stripe.test/s'}));}
+  if(u.includes('/RFPs/recAAAAAAAAAAAAAA'))return new Response(JSON.stringify({id:'recAAAAAAAAAAAAAA',fields:record}));
+  return new Response('{}',{status:404});};
+ const open={Title:'Catering services',Status:'Open','Due Date':future,Jurisdiction:'washington-dc',Slug:'catering-services'};
+ record={...open};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,200);
+ assert.match(stripeBody,/unit_amount%5D=125000/);assert.match(stripeBody,/metadata%5Brfp%5D=recAAAAAAAAAAAAAA/);
+ record={...open,'Est. Value':100000};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,200);
+ assert.match(stripeBody,/unit_amount%5D=250000/);
+ record={...open,'Est. Value':5000,'Listing Badge':'Secured'};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,200,'Secured listings are not blocked');
+ record={...open,'Listing Badge':'Featured'};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,410);
+ record={...open,Status:'Closed'};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,410);
+ record={...open,'Due Date':'2020-01-01'};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA'}),on)).status,410);
+ assert.equal((await handler.fetch(creq({rfp:'not-a-record'}),on)).status,404);
+ assert.equal((await handler.fetch(creq({rfp:'recBBBBBBBBBBBBBB'}),on)).status,404);
+ record={...open};assert.equal((await handler.fetch(creq({rfp:'recAAAAAAAAAAAAAA',price:1,amount:100}),on)).status,200);
+ assert.match(stripeBody,/unit_amount%5D=125000/,'browser-sent amounts never change the price');
+ globalThis.fetch=oldFetch;
+});
+test('Stripe webhook verifies the signature, marks the listing Secured and records the buyer',async()=>{
+ const {stripeSignature}=await import('../worker/src/index.js');
+ const on={...env,STRIPE_WEBHOOK_SECRET:'whsec_test',PAGES_DEPLOY_HOOK:'https://api.cloudflare.test/hook'};
+ const event={type:'checkout.session.completed',data:{object:{id:'cs_test_1',payment_status:'paid',amount_total:125000,metadata:{rfp:'recAAAAAAAAAAAAAA'},customer_details:{name:'Ada Cook',email:'Ada@Example.com',phone:'+12025550100'},custom_fields:[{key:'business',text:{value:'Ada Catering'}}]}}};
+ const raw=JSON.stringify(event);
+ const wreq=async(body,secret='whsec_test',t=String(Math.floor(Date.now()/1000)))=>new Request('https://example.test/api/stripe-webhook',{method:'POST',headers:{'stripe-signature':`t=${t},v1=${await stripeSignature(secret,t,body)}`},body});
+ const calls=[];globalThis.fetch=async(input,init={})=>{calls.push({url:String(input),method:init.method,body:init.body?String(init.body):''});return new Response(JSON.stringify({id:'recPPPPPPPPPPPPPP'}));};
+ assert.equal((await handler.fetch(await wreq(raw,'wrong'),on)).status,400);
+ assert.equal((await handler.fetch(await wreq(raw,'whsec_test',String(Math.floor(Date.now()/1000)-900)),on)).status,400);
+ assert.equal(calls.length,0);
+ assert.equal((await handler.fetch(await wreq(raw),on)).status,200);
+ const patch=calls.find(c=>c.method==='PATCH');assert.ok(patch.url.endsWith('/RFPs/recAAAAAAAAAAAAAA'));assert.match(patch.body,/"Listing Badge":"Secured"/);
+ const buyer=calls.find(c=>c.method==='POST'&&c.url.includes('/Prospects'));assert.match(buyer.body,/"Lead Type":"bid_purchase"/);assert.match(buyer.body,/ada@example.com/);assert.match(buyer.body,/Ada Catering/);
+ assert.ok(calls.some(c=>c.url==='https://api.cloudflare.test/hook'));
+ calls.length=0;const unpaid=JSON.stringify({...event,data:{object:{...event.data.object,payment_status:'unpaid'}}});
+ assert.equal((await handler.fetch(await wreq(unpaid),on)).status,200);assert.equal(calls.length,0);
+ globalThis.fetch=oldFetch;
+});

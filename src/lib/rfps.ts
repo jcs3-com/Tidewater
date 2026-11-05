@@ -4,7 +4,7 @@ export interface Rfp {
   id:string; title:string; agency:string; jurisdiction:string; category:string; slug:string;
   dueDate:string; estimatedValue:number|null; solicitationUrl:string;
   requirements:string[]; summary:string; status:string; awardAmount:number|null;
-  bidTabUrl:string; publishedAt:string;
+  bidTabUrl:string; publishedAt:string; badge:''|'Secured'|'Featured';
 }
 const asStr = (x:unknown) => typeof x==='string' ? x.trim() : '';
 const numOrNull = (v:unknown) => typeof v==='number' && Number.isFinite(v) ? v : null;
@@ -16,6 +16,7 @@ function parseRequirements(v:unknown):string[] {
   try { const a=JSON.parse(v); if(Array.isArray(a)) return parseRequirements(a); } catch {}
   return v.split(/\r?\n/).map(x=>x.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
 }
+const parseBadge = (v:unknown):Rfp['badge'] => { const b=asStr(v); return b==='Secured'||b==='Featured' ? b : ''; };
 export function normalizeRfp(row:any):Rfp {
   const f=row.fields || row;
   const j=slug(asStr(f.Jurisdiction || f.jurisdiction));
@@ -31,7 +32,8 @@ export function normalizeRfp(row:any):Rfp {
     summary:asStr(f.Summary || f.summary), status:asStr(f.Status || f.status) || 'Draft',
     awardAmount:numOrNull(f['Award Amount'] ?? f.awardAmount),
     bidTabUrl:safeUrl(asStr(f['Bid Tab URL'] || f.bidTabUrl)),
-    publishedAt:asStr(f['Published At'] || f.publishedAt).slice(0,10)
+    publishedAt:asStr(f['Published At'] || f.publishedAt).slice(0,10),
+    badge:parseBadge(f['Listing Badge'] ?? f.badge)
   };
 }
 export function effectiveStatus(r:Rfp, now=new Date()):string {
@@ -41,6 +43,8 @@ export function effectiveStatus(r:Rfp, now=new Date()):string {
   if(s==='closed' || (r.dueDate && r.dueDate < now.toISOString().slice(0,10))) return 'Closed';
   return s==='open' ? 'Open' : 'Draft';
 }
+// A listing can be bought from the feed only while it is Open and carries no badge.
+export const isPurchasable = (r:Rfp, now=new Date()) => effectiveStatus(r,now)==='Open' && !r.badge;
 export const bidUrl = (r:Rfp) => `/bids/${r.jurisdiction}/${r.slug}`;
 let cache:Promise<Rfp[]>|null=null;
 export async function getRfps():Promise<Rfp[]> {

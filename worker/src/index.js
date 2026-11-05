@@ -1,5 +1,5 @@
 import {scoreReadiness} from '../../public/scripts/score.js';
-import {bidDeskTiers} from '../../public/scripts/pricing.js';
+import {bidDeskTiers,tierForContractValue} from '../../public/scripts/pricing.js';
 
 const MAX_BODY = 16000;
 async function verifyTurnstile(fields,env) {
@@ -150,10 +150,39 @@ async function createLead(req,env,headers) {
 // "<prospectRecordId>.<tierId>.<expiryEpochSeconds>.<signature>" after confirming fit, tier and signed terms.
 // The amount always comes from the server-side tier table, never from the browser.
 export function signQuote(env,prospect,tierId,expires){return signature(env,`quote:${prospect}.${tierId}.${expires}`);}
+const RFP_ID=/^rec[a-zA-Z0-9]{14}$/;
+async function stripeSession(env,form){
+  const r=await fetch('https://api.stripe.com/v1/checkout/sessions',{method:'POST',headers:{authorization:`Bearer ${env.STRIPE_SECRET_KEY}`,'content-type':'application/x-www-form-urlencoded'},body:form});
+  if(!r.ok){console.error('Stripe session failed',r.status);return null;}
+  return (await r.json()).url||null;
+}
+// Listing checkout: a visitor buys one bid straight from an Open listing on the feed. The server reads the
+// listing from Airtable and prices it from the tier table; the browser sends only the record id. By owner
+// decision (2026-11-05) there is no availability check: duplicate purchases are resolved by hand after
+// payment. Listings marked Featured are not for sale.
+async function listingCheckout(env,headers,rfpId){
+  if(!RFP_ID.test(rfpId))return bad('This listing is not available.',404,headers);
+  let rec;try{rec=await airtable(env,'RFPs',{id:rfpId});}catch{return bad('This listing is not available.',404,headers);}
+  const f=rec.fields||{};const today=new Date().toISOString().slice(0,10);
+  if(f.Status!=='Open'||!/^\d{4}-\d{2}-\d{2}$/.test(f['Due Date']||'')||f['Due Date']<today||f['Listing Badge']==='Featured')return bad('This listing is not available.',410,headers);
+  const tier=tierForContractValue(f['Est. Value'])||bidDeskTiers[0];
+  const jur=clean(f.Jurisdiction,80),slug=clean(f.Slug,160);
+  const back=/^[a-z0-9-]+$/.test(jur)&&/^[a-z0-9-]+$/.test(slug)?`${env.SITE_URL}/bids/${jur}/${slug}`:`${env.SITE_URL}/bids`;
+  const name=`Bid on this with Tidewater: ${clean(f.Title,200)}`.slice(0,250);
+  const form=new URLSearchParams({mode:'payment',success_url:`${env.SITE_URL}/engagement-received`,cancel_url:back,
+    'line_items[0][quantity]':'1','line_items[0][price_data][currency]':'usd','line_items[0][price_data][unit_amount]':String(tier.price*100),
+    'line_items[0][price_data][product_data][name]':name,'phone_number_collection[enabled]':'true',
+    'custom_fields[0][key]':'business','custom_fields[0][label][type]':'custom','custom_fields[0][label][custom]':'Business name','custom_fields[0][type]':'text',
+    client_reference_id:rfpId,'metadata[rfp]':rfpId,'metadata[tier]':tier.id,'payment_intent_data[metadata][rfp]':rfpId});
+  const url=await stripeSession(env,form);
+  return url?json({url},200,headers):bad('Payment could not be started. No charge was made.',502,headers);
+}
 async function checkout(req,env,headers){
-  if(env.CHECKOUT_ENABLED!=='1')return bad('Online payment is not available yet. Tidewater will send a written scope and payment instructions after qualification.',503,headers);
-  if(!env.STRIPE_SECRET_KEY||!env.HMAC_SECRET||!env.SITE_URL)return bad('Payment is not configured.',503,headers);
+  if(env.CHECKOUT_ENABLED!=='1')return bad('Online payment is not available yet. Email hello@tidewaterbid.com and we will send a payment link.',503,headers);
+  if(!env.STRIPE_SECRET_KEY||!env.SITE_URL)return bad('Payment is not configured.',503,headers);
   let fields;try{fields=await parseBody(req);}catch{return bad('Invalid request.',400,headers);}
+  if(fields&&typeof fields==='object'&&fields.rfp!==undefined)return listingCheckout(env,headers,clean(fields.rfp,40));
+  if(!env.HMAC_SECRET)return bad('Payment is not configured.',503,headers);
   const [prospect,tierId,expires,sig]=clean(fields.quote,300).split('.');
   if(!/^rec[a-zA-Z0-9]{14}$/.test(prospect||'')||!/^[0-9]{9,11}$/.test(expires||'')||!/^[a-f0-9]{64}$/.test(sig||''))return bad('This payment link is not valid.',403,headers);
   const tier=bidDeskTiers.find(t=>t.id===tierId);
@@ -161,11 +190,35 @@ async function checkout(req,env,headers){
   if(Number(expires)*1000<Date.now())return bad('This payment link has expired. Ask Tidewater for a new one.',410,headers);
   if(!safeCompare(await signQuote(env,prospect,tierId,expires),sig))return bad('This payment link is not valid.',403,headers);
   const form=new URLSearchParams({mode:'payment',success_url:`${env.SITE_URL}/engagement-received`,cancel_url:`${env.SITE_URL}/pricing`,'line_items[0][quantity]':'1','line_items[0][price_data][currency]':'usd','line_items[0][price_data][unit_amount]':String(tier.price*100),'line_items[0][price_data][product_data][name]':tier.name,client_reference_id:prospect,'metadata[tier]':tier.id,'metadata[prospect]':prospect});
-  const r=await fetch('https://api.stripe.com/v1/checkout/sessions',{method:'POST',headers:{authorization:`Bearer ${env.STRIPE_SECRET_KEY}`,'content-type':'application/x-www-form-urlencoded'},body:form});
-  if(!r.ok){console.error('Stripe session failed',r.status);return bad('Payment could not be started. No charge was made.',502,headers);}
-  const session=await r.json();
-  return json({url:session.url},200,headers);
+  const url=await stripeSession(env,form);
+  return url?json({url},200,headers):bad('Payment could not be started. No charge was made.',502,headers);
 }
+// Stripe webhook: after a paid listing checkout, mark the listing Secured, record the buyer as a Prospect and
+// trigger a rebuild so the badge shows. Verified with STRIPE_WEBHOOK_SECRET (Stripe-Signature, 5-minute window).
+export async function stripeSignature(secret,timestamp,payload){
+  const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+  return hex(await crypto.subtle.sign('HMAC',k,new TextEncoder().encode(`${timestamp}.${payload}`)));
+}
+async function stripeWebhook(req,env){
+  if(!env.STRIPE_WEBHOOK_SECRET)return bad('Not configured.',503);
+  const raw=await req.text();if(raw.length>200000)return bad('Too large.',413);
+  const parts=Object.fromEntries((req.headers.get('stripe-signature')||'').split(',').map(p=>p.split('=')).filter(p=>p.length===2&&p[0]!=='v1'));
+  const sigs=(req.headers.get('stripe-signature')||'').split(',').filter(p=>p.startsWith('v1=')).map(p=>p.slice(3));
+  const t=parts.t;
+  if(!/^\d{9,11}$/.test(t||'')||Math.abs(Date.now()/1000-Number(t))>300||!sigs.length)return bad('Invalid signature.',400);
+  const expected=await stripeSignature(env.STRIPE_WEBHOOK_SECRET,t,raw);
+  if(!sigs.some(s=>safeCompare(s,expected)))return bad('Invalid signature.',400);
+  let event;try{event=JSON.parse(raw);}catch{return bad('Invalid payload.',400);}
+  const s=event?.data?.object||{};const rfp=s.metadata?.rfp;
+  if(event.type!=='checkout.session.completed'||s.payment_status!=='paid'||!RFP_ID.test(rfp||''))return json({received:true});
+  const d=s.customer_details||{};
+  const business=clean((s.custom_fields||[]).find(c=>c.key==='business')?.text?.value,160);
+  await airtable(env,'RFPs',{method:'PATCH',id:rfp,body:{fields:{'Listing Badge':'Secured'},typecast:false}});
+  await airtable(env,'Prospects',{method:'POST',body:{fields:{'Name':clean(d.name,120)||'Checkout buyer','Business':business,'Email':clean(d.email,254).toLowerCase(),'Phone':clean(d.phone,40),'Source':'listing checkout','Lead Type':'bid_purchase','Bid ID':rfp,'Consent Timestamp':now(),'Notes':`Paid ${formatCents(s.amount_total)} for listing ${rfp}. Stripe session ${clean(s.id,80)}.`},typecast:false}});
+  if(env.PAGES_DEPLOY_HOOK){try{await fetch(env.PAGES_DEPLOY_HOOK,{method:'POST'});}catch(e){console.error('Deploy hook failed',String(e));}}
+  return json({received:true});
+}
+const formatCents=c=>Number.isFinite(c)?'$'+(c/100).toLocaleString('en-US',{minimumFractionDigits:0}):'an unknown amount';
 export default {
  async fetch(req,env) {
   const url=new URL(req.url);const path=url.pathname.replace(/\/$/,'')||'/';const c=cors(req,env);
@@ -175,6 +228,10 @@ export default {
     if(req.method!=='POST')return bad('Method not allowed.',405);
     if(req.headers.has('origin')&&!c)return bad('Origin not allowed.',403);
     try{return await checkout(req,env,c||{});}catch(e){console.error(String(e));return bad('Payment could not be started. No charge was made.',503,c||{});}
+  }
+  if(path==='/api/stripe-webhook'){
+    if(req.method!=='POST')return bad('Method not allowed.',405);
+    try{return await stripeWebhook(req,env);}catch(e){console.error(String(e));return bad('Webhook failed.',500);}
   }
   if(path!=='/api/lead')return bad('Not found.',404);
   if(req.method==='OPTIONS')return c?new Response(null,{status:204,headers:c}):bad('Origin not allowed.',403);

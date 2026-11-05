@@ -16,7 +16,8 @@ pairs.push(
  ['Light error','#913C40','#FFFFFF'],['Dark error','#FFBDC0','#213B46'],
  ['Light pill',token('pill-text'),token('pill-bg')],['Dark pill','#F7F5EF','#3A535D'],
  ['Sample chip','#422A07','#F0D9AE'],['Open chip','#15432B','#D1E3D8'],
- ['Closed chip','#512D2D','#E2D8D8'],['Awarded chip','#203F65','#D5DDEC']
+ ['Closed chip','#512D2D','#E2D8D8'],['Awarded chip','#203F65','#D5DDEC'],
+ ['Secured chip','#F7F5EF','#2E4B5B'],['Featured chip','#243943','#D8CBB8']
 );
 for(const [name,fg,bg] of pairs){const ratio=contrast(fg,bg);console.log(`${name}: ${ratio.toFixed(2)}:1`);assert.ok(ratio>=4.5,`${name} fails WCAG AA: ${ratio}`);}
 // Non-text contrast (WCAG 1.4.11): form field borders must reach 3:1 against the page.
