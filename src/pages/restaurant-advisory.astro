@@ -7,7 +7,7 @@ import {stages,deliverables} from '../data/restaurant-process';
 const {items}=await getFundingOpportunities();
 const current=items.filter(o=>o.status==='Open'||o.status==='Upcoming');
 const featured=current.slice(0,4);
-const schema=[{'@context':'https://schema.org','@type':'Service',name:'Restaurant operations and funding advisory',provider:{'@type':'Organization',name:'Tidewater Advisory LLC'},areaServed:['Washington, DC','Maryland','Virginia','Charlottesville, Virginia']}];
+const schema=[{'@context':'https://schema.org','@type':'Service',name:'Restaurant operations and funding advisory',provider:{'@type':'Organization',name:'Tidewater'},areaServed:['Washington, DC','Maryland','Virginia','Charlottesville, Virginia']}];
 ---
 <Base title="The Restaurant Advisory | Funding, Operations & Implementation | Tidewater" description="Identify restaurant grants and incentives across DC, Maryland and Virginia. Improve purchasing, inventory, labor and food waste, and manage projects from assessment through measurable results." schema={schema}>
   <section class="restaurant-hero section"><div class="container restaurant-hero-grid">

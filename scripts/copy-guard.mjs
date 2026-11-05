@@ -8,8 +8,10 @@ const source=walk(root).filter(p=>p.endsWith('.astro')).map(p=>readFileSync(p,'u
 for(const forbidden of [/success[ -]?fee/i,/commission\b/i,/percent(?:age)?\s+of\s+(?:the\s+)?contract\s+value/i,/Read the current/i,/\[\[TODO/]) {
  assert.ok(!forbidden.test(source),`Marketing copy has forbidden or misleading language: ${forbidden}`);
 }
-for(const statement of ['Tidewater is a trade name of Tidewater Advisory LLC','Not affiliated with any government agency','We do not guarantee contract awards']) {
+for(const statement of ['Tidewater is an independent consultancy','Not affiliated with any government agency','We do not guarantee contract awards']) {
  assert.ok(readFileSync(new URL('../src/layouts/Base.astro',import.meta.url),'utf8').includes(statement),`Missing disclaimer: ${statement}`);
 }
 assert.ok(readFileSync(new URL('../src/layouts/Base.astro',import.meta.url),'utf8').includes('Funding opportunity at the source.'),'Missing approved tagline in Base layout');
+// Owner decision 2026-11-05: no personal legal name as the business entity in the footer or legal pages.
+for(const f of ['../src/layouts/Base.astro','../src/pages/terms.astro','../src/pages/privacy.astro']){const t=readFileSync(new URL(f,import.meta.url),'utf8');assert.ok(!/Simpson|trade name of/i.test(t),`Legal name or trade-name statement in ${f}`);}
 console.log('Marketing-copy guardrails passed.');
