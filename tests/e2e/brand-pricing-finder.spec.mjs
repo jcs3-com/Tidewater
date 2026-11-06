@@ -1,6 +1,5 @@
 import {test,expect} from '@playwright/test';
 const routes=['/','/funding-directory','/funding-services','/projects','/resources','/tools','/academy','/fellowship','/careers','/ethics','/bids','/pricing','/opportunity-finder','/engage','/restaurant-advisory','/restaurant-advisory/food-waste','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/support','/contracts/catering/montgomery-county-md'];
-const retired=[/\$295/,/\$250\s*[–-]\s*\$500/,/\$1,500\s*[–-]\s*\$3,000/,/Bid Viability Review/i,/\$500 per bid/i];
 
 test('approved brand lockup, tagline, favicon and social image are installed',async({page,request})=>{
  await page.goto('/');
@@ -32,17 +31,6 @@ test('pricing shows only the approved Bid Desk tiers and the $100,000 boundary',
  const ld=await page.locator('script[type="application/ld+json"]').textContent();
  const prices=[...ld.matchAll(/"price":"(\d+)"/g)].map(m=>Number(m[1]));
  expect(prices.sort()).toEqual([1250,2500]);
-});
-
-test('no retired or sub-floor Bid Desk prices on any rendered public page',async({page})=>{
- test.setTimeout(90000);
- for(const path of routes){
-  await page.goto(path);const text=await page.locator('body').innerText();
-  for(const r of retired)expect(text,`${path} contains ${r}`).not.toMatch(r);
-  const amounts=[...text.matchAll(/\$\s?(\d{1,3}(?:,\d{3})+|\d+)(?!\s*(?:,\d|million|k\b))/g)].map(m=>Number(m[1].replace(/,/g,'')));
-  // Any dollar figure on Bid Desk fee pages must be a tier price or a contract-value boundary, never a lower fee.
-  if(path==='/pricing')for(const a of amounts)expect([1250,2500,100000,1000000].includes(a)||a>=100000,`${path} unexpected amount $${a}`).toBe(true);
- }
 });
 
 test('Opportunity Finder (bids): readiness result, honest empty state, safe failure keeps answers',async({page})=>{

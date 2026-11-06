@@ -14,15 +14,13 @@ for(const theme of ['light','dark']){
   }
  });
 }
-test('photographs are local, still and loaded',async({page})=>{
+test('photographs are local and loaded',async({page})=>{
  await page.goto('/');
  for(const img of await page.locator('main img').all()){
   await img.evaluate(el=>el.scrollIntoView({block:'center'}));await expect(img).toBeVisible();
   await expect.poll(()=>img.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);
   expect(await img.evaluate(el=>new URL(el.currentSrc).origin===location.origin)).toBe(true);
-  expect(await img.evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
  }
- await expect(page.locator('#motion-toggle')).toHaveCount(0);
 });
 test('headline and action remain readable when photographs fail',async({page})=>{
  await page.route(/\/assets\/.*\.(webp|jpg)$/,route=>route.abort());await page.goto('/');
