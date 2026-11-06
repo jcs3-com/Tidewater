@@ -1,5 +1,19 @@
 # Tidewater release log
 
+## Stale rules and guardrails dropped — 2026-11-05
+
+**Live in production, verified 2026-11-05 by Claude.** [PR #34](https://github.com/jcs3-com/Tidewater/pull/34) squash-merged as `6b340a0`; live `/release.json` and the homepage `tidewater-commit` both report `6b340a0…`.
+
+Owner decisions (2026-11-05): XcelHR is no constraint on this project; motion allowed; funding records are vetted upstream and publish as-is; Funding Services retainer from $2,500/month.
+
+- AGENTS.md / README: removed entity-unconfirmed, re-verification, fixed tool/project counts, reserved-concept limits, legal-page and Airtable-schema approval, no-new-project, board-PNG, retired tagline/prices, placeholder and motion rules.
+- Funding records no longer flip to Unverified after 45 days; expired deadlines still show Closed.
+- Copy guard and tests trimmed to match.
+
+Checks: `npm run check` (19/19 unit); `DEMO_SEED=0` build; Playwright 32/32 locally; Cloudflare Pages check passed. Production smoke: `/funding-directory` 200, 14 records (7 Open, 3 Monitoring, 4 Closed).
+
+Rollback: `git revert 6b340a0` on `main` and merge.
+
 ## Public indexing on; checkout live — 2026-11-05
 
 **Live in production, verified 2026-11-05 by Claude.** Owner set `CHECKOUT_ENABLED=1` (live Stripe keys) and `SITE_INDEXABLE=1` in Cloudflare Pages.
