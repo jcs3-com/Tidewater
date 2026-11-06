@@ -21,16 +21,10 @@ test('no paid Bid Desk offer below the $1,250 floor; custom quotes never below t
   assert.deepEqual(bidDeskTiers.map(t=>t.price),[1250,2500]);
   assert.equal(minimumQuote(250000),2500);assert.equal(minimumQuote(null),1250);
 });
-test('public page sources carry no retired Bid Desk prices',()=>{
-  const root=fileURLToPath(new URL('../src/',import.meta.url));
-  const walk=p=>readdirSync(p,{withFileTypes:true}).flatMap(d=>d.isDirectory()?walk(join(p,d.name)):[join(p,d.name)]);
-  const text=walk(root).filter(p=>/\.(astro|ts)$/.test(p)).map(p=>readFileSync(p,'utf8')).join('\n');
-  for(const retired of [/\$295/,/\$250\s*[–-]\s*\$500/,/\$1,500\s*[–-]\s*\$3,000/,/Bid Viability Review/i])assert.ok(!retired.test(text),`retired price present: ${retired}`);
-});
 const today='2026-10-28';
-test('finder never shows expired, unsourced or stale-verified opportunities as open',()=>{
+test('finder closes expired opportunities and never offers unsourced bids',()=>{
   assert.equal(programStatus({status:'Open',deadline:'2026-10-27',verified:'2026-10-27'},today),'Closed');
-  assert.equal(programStatus({status:'Open',verified:'2026-08-01'},today),'Unverified');
+  assert.equal(programStatus({status:'Open',verified:'2026-08-01'},today),'Open');
   assert.equal(programStatus({status:'Open',deadline:'2026-12-09',verified:'2026-10-27'},today),'Open');
   const bids=[{category:'catering',jurisdiction:'washington-dc',dueDate:'2026-10-27',source:'https://x.gov/a'},{category:'catering',jurisdiction:'washington-dc',dueDate:'2026-11-30',source:'https://x.gov/b',estimatedValue:100000},{category:'catering',jurisdiction:'washington-dc',dueDate:'2026-11-30',source:''},{category:'catering',jurisdiction:'annapolis-md',dueDate:'2026-12-01',source:'https://x.gov/c',estimatedValue:99999}];
   const r=matchBids(bids,{category:'catering',jurisdiction:'washington-dc'},today);

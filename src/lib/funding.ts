@@ -16,8 +16,6 @@ const currentStatus=(o:FundingOpportunity):FundingOpportunity=>{
  // Retire expired application windows at build-time even if editorial status was not changed.
  const today=new Date().toISOString().slice(0,10);
  if(o.status==='Open' && o.deadline && o.deadline<today) return {...o,status:'Closed'};
- // A record left 'Open' for more than 45 days without review should not advertise an open grant.
- if(o.status==='Open' && (!o.verified || (new Date(today).getTime()-new Date(o.verified).getTime())>45*86400000))return {...o,status:'Unverified'};
  return o;
 };
 export async function getFundingOpportunities():Promise<{items:FundingOpportunity[];source:'airtable'|'editorial-snapshot';warning?:string}>{

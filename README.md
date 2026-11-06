@@ -1,6 +1,6 @@
 # Tidewater
 
-Website for **Tidewater**, a trade name of Tidewater Advisory LLC. Tagline: *Funding opportunity at the source.* The site leads with funding (directory, research, applications and grant management for hospitality-adjacent organizations in DC, Maryland and Virginia); the Bid Desk is a secondary service for firms pursuing government contracts. Production: https://tidewaterbid.com. Rules for anyone changing this repo: [AGENTS.md](AGENTS.md).
+Website for **Tidewater**, an independent consultancy based in Washington, DC. Tagline: *Funding opportunity at the source.* The site leads with funding (directory, research, applications and grant management for hospitality-adjacent organizations in DC, Maryland and Virginia); the Bid Desk is a secondary service for firms pursuing government contracts. Production: https://tidewaterbid.com. Rules for anyone changing this repo: [AGENTS.md](AGENTS.md).
 
 ## Architecture
 
@@ -10,7 +10,7 @@ Browser forms  --POST /api/lead-->  Pages Function  --> Airtable (Prospects, Mat
 ```
 
 - **Site:** Astro 5, static output in `dist/`. Listings are baked in at build time, so they change only when the site rebuilds.
-- **Backend:** one Pages Function, `/api/lead` (`functions/api/lead.js` → `worker/src/index.js`). It validates input, blocks scripted and vendor-pitch submissions, writes the lead to Airtable and suggests matches. `/api/checkout` exists but returns 503 until `CHECKOUT_ENABLED=1` (P2, owner-gated).
+- **Backend:** one Pages Function, `/api/lead` (`functions/api/lead.js` → `worker/src/index.js`). It validates input, blocks scripted and vendor-pitch submissions, writes the lead to Airtable and suggests matches. `/api/checkout` is live (`CHECKOUT_ENABLED=1`, owner set 2026-11-05).
 - **Deploy:** the Cloudflare Pages project `tidewater` builds every push to `main` (`npm run build`, output `dist`, Node 22). There is no other deploy path.
 - **Release marker:** `/release.json` and the homepage `tidewater-commit` meta tag report the deployed commit. A release is verified only when the live marker equals the merged commit.
 
@@ -19,7 +19,7 @@ Browser forms  --POST /api/lead-->  Pages Function  --> Airtable (Prospects, Mat
 | Path | What it does |
 | --- | --- |
 | `src/pages/` | Funding: home, `/funding-directory`, `/funding-services`, `/projects`, `/resources`, `/tools`, `/academy`, `/fundamentals`, `/fellowship`, `/opportunity-finder`, `/restaurant-advisory` + `/food-waste`. Company: `/about`, `/ethics`, `/careers`, `/contact`. Bid Desk: `/bids` (process + bid board), `/pricing`, `/readiness`, `/becoming-a-contractor`, `/insights`, `/contracts/*`. Footer small print: `/privacy`, `/terms`, `/credits` |
-| `src/data/funding-projects.ts` | The five illustrative project scenarios (not clients) |
+| `src/data/funding-projects.ts` | Illustrative project scenarios (not clients) |
 | `public/funding-site.css` | v4.1 page styles layered on `src/styles/global.css` |
 | `src/lib/config.ts` | Categories, jurisdictions (with market `region`), launch flags |
 | `src/lib/rfps.ts`, `src/lib/funding.ts` | Airtable build reads, publication and expiry rules |
@@ -65,7 +65,7 @@ Preview deployments do not receive the production Airtable token and render an e
 Airtable is the system of record; its live schema is authoritative. The code depends on these tables and fields:
 
 - **RFPs** (read at build): Title, Agency, Jurisdiction, Category (slugs from `config.ts`), Slug, Due Date, Est. Value, Solicitation URL, Requirements, Summary, Status (`Open`, `Closed`, `Awarded`, `Draft`, `SAMPLE`), Award Amount, Bid Tab URL, Published At. Only `Open` records with an official URL and due date are offered.
-- **Funding Opportunities** (read at build): published only when Publication Status = `Approved`, with an `https` Official Source URL and Last Verified date. Open records with a past deadline, or not verified for 45 days, are shown as Closed or Unverified.
+- **Funding Opportunities** (read at build): published when Publication Status = `Approved` (records are vetted upstream by the owner's pipeline). Open records with a past deadline are shown as Closed.
 - **Prospects** (written by `/api/lead`): Name, Business, Email, Phone, Categories, Jurisdictions, Insurance Status, Registrations, Staff Size, Readiness Score, Source, Consent Timestamp, Lead Type, Bid ID, Notes, Gap List.
 - **Matches** and **Restaurant Projects**: best-effort rows written after a finder submission. A match never reserves exclusivity.
 - **Launch Execution**, **Offer Catalog**: internal tracking only.
@@ -74,12 +74,8 @@ To publish a bid: verify the official notice and latest addendum, fill the recor
 
 ## Open launch items
 
-Owner decisions (none can be marked done from a visual or QA pass):
-- Entity formation, DBA and trademark clearance.
-- XcelHR employment-agreement review before taking revenue.
-- Written engagement terms (scope, turnaround, revisions, exclusivity, refunds); counsel review. Only then checkout.
-- Funding Services and Restaurant Advisory packages and pricing (quoted per project until decided; not derived from Bid Desk tiers).
-- Public launch: `SITE_INDEXABLE=1`, Search Console.
+Owner:
+- Search Console.
 - Repository visibility: `jcs3-com/Tidewater` is public on GitHub.
 
 Infrastructure (needs Cloudflare dashboard or zone access):

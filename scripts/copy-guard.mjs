@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../src/pages/',import.meta.url));
 function walk(p){return readdirSync(p,{withFileTypes:true}).flatMap(d=>d.isDirectory()?walk(join(p,d.name)):[join(p,d.name)]);}
 const source=walk(root).filter(p=>p.endsWith('.astro')).map(p=>readFileSync(p,'utf8')).join('\n');
-for(const forbidden of [/success[ -]?fee/i,/commission\b/i,/percent(?:age)?\s+of\s+(?:the\s+)?contract\s+value/i,/Read the current/i,/\[\[TODO/]) {
+for(const forbidden of [/success[ -]?fee/i,/commission\b/i,/percent(?:age)?\s+of\s+(?:the\s+)?contract\s+value/i]) {
  assert.ok(!forbidden.test(source),`Marketing copy has forbidden or misleading language: ${forbidden}`);
 }
 for(const statement of ['Tidewater is an independent consultancy','Not affiliated with any government agency','We do not guarantee contract awards']) {

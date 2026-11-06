@@ -1,13 +1,10 @@
 // Pure Opportunity Finder logic, shared by the browser and the Node tests. No DOM, no network.
 import {tierForContractValue} from './pricing.js';
-export const VERIFY_WINDOW_DAYS = 45;
-const DAY = 86400000;
 export const todayISO = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
 // Never advertise a program as open on stale or expired evidence, even if the static page is old.
 export function programStatus(p, today = todayISO()) {
   if (p.status === 'Open' && p.deadline && p.deadline < today) return 'Closed';
-  if (p.status === 'Open' && (!p.verified || (Date.parse(today) - Date.parse(p.verified)) > VERIFY_WINDOW_DAYS * DAY)) return 'Unverified';
   return p.status || 'Unverified';
 }
 const SPONSOR = /\b(localit(y|ies)|political subdivisions?|local governments?|government sponsor|sponsor(ed|ing)? (by|organization)|must (partner|collaborate)|partner with a locality)\b/i;
