@@ -1,5 +1,19 @@
 # Tidewater release log
 
+## Academy: January 9 Food Funding Workshop — 2026-11-07
+
+**Live in production, verified 2026-11-07 by Claude.** [PR #38](https://github.com/jcs3-com/Tidewater/pull/38) squash-merged as `a8981d9`; live `/release.json` and the `/academy` `tidewater-commit` both report `a8981d9…`.
+
+Owner decision (2026-11-07): publish the first workshop — Saturday, January 9, 2027, 2:30–4:30 p.m., La Cosecha (1280 4th St NE); free, RSVP required, 50 seats; RSVP through the site form.
+
+- `/academy`: workshop listing and RSVP form; Fundamentals and Fellowship stay labeled planned.
+- RSVPs post to `/api/lead` as `kind=contact`, `source=workshop-2027-01-09` (lands in Airtable Prospects). No worker or allow-list change.
+- `LeadForm`: optional `submitLabel` prop; existing forms unchanged.
+
+Checks: `npm run check` (0 errors); `DEMO_SEED=0` build (75 pages); Playwright 32/32 locally; Cloudflare Pages check passed. Production smoke: `/academy` serves the listing, address and RSVP form.
+
+Rollback: `git revert a8981d9` on `main` and merge.
+
 ## Quote-link checkout removed; www→apex redirect — 2026-11-06
 
 **Live in production, verified 2026-11-06 by Claude.** [PR #36](https://github.com/jcs3-com/Tidewater/pull/36) squash-merged as `a78bc8a`; live `/release.json` and the homepage `tidewater-commit` both report `a78bc8a…`.
