@@ -1,10 +1,26 @@
 ---
 import Base from '../layouts/Base.astro';
+import LeadForm from '../components/LeadForm.astro';
 ---
-<Base title="Tidewater Academy | Learning & Development" description="Tidewater Academy is a planned home for practical grant funding training, workshops, Fundamentals and Fellowship.">
-  <section class="section tw-page-hero"><div class="container"><p class="eyebrow">Learning / Planned</p><h1>Grant training for hospitality organizations</h1><p class="lead">Planned training in grant research, eligibility, budgets, applications and award management.</p><p class="fine">Not yet available. No courses are open for enrollment.</p></div></section>
+<Base title="Tidewater Academy | Learning & Development" description="Tidewater's first food funding workshop is January 9, 2027 at La Cosecha in Washington, DC. Free, RSVP required. Fundamentals and Fellowship are planned.">
+  <section class="section tw-page-hero"><div class="container"><p class="eyebrow">Learning / Workshops</p><h1>Grant training for hospitality organizations</h1><p class="lead">Practical sessions on finding, winning and managing funding for food and hospitality businesses.</p></div></section>
+  <section class="section" id="workshop"><div class="container grid-2">
+    <div>
+      <p class="eyebrow">Workshop / Saturday, January 9, 2027</p>
+      <h2>Food Funding Workshop</h2>
+      <p class="lead">A free afternoon session for DC-area restaurant and hospitality owners on the funding and food-waste programs open to them.</p>
+      <ul>
+        <li><strong>When:</strong> Saturday, January 9, 2027, 2:30–4:30 p.m.</li>
+        <li><strong>Where:</strong> La Cosecha, 1280 4th St NE, Washington, DC 20002</li>
+        <li><strong>Cost:</strong> Free. RSVP required; seating is limited to 50.</li>
+      </ul>
+      <p>We'll cover current grants, rebates and incentives for food businesses in DC, Maryland and Virginia, and local food-waste reduction programs, with time for questions. Local government and small business leaders are invited.</p>
+      <p class="fine">Tidewater is an independent consultancy. Programs discussed are run by their funders; eligibility and awards are never guaranteed.</p>
+    </div>
+    <div class="panel"><h2>RSVP</h2><p class="fine">One RSVP per person. We'll confirm your seat by email.</p><LeadForm kind="contact" compact={true} heading="Workshop RSVP" source="workshop-2027-01-09" submitLabel="Reserve my seat" /></div>
+  </div></section>
   <section class="section reverse"><div class="container grid-2">
-    <article class="panel"><p class="eyebrow">Planned / Training</p><h2>Fundamentals</h2><p>Planned lessons on grant research, budgets, applications and reporting.</p><a class="button-quiet" href="/fundamentals">View planned topics ↗</a></article>
-    <article class="panel"><p class="eyebrow">Planned / Development</p><h2>Fellowship</h2><p>Proposed training and coaching for an organization's internal grant staff.</p><a class="button-quiet" href="/fellowship">View Fellowship plan ↗</a></article>
+    <article class="panel"><p class="eyebrow">Planned / Training</p><h2>Fundamentals</h2><p>Planned lessons on grant research, budgets, applications and reporting. Not yet open for enrollment.</p><a class="button-quiet" href="/fundamentals">View planned topics ↗</a></article>
+    <article class="panel"><p class="eyebrow">Planned / Development</p><h2>Fellowship</h2><p>Proposed training and coaching for an organization's internal grant staff. Not yet open for enrollment.</p><a class="button-quiet" href="/fellowship">View Fellowship plan ↗</a></article>
   </div></section>
 </Base>
