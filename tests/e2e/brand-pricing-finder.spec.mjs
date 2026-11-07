@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-const routes=['/','/funding-directory','/funding-services','/projects','/resources','/tools','/academy','/fellowship','/careers','/ethics','/bids','/pricing','/opportunity-finder','/engage','/restaurant-advisory','/restaurant-advisory/food-waste','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/support','/contracts/catering/montgomery-county-md'];
+const routes=['/','/funding-directory','/funding-services','/projects','/resources','/tools','/academy','/fellowship','/careers','/ethics','/bids','/pricing','/opportunity-finder','/restaurant-advisory','/restaurant-advisory/food-waste','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/support','/contracts/catering/montgomery-county-md'];
 
 test('approved brand lockup, tagline, favicon and social image are installed',async({page,request})=>{
  await page.goto('/');
@@ -78,10 +78,8 @@ test('Opportunity Finder (restaurant): labelled, sourced programs and separate s
  await expect(page.locator('#finder-feedback')).toContainText('Request received');
 });
 
-test('gated checkout is off: engagement page shows no payment control',async({page,request})=>{
- await page.goto('/engage?quote=recAAAAAAAAAAAAAA.sba-1.9999999999.'+'a'.repeat(64));
- await expect(page.locator('#engage-form')).toHaveCount(0);
- await expect(page.locator('#engage-offer')).toContainText('not open yet');
- await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','noindex, nofollow');
- const r=await request.post('/api/checkout',{data:{quote:'x'}});expect(r.status()).toBe(503);
+test('quote-link checkout is gone: /engage redirects and checkout refuses a quote token',async({page,request})=>{
+ await page.goto('/engage?quote=x');
+ await expect(page).toHaveURL(/\/pricing/);
+ const r=await request.post('/api/checkout',{data:{quote:'x'}});expect([400,403,503]).toContain(r.status());
 });

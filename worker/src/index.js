@@ -68,7 +68,6 @@ async function airtable(env,table,{method='GET',body,query='',id=''}={}) {
   return res.json();
 }
 const hex = bytes => Array.from(new Uint8Array(bytes)).map(n=>n.toString(16).padStart(2,'0')).join('');
-async function signature(env,record){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(env.HMAC_SECRET),{name:'HMAC',hash:'SHA-256'},false,['sign']);return hex(await crypto.subtle.sign('HMAC',k,new TextEncoder().encode(record)));}
 const safeCompare=(a,b)=>a.length===b.length&&Array.from(a).reduce((acc,ch,i)=>acc|(ch.charCodeAt(0)^b.charCodeAt(i)),0)===0;
 async function parseBody(req){
   if(Number(req.headers.get('content-length')||0)>MAX_BODY)throw Error('Form too large');
@@ -145,11 +144,9 @@ async function createLead(req,env,headers) {
   if(kind==='restaurant_finder')await makeRestaurantLead(env,business,restaurant,record.id);
   return json({message:kind==='bid_packet'?'Request received. We will follow up about the bid packet.':'Request received. We will follow up by email.'},201,headers);
 }
-// P2 gated checkout for Single Bid Architecture. OFF unless CHECKOUT_ENABLED=1 and Stripe is configured.
-// A payment link is only valid for a written, qualified quote: the operator issues an HMAC-signed token
-// "<prospectRecordId>.<tierId>.<expiryEpochSeconds>.<signature>" after confirming fit, tier and signed terms.
-// The amount always comes from the server-side tier table, never from the browser.
-export function signQuote(env,prospect,tierId,expires){return signature(env,`quote:${prospect}.${tierId}.${expires}`);}
+// Listing checkout for Single Bid Architecture. OFF unless CHECKOUT_ENABLED=1 and Stripe is configured.
+// The amount always comes from the server-side tier table, never from the browser. Quoted, retainer and
+// other engagements are invoiced by hand in Stripe (owner decision 2026-11-06), not through this endpoint.
 const RFP_ID=/^rec[a-zA-Z0-9]{14}$/;
 async function stripeSession(env,form){
   const r=await fetch('https://api.stripe.com/v1/checkout/sessions',{method:'POST',headers:{authorization:`Bearer ${env.STRIPE_SECRET_KEY}`,'content-type':'application/x-www-form-urlencoded'},body:form});
@@ -186,16 +183,7 @@ async function checkout(req,env,headers){
   if(!env.STRIPE_SECRET_KEY||!env.SITE_URL)return bad('Payment is not configured.',503,headers);
   let fields;try{fields=await parseBody(req);}catch{return bad('Invalid request.',400,headers);}
   if(fields&&typeof fields==='object'&&fields.rfp!==undefined)return listingCheckout(env,headers,clean(fields.rfp,40));
-  if(!env.HMAC_SECRET)return bad('Payment is not configured.',503,headers);
-  const [prospect,tierId,expires,sig]=clean(fields.quote,300).split('.');
-  if(!/^rec[a-zA-Z0-9]{14}$/.test(prospect||'')||!/^[0-9]{9,11}$/.test(expires||'')||!/^[a-f0-9]{64}$/.test(sig||''))return bad('This payment link is not valid.',403,headers);
-  const tier=bidDeskTiers.find(t=>t.id===tierId);
-  if(!tier)return bad('This payment link is not valid.',403,headers);
-  if(Number(expires)*1000<Date.now())return bad('This payment link has expired. Ask Tidewater for a new one.',410,headers);
-  if(!safeCompare(await signQuote(env,prospect,tierId,expires),sig))return bad('This payment link is not valid.',403,headers);
-  const form=new URLSearchParams({mode:'payment',success_url:`${env.SITE_URL}/engagement-received`,cancel_url:`${env.SITE_URL}/pricing`,'line_items[0][quantity]':'1','line_items[0][price_data][currency]':'usd','line_items[0][price_data][unit_amount]':String(tier.price*100),'line_items[0][price_data][product_data][name]':tier.name,client_reference_id:prospect,'metadata[tier]':tier.id,'metadata[prospect]':prospect});
-  const url=await stripeSession(env,form);
-  return url?json({url},200,headers):bad('Payment could not be started. No charge was made.',502,headers);
+  return bad('Invalid request.',400,headers);
 }
 // Stripe webhook: after a paid listing checkout, mark the listing Secured, record the buyer as a Prospect and
 // trigger a rebuild so the badge shows. Verified with STRIPE_WEBHOOK_SECRET (Stripe-Signature, 5-minute window).

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import handler from '../worker/src/index.js';
 import {scoreReadiness} from '../public/scripts/score.js';
 
-const env={AIRTABLE_PAT:'test-secret',AIRTABLE_BASE_ID:'appTEST',ALLOWED_ORIGIN:'https://example.test',SITE_URL:'https://example.test',WORKER_URL:'https://api.example.test',RESEND_API_KEY:'test-key',FROM_EMAIL:'Tidewater <hello@example.test>',MAILING_ADDRESS:'123 Test Street, Example City, DC 20001',HMAC_SECRET:'12345678901234567890123456789012'};
+const env={AIRTABLE_PAT:'test-secret',AIRTABLE_BASE_ID:'appTEST',ALLOWED_ORIGIN:'https://example.test',SITE_URL:'https://example.test',WORKER_URL:'https://api.example.test',RESEND_API_KEY:'test-key',FROM_EMAIL:'Tidewater <hello@example.test>',MAILING_ADDRESS:'123 Test Street, Example City, DC 20001'};
 const req=(data,origin='https://example.test')=>new Request('https://api.example.test/api/lead',{method:'POST',headers:{origin,'content-type':'application/json'},body:JSON.stringify(data)});
 let requests=[];
 const oldFetch=globalThis.fetch;
@@ -34,20 +34,14 @@ test('restaurant finder writes a prospect with validated answers and a private p
  assert.equal(requests.length,0);
  globalThis.fetch=oldFetch;
 });
-test('checkout is disabled by default and only accepts a signed, unexpired, server-priced quote',async()=>{
- const {signQuote}=await import('../worker/src/index.js');
+test('checkout is disabled by default and refuses anything but a listing id',async()=>{
  const creq=(body)=>new Request('https://api.example.test/api/checkout',{method:'POST',headers:{origin:'https://example.test','content-type':'application/json'},body:JSON.stringify(body)});
  assert.equal((await handler.fetch(creq({quote:'x'}),env)).status,503);
  const on={...env,CHECKOUT_ENABLED:'1',STRIPE_SECRET_KEY:'sk_test_x'};
- const exp=String(Math.floor(Date.now()/1000)+3600);
- const good=`recAAAAAAAAAAAAAA.sba-2.${exp}.${await signQuote(on,'recAAAAAAAAAAAAAA','sba-2',exp)}`;
- let stripeBody='';globalThis.fetch=async(input,init={})=>{if(String(input).includes('api.stripe.com')){stripeBody=String(init.body);return new Response(JSON.stringify({url:'https://checkout.stripe.test/s'}));}return new Response('{}',{status:404});};
- assert.equal((await handler.fetch(creq({quote:good.replace('sba-2','sba-1')}),on)).status,403);
- assert.equal((await handler.fetch(creq({quote:good.slice(0,-1)+(good.endsWith('0')?'1':'0')}),on)).status,403);
- const past=String(Math.floor(Date.now()/1000)-10);
- assert.equal((await handler.fetch(creq({quote:`recAAAAAAAAAAAAAA.sba-1.${past}.${await signQuote(on,'recAAAAAAAAAAAAAA','sba-1',past)}`}),on)).status,410);
- const res=await handler.fetch(creq({quote:good}),on);assert.equal(res.status,200);
- assert.match(stripeBody,/unit_amount%5D=250000/);
+ let stripeCalls=0;globalThis.fetch=async(input)=>{if(String(input).includes('api.stripe.com'))stripeCalls++;return new Response('{}',{status:404});};
+ assert.equal((await handler.fetch(creq({quote:'recAAAAAAAAAAAAAA.sba-2.9999999999.'+'a'.repeat(64)}),on)).status,400);
+ assert.equal((await handler.fetch(creq({}),on)).status,400);
+ assert.equal(stripeCalls,0);
  globalThis.fetch=oldFetch;
 });
 test('scripted POST without Origin or same-origin Referer is rejected; same-origin Referer is accepted',async()=>{
