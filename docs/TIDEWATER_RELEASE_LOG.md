@@ -1,5 +1,19 @@
 # Tidewater release log
 
+## Quote-link checkout removed; www→apex redirect — 2026-11-06
+
+**Live in production, verified 2026-11-06 by Claude.** [PR #36](https://github.com/jcs3-com/Tidewater/pull/36) squash-merged as `a78bc8a`; live `/release.json` and the homepage `tidewater-commit` both report `a78bc8a…`.
+
+Owner decision (2026-11-06): quoted, retainer and other engagements are invoiced by hand in Stripe. `HMAC_SECRET` was never set in production, so signed quote links could not have worked.
+
+- Removed `signQuote`, the quote-token branch of `/api/checkout`, `/engage` and `engage.js`; `/engage` 301s to `/pricing`. Listing checkout and `/api/stripe-webhook` unchanged.
+- Cloudflare zone redirect rule (outside the repo): `www.tidewaterbid.com/*` 301s to `https://tidewaterbid.com/*`, path and query kept.
+- Search Console: domain verified by DNS TXT (added 2026-11-05).
+
+Checks: `npm run check` (19/19 unit); `DEMO_SEED=0` build; Playwright 32/32 locally; Cloudflare Pages check passed. Production smoke: `/engage` 301 → `/pricing`; `/api/checkout` with a quote token 400, with an unknown listing id 404; `/`, `/pricing`, `/bids`, `/funding-directory`, `/engagement-received` 200; `www` 301 → apex.
+
+Rollback: `git revert a78bc8a` on `main` and merge; delete the zone redirect rule "www to apex (tidewaterbid.com)".
+
 ## Stale rules and guardrails dropped — 2026-11-05
 
 **Live in production, verified 2026-11-05 by Claude.** [PR #34](https://github.com/jcs3-com/Tidewater/pull/34) squash-merged as `6b340a0`; live `/release.json` and the homepage `tidewater-commit` both report `6b340a0…`.
