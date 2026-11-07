@@ -1,6 +1,6 @@
 ---
 import {apiUrl,categories,jurisdictions} from '../lib/config';
-const {kind='contact', bidId='', compact=false, source='site', heading='Tell us what you need'} = Astro.props;
+const {kind='contact', bidId='', compact=false, source='site', heading='Tell us what you need', submitLabel=''} = Astro.props;
 const uid=`form-${kind}-${bidId||'main'}`;
 const turnstileKey=import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
@@ -18,7 +18,7 @@ const turnstileKey=import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     </div>
   <div class="form-section"><label class="checkline"><input type="checkbox" name="consent" value="yes" required /><span>I agree to receive email follow-up from Tidewater about this request. I can opt out anytime. <a href="/privacy">Privacy policy</a>.</span></label></div>
   {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="auto"></div>}
-  <button type="submit" class="button">{kind==='bid_packet'?'Request the bid packet':'Send request'}</button>
+  <button type="submit" class="button">{submitLabel || (kind==='bid_packet'?'Request the bid packet':'Send request')}</button>
   <div class="form-feedback" role="status" aria-live="polite"></div>
   <p class="fine dim">If online delivery is unavailable, <a href="mailto:hello@tidewaterbid.com">email Tidewater directly</a>. A request is received only after delivery is confirmed.</p>
 </form>
