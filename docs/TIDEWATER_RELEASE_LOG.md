@@ -1,5 +1,18 @@
 # Tidewater release log
 
+## Astro 5 → 7.4.8 security upgrade — 2026-11-09
+
+**Live in production, verified 2026-11-09 by Claude.** [PR #40](https://github.com/jcs3-com/Tidewater/pull/40) squash-merged as `bf74bed`; live `/release.json` and the homepage `tidewater-commit` both report `bf74bed…`.
+
+Owner approved (2026-11-09). `npm audit --omit=dev` on `main` reported 1 critical (Astro: XSS, image-optimizer RCE and related advisories), 3 high (sharp/libvips, zod) and 1 low (esbuild dev server); after the upgrade, 0.
+
+- `astro` ^5.16.0 → ^7.4.8; `@astrojs/check` → 0.9.12. No source, copy, price, route, flag or secret change.
+- Built output compared page by page with `main`: same 75 pages; only equivalent HTML escaping changed (`&#38;` → `&amp;`).
+
+Checks: `npm run check` (19/19 unit, contrast, copy guard, `astro check` 0 errors); `DEMO_SEED=0` build (75 pages); Playwright 32/32 locally; Cloudflare Pages check passed. Production smoke: robots `Allow: /`, no `noindex` on the homepage; `/`, `/funding-directory`, `/funding-services`, `/bids`, `/pricing`, `/about`, `/contact`, `/opportunity-finder` 200; `/restaurant-advisory/funding` 301 → `/funding-directory`; unknown path 404; `/README.md` 410; `/api/checkout` with an empty body 400; all sitemap URLs 200.
+
+Rollback: `git revert bf74bed` on `main` and merge.
+
 ## Academy: January 9 Food Funding Workshop — 2026-11-07
 
 **Live in production, verified 2026-11-07 by Claude.** [PR #38](https://github.com/jcs3-com/Tidewater/pull/38) squash-merged as `a8981d9`; live `/release.json` and the `/academy` `tidewater-commit` both report `a8981d9…`.
