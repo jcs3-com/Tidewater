@@ -1,5 +1,19 @@
 # Tidewater release log
 
+## DC Business Checklist; street address and "LLC" removed — 2026-11-21
+
+**Live in production, verified 2026-11-21 by Claude.** [PR #42](https://github.com/jcs3-com/Tidewater/pull/42) squash-merged as `c6435a7`; live `/release.json` and the homepage `tidewater-commit` both report `c6435a7…`.
+
+Owner decisions (2026-11-21): publish a general DC Business Checklist at `/checklist` with a direct PDF download (no form; phase 2 adds industry/task checklists and email delivery); the business is "Tidewater Advisory", never "Tidewater Advisory LLC"; no street address anywhere, location shown as "Capitol Hill East, Washington, DC".
+
+- `/checklist` and `/downloads/tidewater-dc-business-checklist.pdf` (3 pages, Letter). Content in `src/data/dc-checklist.ts`, checked against official DLCP, OTR, DOES, DC PFL, OAG, ABCA and DSLBD pages on 2026-11-21; PDF rebuilt with `node scripts/checklist/build-pdf.mjs`.
+- `/resources` lists the checklist; sitemap, nav highlighting and all e2e route lists include `/checklist`.
+- Footer, Organization schema, `/privacy`, `/terms`, `/support`: street address removed. Organization schema name "Tidewater Advisory" (alternateName "Tidewater"); Insights publisher no longer says LLC.
+
+Checks: `npm run check` (0 errors); `DEMO_SEED=0` build (76 pages, no street address in `dist`); Playwright 32/32 locally incl. axe light/dark and 360px on `/checklist`; all 27 checklist links returned 200; Cloudflare Pages check passed. Production smoke: `/checklist` 200, PDF 200 `application/pdf`, `/resources` 200; homepage footer and `/privacy` show "Capitol Hill East, Washington, DC".
+
+Rollback: `git revert c6435a7` on `main` and merge.
+
 ## Astro 5 → 7.4.8 security upgrade — 2026-11-09
 
 **Live in production, verified 2026-11-09 by Claude.** [PR #40](https://github.com/jcs3-com/Tidewater/pull/40) squash-merged as `bf74bed`; live `/release.json` and the homepage `tidewater-commit` both report `bf74bed…`.
