@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-const pages=['/','/funding-directory','/funding-services','/projects','/resources','/tools','/academy','/fundamentals','/fellowship','/careers','/ethics','/contact'];
+const pages=['/','/funding-directory','/funding-services','/projects','/resources','/checklist','/tools','/academy','/fundamentals','/fellowship','/careers','/ethics','/contact'];
 test('funding-first architecture ships without pretend clients',async({page})=>{
   for(const path of pages){
     const response=await page.goto(path);

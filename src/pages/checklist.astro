@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import CTA from '../components/CTA.astro';
+import {checklist, checklistMeta, checklistSources} from '../data/dc-checklist';
+---
+<Base title="DC Business Checklist | Tidewater Advisory" description="A free, general checklist for starting and running a business in Washington, DC: registration, taxes, location, licensing, hiring, good standing and funding readiness. Download the PDF.">
+  <section class="section tw-page-hero"><div class="container">
+    <p class="eyebrow">Resources / Free checklist</p>
+    <h1>{checklistMeta.title}</h1>
+    <p class="lead">{checklistMeta.subtitle}: the agencies, registrations and recurring deadlines, in the order most businesses meet them.</p>
+    <div class="cl-actions">
+      <a class="button" href={checklistMeta.pdf} download>Download the checklist (PDF) <span aria-hidden="true">↓</span></a>
+      <a class="button-quiet" href="/contact">Ask about a specific step ↗</a>
+    </div>
+    <p class="fine dim">Updated {checklistMeta.updated}. {checklistMeta.note}</p>
+  </div></section>
+
+  <section class="section cl-body"><div class="container">
+    <nav class="cl-toc" aria-label="Checklist steps"><ol>
+      {checklist.map(s => <li><a href={`#step-${s.step}`}><span class="step-number">{s.step}</span> {s.title}</a></li>)}
+    </ol></nav>
+    {checklist.map(s => (
+      <section class="cl-section" id={`step-${s.step}`} aria-labelledby={`h-${s.step}`}>
+        <div class="cl-head"><span class="step-number">{s.step} / {s.when}</span><h2 id={`h-${s.step}`}>{s.title}</h2></div>
+        <ul class="cl-items">
+          {s.items.map(i => (
+            <li><span class="cl-box" aria-hidden="true"></span><div><h3>{i.task}</h3><p>{i.detail}</p>{i.link && <a class="cl-link" href={i.link.href} target="_blank" rel="noopener noreferrer">{i.link.label} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>}</div></li>
+          ))}
+        </ul>
+      </section>
+    ))}
+    <section class="cl-sources" aria-labelledby="h-sources">
+      <h2 id="h-sources">Official sources</h2>
+      <p class="dim">Checked {checklistMeta.updated}. Tidewater Advisory is independent and not affiliated with any of these agencies.</p>
+      <ul>{checklistSources.map(src => <li><a href={src.href} target="_blank" rel="noopener noreferrer">{src.label}<span class="sr-only"> (opens in a new tab)</span></a></li>)}</ul>
+    </section>
+  </div></section>
+
+  <CTA title="Want a second set of eyes on your setup?" body="Tell us where you are in the process and what you are trying to open, hire or fund." href="/contact" label="Contact Tidewater Advisory"/>
+</Base>
+
+<style>
+  .cl-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin:1.75rem 0 1.25rem}
+  .cl-body{padding-top:clamp(2rem,4vw,3.5rem)}
+  .cl-toc{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1rem 0;margin-bottom:clamp(2.5rem,5vw,4rem)}
+  .cl-toc ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));gap:.25rem 1.5rem}
+  .cl-toc li{margin:0}
+  .cl-toc a{display:block;padding:.35rem 0;text-decoration:none}
+  .cl-toc a:hover{text-decoration:underline}
+  .cl-section{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:clamp(1.5rem,4vw,4rem);padding:clamp(2rem,4vw,3rem) 0;border-top:1px solid var(--line);scroll-margin-top:1rem}
+  .cl-head h2{font-size:clamp(2rem,3.4vw,3rem);margin-top:.6rem}
+  .cl-items{list-style:none;margin:0;padding:0}
+  .cl-items li{display:grid;grid-template-columns:1.25rem minmax(0,1fr);gap:1rem;margin:0 0 1.6rem}
+  .cl-items li:last-child{margin-bottom:0}
+  .cl-box{width:1.1rem;height:1.1rem;border:1.5px solid var(--field-line);margin-top:.35rem}
+  .cl-items h3{font-family:var(--body);font-size:1.05rem;font-weight:600;letter-spacing:0;line-height:1.4;margin:0 0 .3rem}
+  .cl-items p{margin:0 0 .35rem;max-width:68ch}
+  .cl-link{font-size:.86rem;color:var(--muted)}
+  .cl-sources{border-top:1px solid var(--line);padding-top:clamp(2rem,4vw,3rem)}
+  .cl-sources h2{font-size:clamp(1.8rem,3vw,2.4rem)}
+  .cl-sources ul{columns:2 22rem;column-gap:2.5rem;padding-left:1.1rem}
+  .cl-sources li{break-inside:avoid;font-size:.92rem}
+  @media(max-width:760px){.cl-section{grid-template-columns:1fr}}
+</style>
