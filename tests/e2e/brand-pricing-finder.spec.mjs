@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-const routes=['/','/funding-directory','/funding-services','/projects','/resources','/tools','/academy','/fellowship','/careers','/ethics','/bids','/pricing','/opportunity-finder','/restaurant-advisory','/restaurant-advisory/food-waste','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/support','/contracts/catering/montgomery-county-md'];
+const routes=['/','/funding-directory','/funding-services','/projects','/resources','/checklist','/tools','/academy','/fellowship','/careers','/ethics','/bids','/pricing','/opportunity-finder','/restaurant-advisory','/restaurant-advisory/food-waste','/readiness','/becoming-a-contractor','/insights','/about','/contact','/privacy','/terms','/support','/contracts/catering/montgomery-county-md'];
 
 test('approved brand lockup, tagline, favicon and social image are installed',async({page,request})=>{
  await page.goto('/');
